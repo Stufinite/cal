@@ -20,26 +20,31 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '72kq3osxeqe-_k0d8hoon!-q(be62@_ge3hbhe_kl_$r2_ta3y'
+with open(BASE_DIR + '/' + 'secret_key.txt') as f:
+    SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.stufinite.faith']
 
 
 # Application definition
 
-INSTALLED_APPS = [
+REQUIRED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'timetable',
 ]
+
+PROJECT_APPS = [
+    'timetable.apps.TimetableConfig',
+]
+
+INSTALLED_APPS = REQUIRED_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -107,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Taipei'
 
 USE_I18N = True
 
@@ -120,3 +125,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
+SESSION_COOKIE_DOMAIN = '.stufinite.faith'
+with open(BASE_DIR + '/' + 'sessionid.txt') as f:
+    SESSION_COOKIE_NAME = f.read().strip()
+
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+# Cache
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+#         'LOCATION': '127.0.0.1:11211',
+#     }
+# }
