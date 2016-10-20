@@ -41,7 +41,8 @@ def course_zh_TW(request):
         data = data.dict()  # turn Querydict into python's dict
         idList = json.loads(data['idList'])
         save_idList_for_user(idList, data, CourseUser)
-        return render_to_response('course/index.html', locals())
+        # return render_to_response('course/index.html', locals())
+        return render_to_response('timetable.html', locals())
     elif 'name' in request.GET and request.GET['name'] != '':
         # CourseUser = Course_of_user.objects.get(user_name=request.GET['name'])
         user_name = CourseUser.user_name
@@ -49,10 +50,12 @@ def course_zh_TW(request):
         returnarr = CourseUser.returnarr
         time_table = CourseUser.time_table
         booklist = CourseUser.idList.all()
-        return render_to_response('course/index.html', locals())
+        # return render_to_response('course/index.html', locals())
+        return render_to_response('timetable.html', locals())
     else:
         test = [12, 23, 45, 6]
-        return render_to_response('course/index.html', RequestContext(request, locals()))
+        # return render_to_response('course/index.html', RequestContext(request, locals()))
+        return render_to_response('timetable.html', RequestContext(request, locals()))
 
 
 def save_idList_for_user(idList, data, CourseUser):

@@ -1,0 +1,36 @@
+.timetable {
+  display: inline-block;
+  padding: 16px;
+  width: calc(99% - 200px);
+  color: #403F3F;
+  vertical-align: top;
+}
+
+.timetable td {
+  margin: 0;
+  padding: 8px;
+  background-color: white;
+  text-align: center;
+}
+
+.timetable .time {
+  padding-right: 8px;
+  letter-spacing: 1px;
+}
+
+.timetable .remove {
+  position: relative;
+  left: 25%;
+  color: red;;
+}
+.timetable .remove:hover {
+  cursor: pointer;
+}
+
+.timetable .course .title {
+  display: block;
+  font-weight: bold;
+}
+.timetable .course .teacher, .timetable .course .location {
+  font-size: 12px;
+}

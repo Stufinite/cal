@@ -1,0 +1,324 @@
+{% extends "base.html" %}
+
+{% block title %}選課{% endblock %}
+{% block app_name %}選課{% endblock %}
+
+{% load static %}
+{% block stylesheet %}
+<link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' rel='stylesheet' integrity='sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1' crossorigin='anonymous'>
+<link rel='stylesheet' href='{% static "course/toastr/toastr.css" %}'>
+
+<link rel="stylesheet" href="{% static 'course/css/course_zh_TW.css' %}">
+<link rel='stylesheet' href='{% static "timetable/css/timetable.css" %}'>
+{% endblock %}
+
+{% block content %}
+<div class='stufinite-app-container'>
+    <div class='stufinite-app-content'>
+        <section class='stufinite-app-sidebar-container'>
+            <ul class='stufinite-app-sidebar'>
+                <li><i class="fa fa-user"></i>已選修學分 <span id="credits">0</span></li>
+                <li><i class='fa fa-search'></i>系所查詢</li>
+                <li><i class='fa fa-picture-o'></i>儲存成圖片</li>
+                <li><i class='fa fa-floppy-o'></i>儲存課表</li>
+                <li><i class='fa fa-book'></i>課程心得</li>
+                <li><i class='fa fa-moon-o'></i>夜間模式</li>
+            </ul>
+        </section>
+
+        <section class='timetable'>
+            <div id='time-table'>
+                <table class='table'>
+                    <thead>
+                        <tr>
+                            <th style='width: 4%;'></th>
+                            <th style='width: 19%;'>一</th>
+                            <th style='width: 19%;'>二</th>
+                            <th style='width: 19%;'>三</th>
+                            <th style='width: 19%;'>四</th>
+                            <th style='width: 19%;'>五</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-hour='1'>
+                            <th>
+                                <h5 class='time'>08:10</h5>
+                            </th>
+                            <td data-day='1'><i class='fa fa-plus-square-o fa-5x'></i></td>
+                            <td data-day='2'>
+                                <i class="remove fa fa-trash" aria-hidden="true"></i>
+                                <div class="course">
+                                    <span class="title">範例課程1</span>
+                                    <span class="teacher">黃四郎</span>
+                                    <span class="location">S1001</span>
+                                </div>
+                            </td>
+                            <td data-day='3'>
+                                <i class="remove fa fa-trash" aria-hidden="true"></i>
+                                <div class="course">
+                                    <span class="title">範例名稱非常非常非常非常非常非常非常長的課程1</span>
+                                    <span class="teacher">黃次郎</span>
+                                    <span class="location">S1001</span>
+                                </div>
+                            </td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='2'>
+                            <th>
+                                <h5 class='time'>09:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='3'>
+                            <th>
+                                <h5 class='time'>10:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='4'>
+                            <th>
+                                <h5 class='time'>11:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='5'>
+                            <th>
+                                <h5 class='time'>13:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='6'>
+                            <th>
+                                <h5 class='time'>14:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='7'>
+                            <th>
+                                <h5 class='time'>15:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='8'>
+                            <th>
+                                <h5 class='time'>16:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='9'>
+                            <th>
+                                <h5 class='time'>17:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='10' style='display:none'>
+                            <th>
+                                <h5 class='time'>18:20</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='11' style='display:none'>
+                            <th>
+                                <h5 class='time'>19:15</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='12' style='display:none'>
+                            <th>
+                                <h5 class='time'>20:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='13' style='display:none'>
+                            <th>
+                                <h5 class='time'>21:05</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="stufinite-app-searchbar-container">
+            <div class="stufinite-app-searchbar-toggle">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+            </div>
+
+            <div class='stufinite-searchbar-title'>
+              <span>搜尋結果</span>
+            </div>
+
+            <div class="stufinite-searchbar-result-container">
+                <div class="stufinite-searchbar-result">
+                    <div class="stufinite-searchbar-result-title">
+                        <span>人文</span>
+                    </div>
+                    <div class="stufinite-searchbar-result-list human">
+                        <div class='stufinite-searchbar-result-item'>
+                            <h4>範例課程1</h4>
+                            <span>(一)5, 6, 7 | 黃三郎</span>
+                            <div class="action-btn">
+                                <button>加入</button>
+                                <button>心得</button>
+                                <button>詳細資料</button>
+                            </div>
+                        </div>
+
+                        <div class='stufinite-searchbar-result-item'>
+                            <h4>範例課程2</h4>
+                            <span>(二)5, 6 | 黃四郎</span>
+                            <div class="action-btn">
+                                <button>加入</button>
+                                <button>心得</button>
+                                <button>詳細資料</button>
+                            </div>
+                        </div>
+
+                        <div class='stufinite-searchbar-result-item'>
+                            <h4>範例名稱非常非常非常非常非常非常非常長的課程1</h4>
+                            <span>(五)5, 6, 7 | 黃次郎</span>
+                            <div class="action-btn">
+                                <button>加入</button>
+                                <button>心得</button>
+                                <button>詳細資料</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stufinite-searchbar-result">
+                    <div class="stufinite-searchbar-result-title">
+                        <span>社會</span>
+                    </div>
+                    <div class="stufinite-searchbar-result-list society">
+                        <div class='stufinite-searchbar-result-item'>
+                            <h4>範例課程1</h4>
+                            <span>(一)5, 6, 7 | 黃三郎</span>
+                            <div class="action-btn">
+                                <button>加入</button>
+                                <button>心得</button>
+                                <button>詳細資料</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stufinite-searchbar-result">
+                    <div class="stufinite-searchbar-result-title">
+                        <span>自然</span>
+                    </div>
+                    <div class="stufinite-searchbar-result-list nature"></div>
+                </div>
+
+                <div class="stufinite-searchbar-result">
+                    <div class="stufinite-searchbar-result-title">
+                        <span>體育</span>
+                    </div>
+                    <div class="stufinite-searchbar-result-list PE"></div>
+                </div>
+
+                <div class="stufinite-searchbar-result">
+                    <div class="stufinite-searchbar-result-title">
+                        <span>其他</span>
+                    </div>
+                    <div class="stufinite-searchbar-result-list optional">
+                        <div class='stufinite-searchbar-result-item'>
+                            <h4>範例課程1</h4>
+                            <span>(一)5, 6, 7 | 黃三郎</span>
+                            <div class="action-btn">
+                                <button>加入</button>
+                                <button>心得</button>
+                                <button>詳細資料</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block javascript %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.6/semantic.min.js"></script>
+<script src="{% static 'course/toastr/toastr.js' %}"></script>
+
+<script src="{% static 'stufinite/js/searchbar.js' %}"></script>
+
+<!--截圖-->
+<script src="{% static 'course/js/save/html2canvas.js' %}"></script>
+<script src="{% static 'course/js/save/saveAsPicture.min.js' %}"></script>
+<!--儲存json到本地端-->
+<script async="" src="https://cdn.rawgit.com/eligrey/Blob.js/master/Blob.js"/>
+<script src="{% static 'course/js/save/FileSaver.min.js' %}"></script>
+<!--功能主函式-->
+<script src="{% static 'course/js/csrf_post.js' %}"></script>
+<script src="{% static 'course/js/init.js' %}"></script>
+<script src="{% static 'course/js/course_stl.js' %}"></script>
+<script src="{% static 'course/js/button_control.js' %}"></script>
+<script src="{% static 'course/js/bootstrap_site.min.js' %}"></script>
+<script src="{% static 'course/js/backend.js' %}"></script>
+<script src="{% static 'course/js/main.js' %}"></script>
+<!--Google analytics-->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-78099072-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+{% endblock %}
