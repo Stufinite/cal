@@ -1,0 +1,64 @@
+{% load staticfiles %}
+<!--使用說明投影片的按鈕-->
+<button type="button" class="btn btn-primary " data-toggle="modal" data-target=".bs-example-modal-lg-question" style="background:none; border:none ;padding:6px 0px;">使用說明</button>
+<div class="modal fade modal fade bs-example-modal-lg-question" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" id="exp">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title" id="myModalLabel"><span class="fa fa-question fa-1x fa-fw"></span>使用說明</h3>
+            </div>
+            <div class="modal-body">
+                <!--杜杰的圖片輪播-->
+                <div class="container-fluid">
+                    <div class="row">
+                      <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner" role="listbox">
+                          <div class="item active">
+                            <img src="{% static 'course/images/manual/001.png' %}" alt="...">
+                          </div>
+                          <div class="item">
+                            <img src="{% static 'course/images/manual/002.png' %}" alt="...">
+                          </div>
+                          <div class="item">
+                            <img src="{% static 'course/images/manual/003.png' %}" alt="...">
+                          </div>
+                          <div class="item">
+                            <img src="{% static 'course/images/manual/004.png' %}" alt="...">
+                          </div>
+                          <div class="item">
+                            <img src="{% static 'course/images/manual/005.png' %}" alt="...">
+                          </div>
+                          <div class="item">
+                            <img src="{% static 'course/images/manual/006.png' %}" alt="...">
+                          </div>
+                          <div class="item">
+                            <img src="{% static 'course/images/manual/007.png' %}" alt="...">
+                          </div>
+                          <div class="item">
+                            <img src="{% static 'course/images/manual/008.png' %}" alt="...">
+                          </div>
+                          <div class="item">
+                            <img src="{% static 'course/images/manual/009.png' %}" alt="...">
+                          </div>  
+                        </div>
+                        <!-- Controls -->
+                        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                          <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                          <span class="sr-only">Next</span>
+                        </a>
+                      </div>
+                    </div>
+                </div>
+                <!--杜杰的圖片結束-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

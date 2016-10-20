@@ -1,0 +1,110 @@
+body
+{
+    background-color:#3074B5;
+    background-repeat:no-repeat;
+    background-attachment: fixed;
+    font-family: "Microsoft JhengHei";
+}
+/*最後改的p是相簿的英文字*/
+#elective-post
+{
+    margin-bottom: 10px;
+}
+#btn-tools
+{
+    padding: 0;
+}
+#classification
+{
+    padding: 0px;
+}
+/*修改table的border*/
+#time-table tbody th
+{
+    white-space: nowrap;
+    font-size: 100%;
+    height:55px;
+}
+#time-table th
+{
+    text-align: center;
+    vertical-align:middle;
+}
+#time-table td
+ {
+     text-align: center;
+     vertical-align:middle;
+ }
+ #time-table td span
+ {
+     color: #DDD;
+ }
+ #time-table td span:hover,
+ #time-table td span:focus
+ {
+     background-color: transparent;
+     color: #666;
+}
+#time-table button.btn-link
+{
+    text-align: center;
+    color:black;
+}
+#time-table div.title
+{
+    text-align: center;
+    font-size: 120%;
+    padding-bottom: 3px;
+}
+#time-table div.location
+{
+    text-align: left;
+    font-size: 80%;
+}
+#time-table div.professor
+{
+    text-align: right;
+    font-size: 80%;
+}
+/*table的屬性結束*/
+.search-class .panel-body
+{
+    padding-top: 0;
+    padding-bottom  : 0;
+}f
+.add
+{
+    color: red;
+}
+#curriculum-title small
+{
+    text-align:left;
+    color:#333;
+}
+#toggleTable
+{
+    color: #333; /* IE8 proofing */
+}
+#toggleTable:hover,
+#toggleTable:focus
+{
+    background-color: transparent;
+    color: #ADBDC5;
+}
+.footer{
+    position: relative;
+    text-align: center;
+}
+#contact{
+  font-color:white;
+  background-color: black
+}
+/*footer裡的圖片*/
+#SGsign,#ITsign{
+  width: 20px;
+  height: 20px;
+}
+/*footer裡的圖片*/
+.github_sign{
+  color: white;
+}
