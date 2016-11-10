@@ -1,6 +1,7 @@
 $(document).ready(function() {
     window.user = return_init_user_json();
     window.week = ["一", "二", "三", "四", "五"];
+    var searchbar = new StufiniteSearchbar()
 })
 var return_init_user_json = function() {
         return {
@@ -26,18 +27,13 @@ var bulletin_post = function($target, course, language) {
     } else {
         course.title_short = course.title_parsed["en_US"];
     }
-    var time = build_bulletin_time(course); //會回傳屬於那個課程的客製化時間title
-    $option = return_bulletin_option(course); //it will determine which color should $option be. And return a jQuery object which has html tag.
-    $option.find('span.title').text(course.title_short); //將對應的課程內容寫入cell的html語法中
-    $option.find('span.time').text(time);
-    $option.find('span.location').text(fill_loction(course));
-    $option.find('span.professor').text(course.professor);
-    $option.find('button').val(course.code);
-    //把現在找到的這門選修課課程代碼儲存到這個option，並用value表示
-    var url = window.url_base + course.url;
-    $option.find('a.feedback').attr('href', url);
-    $option.find('a.syllabus').attr('href', "http://feedback.nchusg.org/search/?q=" + course.title_short);
-    $target.append($option); //顯示課程，把$option放到elective-post，append是追加在後面
+    searchbar.addResult($target, {
+            'title': course.title_short,
+            'time': build_bulletin_time(course),
+            'professor': course.professor,
+            'review_url': 'http://feedback.nchusg.org/search/?q=' + course.title_short,
+            'detail_url': course.url,
+        });
 };
 var add_course = function($target, course, language) { //假設target為time-table的參數，course為courses的某一個課程
     if (!$.isArray(course.time_parsed))
@@ -564,10 +560,9 @@ var isChar = function(input) {
         return false;
     }
 }
-var return_bulletin_option = function(course) {
-    // var $option = $($.parseHTML('<div><button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top" style="color:#3074B5;" title="" value=""></button><a class="btn" href="" target="_blank"><span class="fa fa-comment"></span></a></div>'));
-    var $option = $($.parseHTML('<tr  class="text-center"><th><h5 class=""><button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top" style="color:#B53074;" title="" value=""><img src="https://maxcdn.icons8.com/iOS7/PNG/25/Very_Basic/plus-25.png" title="Plus" title="Exit" width="25"></button></h5></th><td><a class="syllabus" href="" target="_blank"><span class="title"></span></a></td><td ><span class="time"></span></td><td ><span class="professor"></span></td><td><a class="feedback" href="" target="_blank"><span class="fa fa-pencil-square-o"></span></a></td></tr>')); //把option做成dom，再把dom做成jQuery物件
-    return $option;
+
+var return_bulletin_option = function() {
+  return $($.parseHTML('<div class="stufinite-searchbar-result-item"><h4></h4><span></span><div class="action-btn"><button>加入</button><button>心得</button><button>詳細資料</button></div></div>'))
 }
 
 var return_add_course_option = function() {
