@@ -64,15 +64,6 @@ var add_doublemajor = function(major, level) {
     department_course_for_specific_search(major, level);
 }
 
-/****************增加學分****************/
-var add_credits = function(course) {
-    window.credits += parseInt(course.credits); //要先把字串型態的學分轉成int才能做加減
-    $("#class_credit").text(window.credits);
-};
-var minus_credits = function(course) {
-    window.credits -= parseInt(course.credits);
-    $("#class_credit").text(window.credits);
-};
 
 /**************改變側欄課程顏色**************/
 var change_color = function($target, command) { //一旦添加了課程，則側欄的課名改了顏色

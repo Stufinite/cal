@@ -5,6 +5,7 @@ class StufiniteTimetable {
         this.language = lang;
         this.target = $("#time-table");
         this.credits = 0;
+        this.selected = {}
 
         // Initialize timetable with square plus buttons
         $("#time-table td").html(
@@ -27,36 +28,12 @@ class StufiniteTimetable {
         this.setCredit(this.credits)
     }
 
-    delCourse(code) {
-        var major = window.user['returnarr']['major'];
-        var level = window.user['returnarr']['level'];
-        for (let course of courses[code]) {
-            if (course.obligatory_tf == true && course.for_dept == major) {
-                toastr.warning(this.language == "zh_TW" ? "此為必修課，若要復原請點擊課表空格" : "This is a required course, if you want to undo, please click the \"plus\" symbol", {
-                    timeOut: 2500
-                });
-            }
-            if (course.for_dept == window.user['returnarr']['d_major']) {
-                var color_str = "available2" //the option of double major.
-            } else {
-                var color_str = "available"
-            }
-            $.each(course.time_parsed, function(_, iv) {
-                $.each(iv.time, function(_, jv) {
-                    var $td = $("#time-table").find('tr[data-hour=' + jv + '] td:eq(' + (iv.day - 1) + ')');
-                    //td:eq()為搜尋td的陣列索引值，找到課程的時間    iv.day為星期，但因為td為陣列所以iv.day要減一    find()是找class!!
-                    $td.html($('<i class="fa fa-plus-square fa-5x"></i>').bind('click', StufiniteTimetable.prototype.addCourseListener));
-                })
-            })
-            this.minusCredit(course.credits);
-        }
-    }
-
     isCourseConflict(course) {
-        var flag = false;
+        let flag = false;
+        let target = this.target
         $.each(course.time_parsed, function(_, iv) {
             $.each(iv.time, function(_, jv) {
-                var $td = $("#time-table").find('tr[data-hour=' + jv + '] td:eq(' + (iv.day - 1) + ')');
+                var $td = target.find('tr[data-hour=' + jv + '] td:eq(' + (iv.day - 1) + ')');
                 if ($td.text() != "") { //用來判斷td裡面是不已經有放過課程了，但若先在裡面放個按鈕那.text()回傳回來的也是空字串
                     flag = true;
                     toastr.error(this.language == "zh_TW" ? "衝堂喔!請手動刪除衝堂的課程" : "Conflict! please drop some course manually.", {
@@ -73,19 +50,20 @@ class StufiniteTimetable {
     }
 
     addCourse(course) {
-        let language = this.language
+        let target = this.target;
+        let language = this.language;
         let conflict = this.isCourseConflict(course);
         if (!conflict) {
-            $.each(course.time_parsed, function(_, iv) {
-                $.each(iv.time, function(_, jv) {
-                    var $td = $("#time-table").find('tr[data-hour="' + jv + '"] td:eq(' + (iv.day - 1) + ')');
+            for (let courseByDay of course.time_parsed) {
+                for (let courseByTime of courseByDay.time) {
+                    var $td = target.find('tr[data-hour="' + courseByTime + '"] td:eq(' + (courseByDay.day - 1) + ')');
                     var $cell = $(`
-                        <div class="course">
-                            <i class="remove fa fa-trash" aria-hidden="true"></i>
-                            <span class="title"></span>
-                            <span class="professor"></span>
-                            <span class="location"></span>
-                        </div>`)
+                    <div class="course">
+                        <i class="remove fa fa-trash" aria-hidden="true"></i>
+                        <span class="title"></span>
+                        <span class="professor"></span>
+                        <span class="location"></span>
+                    </div>`)
                     $cell.find('.remove')
                         .attr('code', course.code)
                         .bind('click', function(e) {
@@ -104,23 +82,21 @@ class StufiniteTimetable {
                         .end()
                         .find('.location')
                     $td.html($cell);
-                });
-            });
+                }
+            }
+
             this.addCredit(course.credits);
-            window.user['time_table'].push(course); //here means once i add this course in my timetable, i will also record this object in a json format, to save this time_table for users.
-            window.user['idList'][course.code] = courses[course.code][0]['title_parsed']['zh_TW']; //建立一個以課程代號為key課程名稱為值的字典
-            build_toastr_time(course, window.language);
+            this.selected[course.code] = course;
+
+            // window.user['time_table'].push(course); //here means once i add this course in my timetable, i will also record this object in a json format, to save this time_table for users.
+            // window.user['idList'][course.code] = courses[course.code][0]['title_parsed']['zh_TW']; //建立一個以課程代號為key課程名稱為值的字典
+            build_toastr_time(course, this.language);
         }
         // window.already_post = false;
         /*
         if it has add at least one course,
         make this boolean val false and it will trigger "beforeunload" event to prevent user accidently close tab.*/
         /*******Don't write below this line********/
-        if (conflict) {
-            return ("available"); //沒衝堂，可以變色
-        } else {
-            return ("conflict") //衝堂，不要變色
-        }
     }
 
     addCourseListener() {
@@ -131,8 +107,8 @@ class StufiniteTimetable {
             var d_level = window.user['returnarr']['d_level'];
             var day = $(this).closest("td").attr("data-day"); //因為我把同一時段的課程塞進陣列裡，所以要用index去取
             var hour = $(this).closest("tr").attr("data-hour");
-            StufiniteSearchbar.prototype.clear();
-            $.each(window.course_of_day[day][hour], function(ik, iv) {
+            searchbar.clear();
+            $.each(window.course_of_day[day][hour], function(_, iv) {
                 if (iv.for_dept == major || ((iv.for_dept == d_major) && (iv.class == d_level)) || iv.for_dept == "全校共同" || iv.for_dept == "共同學科(進修學士班)") {
                     //判斷如果是主系的課就不分年級全部都會顯示出來，如果是輔系的就只顯示該年級的課；如果for_dept==undefined就代表是通識課；如果為全校共同或共同學科(進修學士班)就會是體育、國防、服務學習、全校英外語 or general education, chinese and english.
                     // console.log(iv)
@@ -148,7 +124,33 @@ class StufiniteTimetable {
                     }
                 }
             });
-            StufiniteSearchbar.prototype.show();
+            searchbar.show();
+        }
+    }
+
+    delCourse(code) {
+        let target = this.target;
+        var major = window.user['returnarr']['major'];
+        var level = window.user['returnarr']['level'];
+        for (let course of courses[code]) {
+            if (course.obligatory_tf == true && course.for_dept == major) {
+                toastr.warning(this.language == "zh_TW" ? "此為必修課，若要復原請點擊課表空格" : "This is a required course, if you want to undo, please click the \"plus\" symbol", {
+                    timeOut: 2500
+                });
+            }
+            if (course.for_dept == window.user['returnarr']['d_major']) {
+                var color_str = "available2" //the option of double major.
+            } else {
+                var color_str = "available"
+            }
+            $.each(course.time_parsed, function(_, iv) {
+                $.each(iv.time, function(_, jv) {
+                    var $td = target.find('tr[data-hour=' + jv + '] td:eq(' + (iv.day - 1) + ')');
+                    //td:eq()為搜尋td的陣列索引值，找到課程的時間    iv.day為星期，但因為td為陣列所以iv.day要減一    find()是找class!!
+                    $td.html($('<i class="fa fa-plus-square fa-5x"></i>').bind('click', StufiniteTimetable.prototype.addCourseListener));
+                })
+            })
+            this.minusCredit(course.credits);
         }
     }
 }

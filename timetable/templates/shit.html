@@ -1,7 +1,7 @@
 <script type="text/javascript">
     /*******變換學制後，匯入該json檔*******/
     var get_json_when_change_degree = function(path, time_table_from_django) {
-        console.log(time_table_from_django == null);
+        // console.log(time_table_from_django == null);
         $.when($.getJSON(path, function(json) { //getJSON會用function(X)傳回X的物件或陣列
             //console.log(json);
             $.each(json.course, function(ik, iv) {
@@ -184,7 +184,7 @@
                 ***********************************************************************/
             }
         } else {
-            console.log(user_degree_json_path)
+            // console.log(user_degree_json_path)
             new_get_json_when_change_degree(user_degree_json_path, user_info_arr[1], user_info_arr[0]);
         }
     }
