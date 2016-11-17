@@ -130,19 +130,17 @@ StufiniteTimetable.prototype.addCourse = function($target, course, language) {
             $.each(iv.time, function(jk, jv) { //同上，iv.    time為"time"的陣列{3,4}，jk為0~1、jv為3~4(節數)
                 var $td = $target.find('tr[data-hour="' + jv + '"] td:eq(' + (iv.day - 1) + ')');
                 var $cell = $(`
-                  <i class="remove fa fa-trash" aria-hidden="true"></i>
                   <div class="course">
-                      <span class="title">範例課程1</span>
-                      <span class="professor">黃四郎</span>
-                      <span class="location">S1001</span>
+                      <i class="remove fa fa-trash" aria-hidden="true"></i>
+                      <span class="title"></span>
+                      <span class="professor"></span>
+                      <span class="location"></span>
                   </div>`)
-                console.log($cell.find('.remove'))
                 $cell.find('.remove')
                     .attr('code', course.code)
                     .bind('click', function(e) {
-                        console.log('adad')
                         var code = $(e.target).attr('code');
-                        this.delCourse(code);
+                        StufiniteTimetable.prototype.delCourse(code);
                     })
                     .end()
                     .find('.title')
@@ -155,7 +153,6 @@ StufiniteTimetable.prototype.addCourse = function($target, course, language) {
                     .text(course.professor)
                     .end()
                     .find('.location')
-
 
                 $td.html($cell); //顯示課程，把cell.html()塞到<td>tag裡面，就算裡面原本有按鈕也會直接被蓋掉，$.html()會取div裡面的東西
             });
