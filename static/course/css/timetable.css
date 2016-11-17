@@ -13,6 +13,11 @@
   text-align: center;
 }
 
+.timetable .fa-plus-square {
+  color: #DEDEDE;
+  font-size: 64px;
+}
+
 .timetable .time {
   padding-right: 8px;
   letter-spacing: 1px;
