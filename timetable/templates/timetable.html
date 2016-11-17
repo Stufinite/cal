@@ -8,8 +8,9 @@
 <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' rel='stylesheet' integrity='sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1' crossorigin='anonymous'>
 <link rel='stylesheet' href='{% static "course/toastr/toastr.css" %}'>
 
-<link rel="stylesheet" href="{% static 'course/css/course_zh_TW.css' %}">
-<link rel='stylesheet' href='{% static "timetable/css/timetable.css" %}'>
+{# <link rel="stylesheet" href="{% static 'course/css/course_zh_TW.css' %}">#}
+<link rel='stylesheet' href='{% static "course/css/timetable.css" %}'>
+<link rel='stylesheet' href='{% static "course/css/searchbar.css" %}'>
 {% endblock %}
 
 {% block content %}
@@ -44,23 +45,9 @@
                             <th>
                                 <h5 class='time'>08:10</h5>
                             </th>
-                            <td data-day='1'><i class='fa fa-plus-square-o fa-5x'></i></td>
-                            <td data-day='2'>
-                                <i class="remove fa fa-trash" aria-hidden="true"></i>
-                                <div class="course">
-                                    <span class="title">範例課程1</span>
-                                    <span class="teacher">黃四郎</span>
-                                    <span class="location">S1001</span>
-                                </div>
-                            </td>
-                            <td data-day='3'>
-                                <i class="remove fa fa-trash" aria-hidden="true"></i>
-                                <div class="course">
-                                    <span class="title">範例名稱非常非常非常非常非常非常非常長的課程1</span>
-                                    <span class="teacher">黃次郎</span>
-                                    <span class="location">S1001</span>
-                                </div>
-                            </td>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
                             <td data-day='4'></td>
                             <td data-day='5'></td>
                         </tr>
@@ -294,8 +281,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.6/semantic.min.js"></script>
 <script src="{% static 'course/toastr/toastr.js' %}"></script>
 
-<script src="{% static 'stufinite/js/searchbar.js' %}"></script>
-
 <!--截圖-->
 <script src="{% static 'course/js/save/html2canvas.js' %}"></script>
 <script src="{% static 'course/js/save/saveAsPicture.js' %}"></script>
@@ -306,8 +291,8 @@
 <script src="{% static 'course/js/csrf_post.js' %}"></script>
 <script src="{% static 'course/js/init.js' %}"></script>
 <script src="{% static 'course/js/course_stl.js' %}"></script>
-<script src="{% static 'course/js/button_control.js' %}"></script>
-<script src="{% static 'course/js/bootstrap_site.js' %}"></script>
+{# <script src="{% static 'course/js/button_control.js' %}"></script>#}
+{# <script src="{% static 'course/js/bootstrap_site.js' %}"></script>#}
 <script src="{% static 'course/js/backend.js' %}"></script>
 <!--Google analytics-->
 <script>
@@ -320,5 +305,10 @@
   ga('send', 'pageview');
 
 </script>
+
 {% include 'shit.html' %}
+<script src="{% static 'course/js/legacy.js' %}"></script>
+<script src="{% static 'course/js/searchbar.js' %}"></script>
+<script src="{% static 'course/js/timetable.js' %}"></script>
+<script src="{% static 'course/js/main.js' %}"></script>
 {% endblock %}

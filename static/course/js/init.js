@@ -1,32 +1,3 @@
-$(document).ready(function() {
-    window.credits = 0 //一開始的學分數是0
-    window.courses = {}; //宣告一個空的物件
-    window.course_of_majors = {}; //宣告一個空的物件
-    window.course_of_day = {}; //這是宣告日期的陣列
-    window.teacher_course = {}; //這是以老師姓名為index的陣列
-    window.name_of_course = {}; //這是以課程名稱為index的陣列
-    window.name_of_optional_obligatory = [] //這是用來存系上的必修課，檢查有沒有課名是重複的，若有就讓使用者自行決定要上哪堂
-    $("#class_credit").text(0);
-    window.language = "zh_TW"; //固定顯示語言為中文
-    window.url_base = ""; //used to be the url that link to the syllabus of that course.
-    window.haveloadin = {
-        D: false,
-        G: false,
-        N: false,
-        O: false,
-        U: false,
-        W: false
-    }; //used to checked whether that json of specific degree has been loaded in or not, if it did, the value turn to ture.
-    window.lastupdatetime = ""; //show the update time on server.
-    window.department_name = {};
-    window.already_post = true; //check whether post of not.
-    /*****************************************************************
-    Search content from Semantic Ui
-    *****************************************************************/
-    window.content = [];
-    $("#time-table td").html('<span class="fa fa-plus-circle fa-5x"></span>');
-    //////////////////////////////////////////////////////////////////
-})
 var build_department_arr = function(depJson) { //depJson 是傳入的department json檔名
     $.each(depJson, function(ik, iv) {
         if (typeof(window.department_name[iv.degree]) == 'undefined') {
@@ -46,6 +17,8 @@ var build_department_arr = function(depJson) { //depJson 是傳入的department 
         })
     })
 }
+
+
 var return_degree_text = function() {
     if ($('#m_career').val() == '0') {
         return window.user['returnarr']['degree']
@@ -53,6 +26,8 @@ var return_degree_text = function() {
         return $('#m_career').val();
     }
 }
+
+
 var generate_major_level_option = function() {
     //用先前產生出來的department_name名單，動態產出系所的選單按鈕
     $("#major").empty();
@@ -87,10 +62,14 @@ var generate_major_level_option = function() {
         })
     }
 }
+
+
 var return_department_option_html = function(degree, department) {
     option = '<option value="' + window.department_name[degree][department]['zh_TW'] + '">' + window.department_name[degree][department][window.language] + '</option>' //因為course of majors這個陣列的key全部都是中文，所以選單按鈕的value一定要是中文，而按鈕的文字則是按這是什麼語言版本的頁面
     return option;
 }
+
+
 var return_two_grade_arr = function(degree, language) {
     var freshman_value = "6",
         sophomore_value = "7"; //take graduate's value as default.
@@ -109,6 +88,8 @@ var return_two_grade_arr = function(degree, language) {
     }
     return [newGrade, newGrade2];
 }
+
+
 var return_five_grade_arr = function(language) {
     if (language == 'zh_TW') {
         return ['<option value="0">無年級</option>', '<option value="1">一年級</option>', '<option value="2">二年級</option>', '<option value="3">三年級</option>', '<option value="4">四年級</option>', '<option value="5">五年級</option>'];
