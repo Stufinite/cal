@@ -21,6 +21,7 @@ var bulletin_post = function($target, course, language) {
         .find('a.review').attr('href', 'http://feedback.nchusg.org/search/?q=' + course.title_short).end()
         .find('a.detail').attr('href', course.url).end()
 
+    console.log(result)
     StufiniteSearchbar.prototype.addResult($target, result);
 };
 

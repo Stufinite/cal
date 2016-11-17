@@ -38,6 +38,16 @@
     window.lastupdatetime = ""; //show the update time on server.
     window.department_name = {};
     window.already_post = true; //check whether post of not.
+    window.content = []
 
+    $.when(get_json_when_change_degree("/static/course/json/O.json", null), $.getJSON("/static/course/json/new_department.json", function(depJson) {
+        build_department_arr(depJson);
+        return_url_and_time_base();
+    })).then(function() {
+        //when的功能註解就是下面這兩條
+        //1. couse O.json is suitable for all kind of degree, so it will be loaded in automatically.
+        //2. 當文件準備好的時候，讀入department的json檔, 因為這是顯示系所，沒多大就全部都載進來
+        get_from_django();
+    });
     timetable.init("NCHU", "zh_TW");
 })()

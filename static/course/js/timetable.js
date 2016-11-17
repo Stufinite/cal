@@ -1,24 +1,4 @@
 function StufiniteTimetable() {
-    this.credits = 0
-    this.courses = {};
-    this.course_of_majors = {};
-    this.course_of_day = {};
-    this.teacher_course = {};
-    this.name_of_course = {};
-    this.name_of_optional_obligatory = []
-    this.language = "zh_TW";
-    this.url_base = "";
-    this.haveloadin = {
-        D: false,
-        G: false,
-        N: false,
-        O: false,
-        U: false,
-        W: false
-    };
-    this.lastupdatetime = "";
-    this.department_name = {};
-    this.already_post = true;
 }
 
 StufiniteTimetable.prototype.init = function(school, lang) {
@@ -35,7 +15,7 @@ StufiniteTimetable.prototype.init = function(school, lang) {
                 StufiniteSearchbar.prototype.clear();
                 // console.log(major + ' = ' + d_major + ' = ' + d_level);
                 // console.log(day + ' ' + hour);
-                $.each(course_of_day[day][hour], function(ik, iv) {
+                $.each(window.course_of_day[day][hour], function(ik, iv) {
                     if (iv.for_dept == major || ((iv.for_dept == d_major) && (iv.class == d_level)) || iv.for_dept == "全校共同" || iv.for_dept == "共同學科(進修學士班)") {
                         //判斷如果是主系的課就不分年級全部都會顯示出來，如果是輔系的就只顯示該年級的課；如果for_dept==undefined就代表是通識課；如果為全校共同或共同學科(進修學士班)就會是體育、國防、服務學習、全校英外語 or general education, chinese and english.
                         // console.log(iv)

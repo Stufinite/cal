@@ -161,7 +161,6 @@
         user_info_arr 會回傳使用者的grade和major，注意是按照這樣的順序喔
         **********************************************************/
         window.user = return_init_user_json();
-        console.log(window.user);
         user_info_arr = return_major_and_level("{{ userDept_from_request | escapejs }}", "{{ userGrade_from_request | escapejs }}");
         window.user['returnarr']['degree'] = "{{ userDegree_from_request | escapejs }}";
         window.user['returnarr']['major'] = "{{ userDept_from_request | escapejs }}";
