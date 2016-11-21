@@ -76,10 +76,10 @@ function legacyInit() {
             })
         })
     };
-    $.when(get_json_when_change_degree("/static/course/json/O.json"),
-        $.getJSON("/static/course/json/department.json", build_department_arr),
-        get_json_when_change_degree("/static/course/json/U.json")
+    $.when(get_json_when_change_degree("/static/course/json/U.json"),
+        get_json_when_change_degree("/static/course/json/O.json"),
+        $.getJSON("/static/course/json/department.json", build_department_arr)
     ).then(function() {
-        add_major("資訊科學與工程學系學士班", 1);
+        add_major("資訊科學與工程學系學士班", "1");
     })
 }

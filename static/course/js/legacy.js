@@ -18,9 +18,6 @@ var get_json_when_change_degree = function(path) {
                 window.courses[iv.code] = [];
             }
             window.courses[iv.code].push(iv); //這邊可以直接把選課號當作索引值key，裡面的值為object
-            window.content.push({
-                title: iv.code
-            });
             $.each(iv.time_parsed, function(jk, jv) { //建立日期的陣列
                 $.each(jv.time, function(mk, mv) {
                     if (typeof(window.course_of_day[jv.day]) == 'undefined') {
@@ -34,28 +31,14 @@ var get_json_when_change_degree = function(path) {
             })
             if (typeof(window.teacher_course[iv.professor]) == 'undefined') { //建立老師名稱的陣列
                 window.teacher_course[iv.professor] = [];
-                window.content.push({
-                    title: iv.professor
-                });
             }
             window.teacher_course[iv.professor].push(iv);
             if (typeof(window.name_of_course[iv.title_parsed.zh_TW]) == 'undefined') { //中文課名陣列
                 window.name_of_course[iv.title_parsed.zh_TW] = [];
-                /**************************************************
-                Window.content.push(the Chinese title of this class)
-                will build a search index for Semantic Ui search bar
-                可以自動補全文字
-                **************************************************/
-                window.content.push({
-                    title: iv.title_parsed.zh_TW
-                });
             }
             window.name_of_course[iv.title_parsed.zh_TW].push(iv);
             if (typeof(window.name_of_course[iv.title_parsed.en_US]) == 'undefined') { //英文課名陣列
                 window.name_of_course[iv.title_parsed.en_US] = [];
-                window.content.push({
-                    title: iv.title_parsed.en_US
-                });
             }
             window.name_of_course[iv.title_parsed.en_US].push(iv);
         });
