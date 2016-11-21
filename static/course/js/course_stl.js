@@ -1,6 +1,6 @@
 var add_doublemajor = function(major, level) {
     reset_for_time_request();
-    department_course_for_specific_search(major, level);
+    getCourse("major", major, level);
 }
 
 
@@ -57,84 +57,6 @@ var check_which_class = function(major, level) { //確定他是不是有分A、B
     } else {
         return (level); //取到年級
     }
-}
-
-/*********搜尋用*********/
-var department_course_for_specific_search = function(major, level) {
-    $.each(course_of_majors[major][level], function(ik, iv) { //因為這種輔系的課一定是交給使用者自己選，所以就不自動填入
-        console.log(iv)
-        $.each(courses[iv], function(jk, jv) {
-            console.log(jv)
-            if (jv.for_dept == major) { //這個判斷是為了像景觀學程那種專門上別的科系的課的系而設計的
-                if (jv.obligatory_tf == true && jv.class == level) {
-                    bulletin_post($(".optional"), jv, language);
-                    return false;
-                }
-                if (jv.obligatory_tf == false && jv.class == level) { //因為輔系的查詢只能查一個年級，所以就可以只判斷是否為level
-                    check_which_bulletin(jv);
-                    return false;
-                }
-            }
-        })
-    });
-}
-
-/*********教室資訊**********/
-var fill_loction = function(course) { //回傳教室資訊，型態為string
-    //course是課程物件
-    var location = "";
-    if (course.location != [""] && course.location != undefined) {
-        //要確保真的有location這個key才可以進if，不然undefined進到each迴圈
-        // 就會跳 [Uncaught TypeError: Cannot read property 'length' of undefined]這個error
-        $.each(course.location, function(ik, iv) {
-            location = location + " " + iv;
-        })
-    }
-    if (course.intern_location != [""] && course.intern_location != undefined) {
-        $.each(course.intern_location, function(ik, iv) {
-            location = location + " " + iv;
-        })
-    }
-    return location; //回傳字串
-}
-
-/*******獲得使用者選擇的主修資訊與年級*******/
-var get_major_and_level = function() {
-    //這會回傳一個major和level的陣列，供全域呼叫使用
-    var arr = $('form').serializeArray(); //this is a jQuery function
-    // will select all form of this html Document, and build and array of object
-    window.user['returnarr']['degree'] = arr[0]['value'];
-    var temp;
-    temp = arr[1]['value'].split('-')[1];
-    // window.user['returnarr']['level']=check_which_class(temp,arr[2]['value']);
-    // window.user['returnarr']['major']=temp.split(' ')[0];
-    temp = arr[1]['value'].split('-')[1];
-    window.user['returnarr']['d_level'] = check_which_class(temp, arr[2]['value']);
-    window.user['returnarr']['d_major'] = temp.split(' ')[0];
-}
-
-/******************************************************
-把django回傳的使用者系所年級、修改成小幫手能使用的
-******************************************************/
-var return_major_and_level = function(major, level) {
-    var temp;
-    var returnarr = [];
-    temp = major.split('-')[1];
-    returnarr.push(check_which_class(temp, level));
-    if (temp != undefined) {
-        returnarr.push(temp.split(' ')[0]);
-    }
-    return returnarr;
-}
-
-var cal_possibility = function(course) {
-    var pos = (course.number - course.enrolled_num) / course.number * 100;
-    pos = new Number(pos);
-    pos = pos.toFixed(2);
-    if (pos < 0) {
-        return 0;
-    }
-    return pos;
 }
 
 var isChar = function(input) {

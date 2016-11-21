@@ -116,7 +116,15 @@ class StufiniteTimetable {
                 toastr1 = "Discipline:";
             }
             toast_mg.push(toastr1 + course.discipline);
-            var possibility = cal_possibility(course); // a fuction that return the possibility of enrolling that course successfully.
+            var possibility = function(course) {
+                var pos = (course.number - course.enrolled_num) / course.number * 100;
+                pos = new Number(pos);
+                pos = pos.toFixed(2);
+                if (pos < 0) {
+                    return 0;
+                }
+                return pos;
+            }(course); // a fuction that return the possibility of enrolling that course successfully.
             //toast_mg.push("中籤率:" + possibility + "%");
         }
         if (course.note != "") {

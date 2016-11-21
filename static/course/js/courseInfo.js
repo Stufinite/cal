@@ -1,4 +1,4 @@
-function getCourse(mode, key) {
+function getCourse(mode, key, grade) {
     if (key === undefined || key === "") {
         return [];
     }
@@ -9,6 +9,8 @@ function getCourse(mode, key) {
         return getCourseByTitle(key);
     } else if (mode === "teacher") {
         return getCourseByTeacher(key);
+    } else if (mode === "major") {
+        return getCourseByMajor(key, parseInt(grade, 10));
     } else {
         return [];
     }
@@ -32,7 +34,7 @@ function getCourseByTitle(class_title) {
 
     var result = [];
     for (code of posted_code) {
-      result.push(courses[code][0]);
+        result.push(courses[code][0]);
     }
 
     return result;
@@ -42,9 +44,40 @@ function getCourseByTeacher(key) {
     return teacher_course[key]
 }
 
+
+function getCourseByMajor(major, grade) {
+    var result = [];
+    for (let iv of course_of_majors[major][grade]) {
+        for (let course of getCourseByCode(iv)) {
+            if (course.for_dept == major && course.class == grade) {
+                //這個判斷是為了像景觀學程那種專門上別的科系的課的系而設計的
+                result.push(course);
+            }
+        }
+    }
+    return result;
+}
+
+function getCourseLocation(course) {
+    var location = "";
+    if (course.location != [""] && course.location != undefined) {
+        //要確保真的有location這個key才可以進if，不然undefined進到each迴圈
+        // 就會跳 [Uncaught TypeError: Cannot read property 'length' of undefined]這個error
+        $.each(course.location, function(_, iv) {
+            location = location + " " + iv;
+        })
+    }
+    if (course.intern_location != [""] && course.intern_location != undefined) {
+        $.each(course.intern_location, function(_, iv) {
+            location = location + " " + iv;
+        })
+    }
+    return location;
+}
+
 function getCourseTime(course) {
     var time = [];
-    $.each(course.time_parsed, function(ik, iv) {
+    $.each(course.time_parsed, function(_, iv) {
         //push是把裡面的元素變成陣列的一格
         time.push("(" + week[iv.day - 1] + ")" + iv.time);
     })
