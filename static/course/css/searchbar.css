@@ -30,6 +30,13 @@
     height: calc(100% - 107px);
 }
 
+.stufinite-searchbar-placeholder {
+    margin-top: 50%;
+    width: 100%;
+    color: grey;
+    text-align: center;
+}
+
 .stufinite-searchbar-result {
     margin-bottom: 31px;
     width: 100%;
@@ -44,6 +51,7 @@
 }
 
 .stufinite-searchbar-result-title {
+    display: none;
     margin-left: 8px;
     padding: 8px 16px 8px 16px;
     width: 90%;

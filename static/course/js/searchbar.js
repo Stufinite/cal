@@ -43,10 +43,13 @@ class StufiniteSearchbar {
             .find('a.review').attr('href', 'http://feedback.nchusg.org/search/?q=' + course.title_short).end()
             .find('a.detail').attr('href', course.url).end()
 
+        target.parent().find('.stufinite-searchbar-result-title').show();
         target.append(target, result);
     }
 
     clear() {
         $('.stufinite-searchbar-result-list').empty();
+        $('.stufinite-searchbar-placeholder').hide();
+        $('.stufinite-searchbar-result-title').hide();
     }
 }
