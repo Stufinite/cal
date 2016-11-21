@@ -87,3 +87,13 @@
 .stufinite-searchbar-result-item .action-btn {
     padding: 8px;
 }
+
+@media screen and (min-width: 1324px) {
+  .stufinite-app-searchbar-container {
+    right: 0!important;
+  }
+
+  .stufinite-app-searchbar-toggle {
+    display: none;
+  }
+}
