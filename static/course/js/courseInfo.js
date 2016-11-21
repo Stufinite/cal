@@ -1,3 +1,47 @@
+function getCourse(mode, key) {
+    if (key === undefined || key === "") {
+        return [];
+    }
+
+    if (mode === "code") {
+        return getCourseByCode(key);
+    } else if (mode === "title") {
+        return getCourseByTitle(key);
+    } else if (mode === "teacher") {
+        return getCourseByTeacher(key);
+    } else {
+        return [];
+    }
+}
+
+function getCourseByCode(key) {
+    return courses[key];
+}
+
+function getCourseByTitle(class_title) {
+    var posted_code = [];
+    $.each(name_of_course, function(ik, iv) {
+        if (ik.search(class_title) != -1) {
+            $.each(iv, function(_, jv) {
+                if (posted_code.indexOf(jv.code) == -1) {
+                    posted_code.push(jv.code);
+                }
+            });
+        }
+    })
+
+    var result = [];
+    for (code of posted_code) {
+      result.push(courses[code][0]);
+    }
+
+    return result;
+}
+
+function getCourseByTeacher(key) {
+    return teacher_course[key]
+}
+
 function getCourseTime(course) {
     var time = [];
     $.each(course.time_parsed, function(ik, iv) {

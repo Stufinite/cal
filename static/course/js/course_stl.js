@@ -1,80 +1,8 @@
-/*******嘗試函式化選修填入課程的功能！！*******/
-var add_major = function(major, level) {
-    $.each(course_of_majors[major][level], function(ik, iv) {
-        //先這一年級的必修課全部跑過一次，計算重複課名的數量
-        $.each(courses[iv], function(jk, jv) {
-            if (jv.obligatory_tf == true && jv.for_dept == major && jv.class == level) { //這樣就可以保證我計算到的必修數量一定是該科系該年級該班級了
-                check_optional_obligatory(jv);
-                return false;
-            }
-        })
-    });
-    $.each(course_of_majors[major][level], function(ik, iv) { //知道那些課程會重複之後，再決定那些課程要填入課表
-        $.each(courses[iv], function(jk, jv) {
-            if (jv.for_dept == major && jv.class == level) {
-                var title_short = return_optional_obligatory_course_name(jv);
-                if (window.name_of_optional_obligatory[title_short] == 1) { //只有必修課會被函式計算數量，所以就不用再判斷是否為必修了，一定是
-                    if (jv.time_parsed == 0) { //表示應該為實習課，所以無時間,他沒有正課時間和實習時間，反正就是都沒有時間，神奇的是[]在boolean判斷式中居然會被當作0
-                        bulletin_post($(".optional"), jv, language);
-                    } else {
-                        window.timetable.addCourse(jv);
-                        //如果這個課名只有出現過一次，就可以自動填入
-                    }
-                } else { //當出現不止一次的時候就丟到bulletin，但是只丟屬於這個班級的
-                    if (jv.obligatory_tf == true) {
-                        show_optional_obligatory(jv); //若重複出現，則讓使用者自己決定
-                    }
-                }
-            }
-        })
-    });
-    $.each(course_of_majors[major], function(ik, iv) { //系上所有的選修課都先填入bulletin
-        if (check_if_two_class(level).length == 1) { //代表只有一個班
-            $.each(iv, function(jk, jv) {
-                $.each(courses[jv], function(kk, kv) {
-                    if (kv.obligatory_tf == false && kv.for_dept == major && kv.class == level) {
-                        /************************************************************
-                        kv.class == level limits only optional class for that grade will show!!!!
-                        ************************************************************/
-                        check_which_bulletin(kv); //由fuction決定該貼到哪個年級的欄位
-                    }
-                })
-            })
-        } else { //代表有兩個班
-            var class_EN = level.split("")[1]; //班級的A或B，就是最後那個代碼
-            if (ik.split("")[1] == class_EN) {
-                $.each(iv, function(jk, jv) {
-                    $.each(courses[jv], function(kk, kv) {
-                        if (kv.obligatory_tf == false && kv.for_dept == major && kv.class.split("")[1] == class_EN && kv.class.split("")[0] == ik.split("")[0]) {
-                            //console.log(kv);
-                            check_which_bulletin(kv); //由fuction決定該貼到哪個年級的欄位
-                            return false;
-                        }
-                    })
-                })
-            }
-        }
-    })
-};
-
 var add_doublemajor = function(major, level) {
     reset_for_time_request();
     department_course_for_specific_search(major, level);
 }
 
-
-/**************改變側欄課程顏色**************/
-var change_color = function($target, command) { //一旦添加了課程，則側欄的課名改了顏色
-    if (command == "available") {
-        $target.parents('tr').find('td').eq(0).css("color", "black");
-    } else if (command == "used") {
-        $target.parents('tr').find('td').eq(0).css("color", "red");
-    } else if (command == "available2") {
-        $target.parents('tr').find('td').eq(0).css("color", "#B53074");
-    } else {
-        alert("遇到不可預期的錯誤，請聯絡開發小組XD");
-    }
-}
 
 /****把有abcd班別的必修課做判斷，讓使用這自己選擇**********/
 var return_optional_obligatory_course_name = function(course) {
@@ -149,53 +77,6 @@ var department_course_for_specific_search = function(major, level) {
             }
         })
     });
-}
-
-
-var credits_filter = function() {
-    var credits = $("#credits").val();
-    if (credits != "") {
-        return credits;
-    } else {
-        return true;
-    } //到時候把整個credits_filter當成參數傳入搜尋的函式
-    //參數會return東西到if判斷式，如果沒有輸入學分，就return TRUE就不會有任何影響了
-}
-
-/*******課程代碼搜尋*******/
-var code_search = function(code) {
-    if (code != "") {
-        bulletin_post($(".optional"), courses[code][0], language);
-    }
-}
-
-/********課程名稱搜尋********/
-var title_search = function(class_title) {
-    var posted_code = [];
-    if (class_title != "") { //class_title is 課程名稱搜尋的字串
-        $.each(name_of_course, function(ik, iv) {
-            if (ik.search(class_title) != -1) {
-                $.each(iv, function(jk, jv) {
-                    if (posted_code.indexOf(jv.code) == -1) {
-                        //indexOf will find whether jv.code is in posted_code this array.
-                        // if it already exist, then i wont post this course into bulletin.
-                        bulletin_post($(".optional"), jv, language);
-                        console.log(jv)
-                        posted_code.push(jv.code);
-                    }
-                });
-            }
-        })
-    }
-}
-
-/********授課教授搜尋*********/
-var teach_search = function(teacher) {
-    if (teacher != "") { //teacher is 老師名稱搜尋的字串
-        $.each(teacher_course[teacher], function(ik, iv) {
-            bulletin_post($(".optional"), iv, language);
-        });
-    }
 }
 
 /*********教室資訊**********/
