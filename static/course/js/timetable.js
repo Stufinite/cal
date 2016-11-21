@@ -100,54 +100,32 @@ class StufiniteTimetable {
     }
 
     addCourseListener() {
-        if ($(this).text() == "") {
-            var major = window.user['returnarr']['major'];
-            var level = window.user['returnarr']['level'];
-            var d_major = window.user['returnarr']['d_major'];
-            var d_level = window.user['returnarr']['d_level'];
-            var day = $(this).closest("td").attr("data-day"); //因為我把同一時段的課程塞進陣列裡，所以要用index去取
-            var hour = $(this).closest("tr").attr("data-hour");
-            searchbar.clear();
-            $.each(window.course_of_day[day][hour], function(_, iv) {
-                if (iv.for_dept == major || ((iv.for_dept == d_major) && (iv.class == d_level)) || iv.for_dept == "全校共同" || iv.for_dept == "共同學科(進修學士班)") {
-                    //判斷如果是主系的課就不分年級全部都會顯示出來，如果是輔系的就只顯示該年級的課；如果for_dept==undefined就代表是通識課；如果為全校共同或共同學科(進修學士班)就會是體育、國防、服務學習、全校英外語 or general education, chinese and english.
-                    // console.log(iv)
-                    if (iv.obligatory_tf == false && iv.for_dept != major && iv.for_dept != d_major) {
-                        //代表是教務處綜合課程查詢裡面的所有課、國防、師培、全校選修、全校英外語  (obligatory of 師培 can be true or false!!!)
-                        check_which_common_subject(iv);
-                    } else if (iv.obligatory_tf == true) {
-                        //判斷為國英文或是必修課和通識課!!!，包含體育 (obligatory of 師培 can be true or false!!!)
-                        check_which_bulletin_required(iv);
-                    } else if (iv.obligatory_tf == false) {
-                        //決定選修課該貼到哪個年級的欄位
-                        check_which_bulletin(iv);
-                    }
-                }
-            });
-            searchbar.show();
+        let day = $(this).closest("td").attr("data-day");
+        let hour = $(this).closest("tr").attr("data-hour");
+
+        window.searchbar.clear();
+        for (let course of window.course_of_day[day][hour]) {
+            window.searchbar.addResult($(getCourseType(course)), course, window.timetable.language)
         }
+        window.searchbar.show();
     }
 
     delCourse(code) {
         let target = this.target;
-        var major = window.user['returnarr']['major'];
-        var level = window.user['returnarr']['level'];
+        let major = window.user['returnarr']['major'];
+
         for (let course of courses[code]) {
             if (course.obligatory_tf == true && course.for_dept == major) {
                 toastr.warning(this.language == "zh_TW" ? "此為必修課，若要復原請點擊課表空格" : "This is a required course, if you want to undo, please click the \"plus\" symbol", {
                     timeOut: 2500
                 });
             }
-            if (course.for_dept == window.user['returnarr']['d_major']) {
-                var color_str = "available2" //the option of double major.
-            } else {
-                var color_str = "available"
-            }
+
             $.each(course.time_parsed, function(_, iv) {
                 $.each(iv.time, function(_, jv) {
                     var $td = target.find('tr[data-hour=' + jv + '] td:eq(' + (iv.day - 1) + ')');
                     //td:eq()為搜尋td的陣列索引值，找到課程的時間    iv.day為星期，但因為td為陣列所以iv.day要減一    find()是找class!!
-                    $td.html($('<i class="fa fa-plus-square fa-5x"></i>').bind('click', StufiniteTimetable.prototype.addCourseListener));
+                    $td.html($('<i class="fa fa-plus-square fa-5x"></i>').bind('click', window.timetable.addCourseListener));
                 })
             })
             this.minusCredit(course.credits);

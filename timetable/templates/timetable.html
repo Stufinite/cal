@@ -190,54 +190,14 @@
                     <div class="stufinite-searchbar-result-title">
                         <span>人文</span>
                     </div>
-                    <div class="stufinite-searchbar-result-list human">
-                        <div class='stufinite-searchbar-result-item'>
-                            <h4>範例課程1</h4>
-                            <span>(一)5, 6, 7 | 黃三郎</span>
-                            <div class="action-btn">
-                                <button>加入</button>
-                                <button>心得</button>
-                                <button>詳細資料</button>
-                            </div>
-                        </div>
-
-                        <div class='stufinite-searchbar-result-item'>
-                            <h4>範例課程2</h4>
-                            <span>(二)5, 6 | 黃四郎</span>
-                            <div class="action-btn">
-                                <button>加入</button>
-                                <button>心得</button>
-                                <button>詳細資料</button>
-                            </div>
-                        </div>
-
-                        <div class='stufinite-searchbar-result-item'>
-                            <h4>範例名稱非常非常非常非常非常非常非常長的課程1</h4>
-                            <span>(五)5, 6, 7 | 黃次郎</span>
-                            <div class="action-btn">
-                                <button>加入</button>
-                                <button>心得</button>
-                                <button>詳細資料</button>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="stufinite-searchbar-result-list human"></div>
                 </div>
 
                 <div class="stufinite-searchbar-result">
                     <div class="stufinite-searchbar-result-title">
                         <span>社會</span>
                     </div>
-                    <div class="stufinite-searchbar-result-list society">
-                        <div class='stufinite-searchbar-result-item'>
-                            <h4>範例課程1</h4>
-                            <span>(一)5, 6, 7 | 黃三郎</span>
-                            <div class="action-btn">
-                                <button>加入</button>
-                                <button>心得</button>
-                                <button>詳細資料</button>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="stufinite-searchbar-result-list society"></div>
                 </div>
 
                 <div class="stufinite-searchbar-result">
@@ -256,19 +216,44 @@
 
                 <div class="stufinite-searchbar-result">
                     <div class="stufinite-searchbar-result-title">
+                        <span>大學國文</span>
+                    </div>
+                    <div class="stufinite-searchbar-result-list chinese"></div>
+                </div>
+
+                <div class="stufinite-searchbar-result">
+                    <div class="stufinite-searchbar-result-title">
+                        <span>大一英文</span>
+                    </div>
+                    <div class="stufinite-searchbar-result-list english"></div>
+                </div>
+
+                <div class="stufinite-searchbar-result">
+                    <div class="stufinite-searchbar-result-title">
                         <span>其他</span>
                     </div>
-                    <div class="stufinite-searchbar-result-list optional">
-                        <div class='stufinite-searchbar-result-item'>
-                            <h4>範例課程1</h4>
-                            <span>(一)5, 6, 7 | 黃三郎</span>
-                            <div class="action-btn">
-                                <button>加入</button>
-                                <button>心得</button>
-                                <button>詳細資料</button>
-                            </div>
-                        </div>
+                    <div class="stufinite-searchbar-result-list optional"></div>
+                </div>
+
+                <div class="stufinite-searchbar-result">
+                    <div class="stufinite-searchbar-result-title">
+                        <span>師資培育中心</span>
                     </div>
+                    <div class="stufinite-searchbar-result-list teacher-post"></div>
+                </div>
+
+                <div class="stufinite-searchbar-result">
+                    <div class="stufinite-searchbar-result-title">
+                        <span>教官室</span>
+                    </div>
+                    <div class="stufinite-searchbar-result-list military-post"></div>
+                </div>
+
+                <div class="stufinite-searchbar-result">
+                    <div class="stufinite-searchbar-result-title">
+                        <span>語言中心</span>
+                    </div>
+                    <div class="stufinite-searchbar-result-list foreign-post"></div>
                 </div>
             </div>
         </section>
@@ -308,6 +293,7 @@
 
 {% include 'shit.html' %}
 <script src="{% static 'course/js/legacy.js' %}"></script>
+<script src="{% static 'course/js/courseTypeChecker.js' %}"></script>
 <script src="{% static 'course/js/searchbar.js' %}"></script>
 <script src="{% static 'course/js/timetable.js' %}"></script>
 <script src="{% static 'course/js/main.js' %}"></script>
