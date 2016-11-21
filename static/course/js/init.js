@@ -1,24 +1,3 @@
-var build_department_arr = function(depJson) { //depJson 是傳入的department json檔名
-    $.each(depJson, function(ik, iv) {
-        if (typeof(window.department_name[iv.degree]) == 'undefined') {
-            window.department_name[iv.degree] = {};
-        }
-        //console.log(iv.degree)
-        $.each(iv.department, function(jk, jv) {
-            if (typeof(window.department_name[iv.degree][jv.zh_TW]) == 'undefined') {
-                window.department_name[iv.degree][jv.zh_TW] = {};
-            }
-            var option = "";
-            option += jv.value + '-' + jv["zh_TW"];
-            window.department_name[iv.degree][jv.zh_TW]["zh_TW"] = option;
-            var option = "";
-            option += jv.value + '-' + jv["en_US"];
-            window.department_name[iv.degree][jv.zh_TW]["en_US"] = option;
-        })
-    })
-}
-
-
 var return_degree_text = function() {
     if ($('#m_career').val() == '0') {
         return window.user['returnarr']['degree']

@@ -1,7 +1,5 @@
 class StufiniteTimetable {
     constructor(school, lang) {
-        this.week = ["一", "二", "三", "四", "五"];
-
         this.language = lang;
         this.target = $("#time-table");
         this.credits = 0;
@@ -56,31 +54,26 @@ class StufiniteTimetable {
         if (!conflict) {
             for (let courseByDay of course.time_parsed) {
                 for (let courseByTime of courseByDay.time) {
-                    var $td = target.find('tr[data-hour="' + courseByTime + '"] td:eq(' + (courseByDay.day - 1) + ')');
-                    var $cell = $(`
+                    let $cell = $(`
                     <div class="course">
                         <i class="remove fa fa-trash" aria-hidden="true"></i>
                         <span class="title"></span>
                         <span class="professor"></span>
                         <span class="location"></span>
                     </div>`)
-                    $cell.find('.remove')
+                    let $td = target.find('tr[data-hour="' + courseByTime + '"] td:eq(' + (courseByDay.day - 1) + ')');
+
+                    $cell
+                        .find('.remove')
                         .attr('code', course.code)
                         .bind('click', function(e) {
-                            var code = $(e.target).attr('code');
+                            let code = $(e.target).attr('code');
                             window.timetable.delCourse(code);
-                        })
-                        .end()
-                        .find('.title')
-                        .text(course.title_parsed[language])
-                        .end()
-                        .find('input')
-                        .val(course.code)
-                        .end()
-                        .find('.professor')
-                        .text(course.professor)
-                        .end()
-                        .find('.location')
+                        }).end()
+                        .find('.title').text(course.title_parsed[language]).end()
+                        .find('input').val(course.code).end()
+                        .find('.professor').text(course.professor).end()
+                        .find('.location').end()
                     $td.html($cell);
                 }
             }
