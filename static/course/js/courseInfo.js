@@ -76,7 +76,9 @@ function getCourseLocation(course) {
 }
 
 function getCourseTime(course) {
+    var week = ["一", "二", "三", "四", "五"];
     var time = [];
+
     $.each(course.time_parsed, function(_, iv) {
         //push是把裡面的元素變成陣列的一格
         time.push("(" + week[iv.day - 1] + ")" + iv.time);

@@ -31,13 +31,14 @@ function legacyInit() {
             'd_level': ''
         },
     }
-    window.week = ["一", "二", "三", "四", "五"];
 
-    window.courses = {}; //宣告一個空的物件
-    window.course_of_majors = {}; //宣告一個空的物件
-    window.course_of_day = {}; //這是宣告日期的陣列
-    window.teacher_course = {}; //這是以老師姓名為index的陣列
-    window.name_of_course = {}; //這是以課程名稱為index的陣列
+    window.department_name = {}; //包含科系完整名稱的物件
+    window.courses = {}; //以課程代碼為 key 的物件
+    window.teacher_course = {}; //以老師姓名為 key 的物件
+    window.name_of_course = {}; //以課程名稱為 key 的物件
+    window.course_of_day = {}; //以日和小時為 key 的二維物件
+    window.course_of_majors = {}; //以科系和年級為 key 的二維物件
+
     window.name_of_optional_obligatory = [] //這是用來存系上的必修課，檢查有沒有課名是重複的，若有就讓使用者自行決定要上哪堂
     window.url_base = ""; //used to be the url that link to the syllabus of that course.
     window.haveloadin = {
@@ -49,9 +50,6 @@ function legacyInit() {
         W: false
     }; //used to checked whether that json of specific degree has been loaded in or not, if it did, the value turn to ture.
     window.lastupdatetime = ""; //show the update time on server.
-    window.department_name = {};
-    window.already_post = true; //check whether post of not.
-    window.content = []
 
     //1. O.json is suitable for all kind of degree, so it will be loaded in automatically.
     //2. 當文件準備好的時候，讀入department的json檔, 因為這是顯示系所，沒多大就全部都載進來
