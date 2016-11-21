@@ -20,6 +20,12 @@ class StufiniteSearchbar {
         this.isVisible = false;
     }
 
+    clear() {
+        $('.stufinite-searchbar-result-list').empty();
+        $('.stufinite-searchbar-placeholder').hide();
+        $('.stufinite-searchbar-result-title').hide();
+    }
+
     addResult(target, course, language) {
         let result = $(
             `<div class="stufinite-searchbar-result-item">
@@ -34,7 +40,7 @@ class StufiniteSearchbar {
 
         result
             .find('h4.title').text(language == "zh_TW" ? course.title_parsed["zh_TW"] : course.title_parsed["en_US"]).end()
-            .find('span.info').text(build_bulletin_time(course) + ' | ' + course.professor).end()
+            .find('span.info').text(getCourseTime(course) + ' | ' + course.professor).end()
             .find('a.join').attr('code', course.code).bind('click', function() {
                 let code = $(this).attr('code');
                 course = courses[code][0];
@@ -45,11 +51,5 @@ class StufiniteSearchbar {
 
         target.parent().find('.stufinite-searchbar-result-title').show();
         target.append(target, result);
-    }
-
-    clear() {
-        $('.stufinite-searchbar-result-list').empty();
-        $('.stufinite-searchbar-placeholder').hide();
-        $('.stufinite-searchbar-result-title').hide();
     }
 }

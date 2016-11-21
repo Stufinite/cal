@@ -1,7 +1,5 @@
 /*******嘗試函式化選修填入課程的功能！！*******/
 var add_major = function(major, level) {
-    console.log(major + " " + level);
-    console.log(course_of_majors[major][level]);
     $.each(course_of_majors[major][level], function(ik, iv) {
         //先這一年級的必修課全部跑過一次，計算重複課名的數量
         $.each(courses[iv], function(jk, jv) {
@@ -19,7 +17,7 @@ var add_major = function(major, level) {
                     if (jv.time_parsed == 0) { //表示應該為實習課，所以無時間,他沒有正課時間和實習時間，反正就是都沒有時間，神奇的是[]在boolean判斷式中居然會被當作0
                         bulletin_post($(".optional"), jv, language);
                     } else {
-                        add_course($('#time-table'), jv, language);
+                        window.timetable.addCourse(jv);
                         //如果這個課名只有出現過一次，就可以自動填入
                     }
                 } else { //當出現不止一次的時候就丟到bulletin，但是只丟屬於這個班級的

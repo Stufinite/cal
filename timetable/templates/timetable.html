@@ -267,19 +267,6 @@
 
 
 {% block javascript %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.6/semantic.min.js"></script>
-<script src="{% static 'course/toastr/toastr.js' %}"></script>
-
-<!--截圖-->
-<script src="{% static 'course/js/save/html2canvas.js' %}"></script>
-<script src="{% static 'course/js/save/saveAsPicture.js' %}"></script>
-<!--儲存json到本地端-->
-<script async="" src="https://cdn.rawgit.com/eligrey/Blob.js/master/Blob.js"/>
-<script src="{% static 'course/js/save/FileSaver.js' %}"></script>
-<!--功能主函式-->
-<script src="{% static 'course/js/csrf_post.js' %}"></script>
-<script src="{% static 'course/js/init.js' %}"></script>
-<script src="{% static 'course/js/course_stl.js' %}"></script>
 <!--Google analytics-->
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -289,12 +276,21 @@
 
   ga('create', 'UA-78099072-2', 'auto');
   ga('send', 'pageview');
-
 </script>
-
+<!--Toast Notification-->
+<script src="{% static 'course/toastr/toastr.js' %}"></script>
+<!--截圖-->
+<script src="{% static 'course/js/save/html2canvas.js' %}"></script>
+<script src="{% static 'course/js/save/saveAsPicture.js' %}"></script>
+<!--儲存 JSON 到本地端-->
+<script src="{% static 'course/js/save/Blob.js' %}"/>
+<script src="{% static 'course/js/save/FileSaver.js' %}"></script>
 {% include 'shit.html' %}
+<!--功能主函式-->
+<script src="{% static 'course/js/csrf_post.js' %}"></script>
+<script src="{% static 'course/js/course_stl.js' %}"></script>
 <script src="{% static 'course/js/legacy.js' %}"></script>
-<script src="{% static 'course/js/courseTypeChecker.js' %}"></script>
+<script src="{% static 'course/js/courseInfo.js' %}"></script>
 <script src="{% static 'course/js/searchbar.js' %}"></script>
 <script src="{% static 'course/js/timetable.js' %}"></script>
 <script src="{% static 'course/js/main.js' %}"></script>

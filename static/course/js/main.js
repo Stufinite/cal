@@ -18,7 +18,19 @@
 })()
 
 function legacyInit() {
-    window.user = return_init_user_json();
+    window.user = {
+        "user_name": "",
+        "user_dept": "",
+        "time_table": [],
+        "idList": {},
+        "returnarr": {
+            'degree': '',
+            'level': '',
+            "major": "",
+            'd_major': '',
+            'd_level': ''
+        },
+    }
     window.week = ["一", "二", "三", "四", "五"];
 
     window.courses = {}; //宣告一個空的物件
@@ -43,24 +55,31 @@ function legacyInit() {
 
     //1. O.json is suitable for all kind of degree, so it will be loaded in automatically.
     //2. 當文件準備好的時候，讀入department的json檔, 因為這是顯示系所，沒多大就全部都載進來
-    $.when(get_json_when_change_degree("/static/course/json/O.json"),
-        $.getJSON("/static/course/json/new_department.json", function(depJson) {
-            $.each(depJson, function(ik, iv) {
-                if (typeof(window.department_name[iv.degree]) == 'undefined') {
-                    window.department_name[iv.degree] = {};
+    var build_department_arr = function(depJson) {
+        $.each(depJson, function(_, iv) {
+            if (typeof(window.department_name[iv.degree]) == 'undefined') {
+                window.department_name[iv.degree] = {};
+            }
+
+            $.each(iv.department, function(_, jv) {
+                if (typeof(window.department_name[iv.degree][jv.zh_TW]) == 'undefined') {
+                    window.department_name[iv.degree][jv.zh_TW] = {};
                 }
-                $.each(iv.department, function(jk, jv) {
-                    if (typeof(window.department_name[iv.degree][jv.zh_TW]) == 'undefined') {
-                        window.department_name[iv.degree][jv.zh_TW] = {};
-                    }
-                    var option = "";
-                    option += jv.value + '-' + jv["zh_TW"];
-                    window.department_name[iv.degree][jv.zh_TW]["zh_TW"] = option;
-                    var option = "";
-                    option += jv.value + '-' + jv["en_US"];
-                    window.department_name[iv.degree][jv.zh_TW]["en_US"] = option;
-                })
+
+                var option = "";
+                option += jv.value + '-' + jv["zh_TW"];
+                window.department_name[iv.degree][jv.zh_TW]["zh_TW"] = option;
+
+                var option = "";
+                option += jv.value + '-' + jv["en_US"];
+                window.department_name[iv.degree][jv.zh_TW]["en_US"] = option;
             })
         })
-    )
+    };
+    $.when(get_json_when_change_degree("/static/course/json/O.json"),
+        $.getJSON("/static/course/json/department.json", build_department_arr),
+        get_json_when_change_degree("/static/course/json/U.json")
+    ).then(function() {
+        add_major("資訊科學與工程學系學士班", 1);
+    })
 }

@@ -83,13 +83,61 @@ class StufiniteTimetable {
 
             // window.user['time_table'].push(course); //here means once i add this course in my timetable, i will also record this object in a json format, to save this time_table for users.
             // window.user['idList'][course.code] = courses[course.code][0]['title_parsed']['zh_TW']; //建立一個以課程代號為key課程名稱為值的字典
-            build_toastr_time(course, this.language);
+            this.addCourseMessage(course);
         }
         // window.already_post = false;
         /*
         if it has add at least one course,
         make this boolean val false and it will trigger "beforeunload" event to prevent user accidently close tab.*/
         /*******Don't write below this line********/
+    }
+
+    addCourseMessage(course) {
+        var language = this.language
+        var toast_mg = [];
+        var toastr1;
+        var toastr2;
+        if (language == 'zh_TW') {
+            toastr1 = "代碼:";
+            toastr2 = "剩餘名額:";
+            toast_mg.push('課名:' + course.title_parsed[language]);
+        } else if (language == 'en_US') {
+            toastr1 = "Course ID:";
+            toastr2 = "Remaining Seat:";
+            toast_mg.push('Title:' + course.title_parsed[language]);
+        }
+        toast_mg.push(toastr1 + course.code);
+        toast_mg.push(toastr2 + (course.number - course.enrolled_num));
+
+        if (course.discipline != "" && course.discipline != undefined) { //代表他是通識課
+            if (language == 'zh_TW') {
+                toastr1 = "學群:";
+            } else if (language == 'en_US') {
+                toastr1 = "Discipline:";
+            }
+            toast_mg.push(toastr1 + course.discipline);
+            var possibility = cal_possibility(course); // a fuction that return the possibility of enrolling that course successfully.
+            //toast_mg.push("中籤率:" + possibility + "%");
+        }
+        if (course.note != "") {
+            if (language == 'zh_TW') {
+                toastr1 = "備註:";
+            } else if (language == 'en_US') {
+                toastr1 = "Note:";
+            }
+            toast_mg.push(toastr1 + course.note);
+        }
+        if (course.prerequisite != "") {
+            //prerequisite means you need to enroll that course before enroll this course
+            if (language == 'zh_TW') {
+                toastr1 = "先修科目:";
+            } else if (language == 'en_US') {
+                toastr1 = "Prerequisite:";
+            }
+            toast_mg.push(toastr1 + course.prerequisite);
+        }
+        toast_mg = toast_mg.join('<br/>');
+        toastr.info(toast_mg);
     }
 
     addCourseListener() {
@@ -125,6 +173,7 @@ class StufiniteTimetable {
         }
     }
 }
+
 //
 // StufiniteTimetable.prototype.downloadJson = function() {
 //     window.user['user_name'] = $('#user_name').val();

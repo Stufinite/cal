@@ -1,12 +1,3 @@
-var return_degree_text = function() {
-    if ($('#m_career').val() == '0') {
-        return window.user['returnarr']['degree']
-    } else {
-        return $('#m_career').val();
-    }
-}
-
-
 var generate_major_level_option = function() {
     //用先前產生出來的department_name名單，動態產出系所的選單按鈕
     $("#major").empty();
@@ -39,6 +30,15 @@ var generate_major_level_option = function() {
                 $(iv).append(newGrade)
             })
         })
+    }
+}
+
+
+var return_degree_text = function() {
+    if ($('#m_career').val() == '0') {
+        return window.user['returnarr']['degree']
+    } else {
+        return $('#m_career').val();
     }
 }
 

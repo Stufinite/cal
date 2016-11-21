@@ -1,9 +1,23 @@
+function getCourseTime(course) {
+    var time = [];
+    $.each(course.time_parsed, function(ik, iv) {
+        //push是把裡面的元素變成陣列的一格
+        time.push("(" + week[iv.day - 1] + ")" + iv.time);
+    })
+    if (course.intern_time != "" && course.intern_time != undefined) {
+        //不是每一堂課都會有實習時間
+        time.push("實習時間:" + course.intern_time);
+    } else {}
+    time = time.join(' '); //把多個陣列用" "分隔並合併指派給time，此為字串型態，若是將字串split('')，則會回傳一個陣列型態
+    return time;
+}
+
 function getCourseType(course) {
     var major = window.user['returnarr']['major'];
     var level = window.user['returnarr']['level'];
     var d_major = window.user['returnarr']['d_major'];
     var d_level = window.user['returnarr']['d_level'];
-    
+
     if (course.for_dept == major || ((course.for_dept == d_major) && (course.class == d_level)) || course.for_dept == "全校共同" || course.for_dept == "共同學科(進修學士班)") {
         //判斷如果是主系的課就不分年級全部都會顯示出來，如果是輔系的就只顯示該年級的課；如果for_dept==undefined就代表是通識課
         //如果為全校共同或共同學科(進修學士班)就會是體育、國防、服務學習、全校英外語 or general education, chinese and english.
