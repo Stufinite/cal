@@ -19,51 +19,51 @@
 
 function buildCourseIndex(json) {
     $.each(json.course, function(_, iv) {
-        //初始化 course_of_majors
-        if (typeof(window.course_of_majors[iv.for_dept]) == 'undefined') {
-            window.course_of_majors[iv.for_dept] = {};
+        //初始化 coursesByMajor
+        if (coursesByMajor[iv.for_dept] === undefined) {
+            coursesByMajor[iv.for_dept] = {};
         }
-        if (typeof(window.course_of_majors[iv.for_dept][iv.class]) == 'undefined') {
-            window.course_of_majors[iv.for_dept][iv.class] = [];
+        if (coursesByMajor[iv.for_dept][iv.class] === undefined) {
+            coursesByMajor[iv.for_dept][iv.class] = [];
         }
-        window.course_of_majors[iv.for_dept][iv.class].push(iv.code);
+        coursesByMajor[iv.for_dept][iv.class].push(iv.code);
 
-        //初始化 courses
-        if (typeof(window.courses[iv.code]) == 'undefined') {
-            window.courses[iv.code] = [];
+        //初始化 coursesByCode
+        if (coursesByCode[iv.code] === undefined) {
+            coursesByCode[iv.code] = [];
         }
-        window.courses[iv.code].push(iv);
+        coursesByCode[iv.code].push(iv);
 
-        //初始化 course_of_day
+        //初始化 coursesByDay
         $.each(iv.time_parsed, function(_, jv) {
             $.each(jv.time, function(_, mv) {
-                if (typeof(window.course_of_day[jv.day]) == 'undefined') {
-                    window.course_of_day[jv.day] = {};
+                if (coursesByDay[jv.day] === undefined) {
+                    coursesByDay[jv.day] = {};
                 }
-                if (typeof(window.course_of_day[jv.day][mv]) == 'undefined') {
-                    window.course_of_day[jv.day][mv] = [];
+                if (coursesByDay[jv.day][mv] === undefined) {
+                    coursesByDay[jv.day][mv] = [];
                 }
-                window.course_of_day[jv.day][mv].push(iv);
+                coursesByDay[jv.day][mv].push(iv);
             })
         })
 
-        //初始化 teacher_course
-        if (typeof(window.teacher_course[iv.professor]) == 'undefined') {
-            window.teacher_course[iv.professor] = [];
+        //初始化 coursesByTeacher
+        if (coursesByTeacher[iv.professor] === undefined) {
+            coursesByTeacher[iv.professor] = [];
         }
-        window.teacher_course[iv.professor].push(iv);
+        coursesByTeacher[iv.professor].push(iv);
 
-        //初始化 name_of_course
-        if (typeof(window.name_of_course[iv.title_parsed.zh_TW]) == 'undefined') {
+        //初始化 coursesByName
+        if (coursesByName[iv.title_parsed.zh_TW] === undefined) {
             //中文課名陣列
-            window.name_of_course[iv.title_parsed.zh_TW] = [];
+            coursesByName[iv.title_parsed.zh_TW] = [];
         }
-        window.name_of_course[iv.title_parsed.zh_TW].push(iv);
-        if (typeof(window.name_of_course[iv.title_parsed.en_US]) == 'undefined') {
+        coursesByName[iv.title_parsed.zh_TW].push(iv);
+        if (coursesByName[iv.title_parsed.en_US] === undefined) {
             //英文課名陣列
-            window.name_of_course[iv.title_parsed.en_US] = [];
+            coursesByName[iv.title_parsed.en_US] = [];
         }
-        window.name_of_course[iv.title_parsed.en_US].push(iv);
+        coursesByName[iv.title_parsed.en_US].push(iv);
     });
 }
 
@@ -105,13 +105,11 @@ function legacyInit() {
     }
 
     window.department_name = {}; //包含科系完整名稱的物件
-    window.courses = {}; //以課程代碼為 key 的物件
-    window.teacher_course = {}; //以老師姓名為 key 的物件
-    window.name_of_course = {}; //以課程名稱為 key 的物件
-    window.course_of_day = {}; //以日和小時為 key 的二維物件
-    window.course_of_majors = {}; //以科系和年級為 key 的二維物件
-
-    window.name_of_optional_obligatory = [] //這是用來存系上的必修課，檢查有沒有課名是重複的，若有就讓使用者自行決定要上哪堂
+    window.coursesByCode = {}; //以課程代碼為 key 的物件
+    window.coursesByTeacher = {}; //以老師姓名為 key 的物件
+    window.coursesByName = {}; //以課程名稱為 key 的物件
+    window.coursesByDay = {}; //以日和小時為 key 的二維物件
+    window.coursesByMajor = {}; //以科系和年級為 key 的二維物件
 
     //1. O.json is suitable for all kind of degree, so it will be loaded in automatically.
     //2. 當文件準備好的時候，讀入department的json檔, 因為這是顯示系所，沒多大就全部都載進來
@@ -120,6 +118,6 @@ function legacyInit() {
     )
     $.when($.getJSON("/static/course/json/U.json", buildCourseIndex))
         .then(function() {
-            add_major("資訊科學與工程學系學士班", "2");
+            addMajorCourses("資訊科學與工程學系學士班", "2");
         })
 }

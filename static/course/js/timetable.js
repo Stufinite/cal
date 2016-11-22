@@ -153,7 +153,7 @@ class StufiniteTimetable {
         let hour = $(this).closest("tr").attr("data-hour");
 
         window.searchbar.clear();
-        for (let course of window.course_of_day[day][hour]) {
+        for (let course of coursesByDay[day][hour]) {
             window.searchbar.addResult($(getCourseType(course)), course, window.timetable.language)
         }
         window.searchbar.show();

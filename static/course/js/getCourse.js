@@ -10,6 +10,9 @@ function getCourse(mode, key, grade) {
     } else if (mode === "teacher") {
         return getCourseByTeacher(key);
     } else if (mode === "major") {
+        if (grade === null || grade === undefined) {
+            grade = 0;
+        }
         return getCourseByMajor(key, parseInt(grade, 10));
     } else {
         return [];
@@ -17,12 +20,12 @@ function getCourse(mode, key, grade) {
 }
 
 function getCourseByCode(key) {
-    return courses[key];
+    return coursesByCode[key];
 }
 
 function getCourseByTitle(class_title) {
     var posted_code = [];
-    $.each(name_of_course, function(ik, iv) {
+    $.each(coursesByName, function(ik, iv) {
         if (ik.search(class_title) != -1) {
             $.each(iv, function(_, jv) {
                 if (posted_code.indexOf(jv.code) == -1) {
@@ -34,23 +37,30 @@ function getCourseByTitle(class_title) {
 
     var result = [];
     for (code of posted_code) {
-        result.push(courses[code][0]);
+        result.push(getCourseByCode(code)[0]);
     }
 
     return result;
 }
 
 function getCourseByTeacher(key) {
-    return teacher_course[key]
+    return coursesByTeacher[key]
 }
 
 
 function getCourseByMajor(major, grade) {
     var result = [];
-    for (let iv of course_of_majors[major][grade]) {
-        for (let course of getCourseByCode(iv)) {
-            if (course.for_dept == major && course.class == grade) {
-                //這個判斷是為了像景觀學程那種專門上別的科系的課的系而設計的
+    if (grade == 0) {
+        for (let g in coursesByMajor[major]) {
+            for (let code of coursesByMajor[major][g]) {
+                for (let course of getCourseByCode(code)) {
+                    result.push(course);
+                }
+            }
+        }
+    } else {
+        for (let code of coursesByMajor[major][grade]) {
+            for (let course of getCourseByCode(code)) {
                 result.push(course);
             }
         }

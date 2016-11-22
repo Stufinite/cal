@@ -47,7 +47,7 @@ class StufiniteSearchbar {
                 window.timetable.addCourse(course);
                 window.searchbar.hide();
             }).end()
-            .find('a.review').attr('href', 'http://feedback.nchusg.org/search/?q=' + course.title_short).end()
+            .find('a.review').attr('href', 'http://feedback.nchusg.org/search/?q=' + course.title_parsed["zh_TW"]).end()
             .find('a.detail').attr('href', course.url).end()
 
         target.parent().find('.stufinite-searchbar-result-title').show();
