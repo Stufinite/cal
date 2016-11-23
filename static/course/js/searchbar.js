@@ -40,13 +40,13 @@ class StufiniteSearchbar {
 
         result
             .find('h4.title').text(language == "zh_TW" ? course.title_parsed["zh_TW"] : course.title_parsed["en_US"]).end()
-            .find('span.info').text(getCourseTime(course) + ' | ' + course.professor).end()
-            .find('a.join').attr('code', course.code).bind('click', function() {
-                let code = $(this).attr('code');
-                course = courses[code][0];
+            .find('span.info').text(window.timetable.getCourseTime(course) + ' | ' + course.professor).end()
+            .find('a.join').attr('code', course.code).bind('click', (function(e) {
+                let code = $(e.target).attr('code');
+                course = window.timetable.getCourse('code', code)[0];
                 window.timetable.addCourse(course);
-                window.searchbar.hide();
-            }).end()
+                this.hide();
+            }).bind(this)).end()
             .find('a.review').attr('href', 'http://feedback.nchusg.org/search/?q=' + course.title_parsed["zh_TW"]).end()
             .find('a.detail').attr('href', course.url).end()
 
