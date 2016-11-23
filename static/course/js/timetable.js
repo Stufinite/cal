@@ -1,9 +1,9 @@
 class StufiniteTimetable {
-    constructor(school, lang) {
+    constructor(school, lang, major, grade, selected) {
         this.language = lang;
         this.target = $("#time-table");
         this.credits = 0;
-        this.selected = {};
+        this.selected = selected === undefined ? {} : selected;
 
         this.department_name = {}; //包含科系完整名稱的物件
         this.coursesByCode = {}; //以課程代碼為 key 的物件
@@ -23,7 +23,7 @@ class StufiniteTimetable {
             $.getJSON("/static/course/json/department.json", this.buildDeptArray.bind(this)))
         $.when($.getJSON("/static/course/json/U.json", this.buildCourseIndex.bind(this)))
             .then((function() {
-                this.addMajorCourses("資訊科學與工程學系學士班", "4");
+                this.addMajorCourses(major, grade);
             }).bind(this))
     }
 
@@ -167,17 +167,8 @@ class StufiniteTimetable {
             }
 
             this.addCredit(course.credits);
-            this.selected[course.code] = course;
-
-            // window.user['time_table'].push(course); //here means once i add this course in my timetable, i will also record this object in a json format, to save this time_table for users.
-            // window.user['idList'][course.code] = courses[course.code][0]['title_parsed']['zh_TW']; //建立一個以課程代號為key課程名稱為值的字典
             this.addCourseMessage(course);
         }
-        // window.already_post = false;
-        /*
-        if it has add at least one course,
-        make this boolean val false and it will trigger "beforeunload" event to prevent user accidently close tab.*/
-        /*******Don't write below this line********/
     }
 
     addCourseMessage(course) {
@@ -197,7 +188,8 @@ class StufiniteTimetable {
         toast_mg.push(toastr1 + course.code);
         toast_mg.push(toastr2 + (course.number - course.enrolled_num));
 
-        if (course.discipline != "" && course.discipline != undefined) { //代表他是通識課
+        if (course.discipline != "" && course.discipline != undefined) {
+            //代表他是通識課
             if (language == 'zh_TW') {
                 toastr1 = "學群:";
             } else if (language == 'en_US') {
@@ -205,6 +197,7 @@ class StufiniteTimetable {
             }
             toast_mg.push(toastr1 + course.discipline);
             var possibility = function(course) {
+                // a fuction that return the possibility of enrolling that course successfully.
                 var pos = (course.number - course.enrolled_num) / course.number * 100;
                 pos = new Number(pos);
                 pos = pos.toFixed(2);
@@ -212,7 +205,7 @@ class StufiniteTimetable {
                     return 0;
                 }
                 return pos;
-            }(course); // a fuction that return the possibility of enrolling that course successfully.
+            }(course);
             //toast_mg.push("中籤率:" + possibility + "%");
         }
         if (course.note != "") {
