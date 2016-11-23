@@ -3,9 +3,9 @@ class StufiniteTimetable {
         this.language = lang;
         this.target = $("#time-table");
         this.credits = 0;
-        this.selected = {}
+        this.selected = {};
 
-        this.department_name = {}
+        this.department_name = {}; //包含科系完整名稱的物件
         this.coursesByCode = {}; //以課程代碼為 key 的物件
         this.coursesByTeacher = {}; //以老師姓名為 key 的物件
         this.coursesByName = {}; //以課程名稱為 key 的物件
@@ -477,7 +477,6 @@ class StufiniteTimetable {
                 return this.getSubjectType(course);
             } else if (course.obligatory_tf == false) {
                 //決定選修課該貼到哪個年級的欄位
-                // check_which_bulletin(course);
                 return '.optional';
             }
         }
@@ -490,7 +489,7 @@ class StufiniteTimetable {
             '語言中心': '.foreign-post'
         };
 
-        return course.department in types ? types[course.department] : '#non-graded-optional-post';
+        return course.department in types ? types[course.department] : '.non-graded-optional-post';
     }
 
     getSubjectType(course) {
@@ -524,7 +523,7 @@ class StufiniteTimetable {
                 "體育室": ".PE",
                 "師資培育中心": ".teacher-post"
             };
-            return course.department in types ? types[course.department] : "#obligatory-post";
+            return course.department in types ? types[course.department] : ".obligatory-post";
         }
     }
 }

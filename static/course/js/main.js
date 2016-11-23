@@ -31,11 +31,4 @@ function legacyInit() {
             'd_level': ''
         },
     }
-
-    // window.department_name = {}; //包含科系完整名稱的物件
-    // window.coursesByCode = {}; //以課程代碼為 key 的物件
-    // window.coursesByTeacher = {}; //以老師姓名為 key 的物件
-    // window.coursesByName = {}; //以課程名稱為 key 的物件
-    // window.coursesByDay = {}; //以日和小時為 key 的二維物件
-    // window.coursesByMajor = {}; //以科系和年級為 key 的二維物件
 }
