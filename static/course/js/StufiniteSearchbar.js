@@ -27,6 +27,10 @@ class StufiniteSearchbar {
     }
 
     addResult(target, course, language) {
+        if ($('.stufinite-searchbar-placeholder').is(':visible')) {
+            $('.stufinite-searchbar-placeholder').hide();
+        }
+
         let result = $(
             `<div class="stufinite-searchbar-result-item">
               <h4 class='title'></h4>

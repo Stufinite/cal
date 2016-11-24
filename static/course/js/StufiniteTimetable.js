@@ -1,9 +1,11 @@
 class StufiniteTimetable {
-    constructor(school, lang, major, grade, selected) {
+    constructor(school, lang, user, selected) {
         this.language = lang;
         this.target = $("#time-table");
         this.credits = 0;
         this.selected = selected === undefined ? {} : selected;
+
+        this.user = user;
 
         this.department_name = {}; //包含科系完整名稱的物件
         this.coursesByCode = {}; //以課程代碼為 key 的物件
@@ -23,7 +25,7 @@ class StufiniteTimetable {
             $.getJSON("/static/course/json/department.json", this.buildDeptArray.bind(this)))
         $.when($.getJSON("/static/course/json/U.json", this.buildCourseIndex.bind(this)))
             .then((function() {
-                this.addMajorCourses(major, grade);
+                this.addMajorCourses(this.user.major, this.user.grade);
             }).bind(this))
     }
 
@@ -454,10 +456,10 @@ class StufiniteTimetable {
     }
 
     getCourseType(course) {
-        var major = window.user['returnarr']['major'];
-        var level = window.user['returnarr']['level'];
-        var d_major = window.user['returnarr']['d_major'];
-        var d_level = window.user['returnarr']['d_level'];
+        var major = this.user['major'];
+        var level = this.user['grade'];
+        var d_major = this.user['second_major'];
+        var d_level = this.user['grade'];
 
         if (course.for_dept == major || ((course.for_dept == d_major) && (course.class == d_level)) || course.for_dept == "全校共同" || course.for_dept == "共同學科(進修學士班)") {
             //判斷如果是主系的課就不分年級全部都會顯示出來，如果是輔系的就只顯示該年級的課；如果for_dept==undefined就代表是通識課

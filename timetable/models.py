@@ -5,6 +5,7 @@ class Department(models.Model):
     code = models.CharField(max_length=100, default='')
     title = models.CharField(max_length=100, default='')
 
+
 class Course(models.Model):
     semester = models.CharField(max_length=100, default='')
     code = models.CharField(max_length=100, default='')
