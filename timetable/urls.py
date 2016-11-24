@@ -3,5 +3,9 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.course_zh_TW, name="course"),
+    url(r'^$', views.timetable, name="course"),
+]
+
+urlpatterns += [
+    url(r'^api/get/user$', views.get_user, name="get_user"),
 ]
