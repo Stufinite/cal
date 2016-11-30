@@ -14,7 +14,7 @@ def timetable(request):
         # User.get(request.session.session_key)
         User.get_test()
     except HTTPError:
-        return HttpResponseRedirect('https://login.stufinite.faith?next=')
+        return HttpResponseRedirect('https://login.stufinite.faith')
 
     return render(request, 'timetable.html', {})
 
@@ -22,9 +22,17 @@ def timetable(request):
 def get_user(request):
     u = {
         'username': User.username,
-        'grade': User.grade,
+        'grade': 3,
         'major': User.major,
         'second_major': User.second_major,
         'career': User.career,
     }
     return JsonResponse(u)
+
+
+def get_selected(reqeust):
+    pass
+
+
+def save_selected(request):
+    pass

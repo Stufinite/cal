@@ -245,7 +245,7 @@ class StufiniteTimetable {
 
     delCourse(code) {
         let target = this.target;
-        let major = window.user['returnarr']['major'];
+        let major = this.major;
 
         for (let course of this.getCourse('code', code)) {
             if (course.obligatory_tf == true && course.for_dept == major) {
