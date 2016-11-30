@@ -6,10 +6,10 @@
 {% load static %}
 {% block stylesheet %}
 <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' rel='stylesheet' integrity='sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1' crossorigin='anonymous'>
-<link rel='stylesheet' href='{% static "course/toastr/toastr.css" %}'>
+<link rel='stylesheet' href='{% static "timetable/toastr/toastr.css" %}'>
 
-<link rel='stylesheet' href='{% static "course/css/timetable.css" %}'>
-<link rel='stylesheet' href='{% static "course/css/searchbar.css" %}'>
+<link rel='stylesheet' href='{% static "timetable/css/timetable.css" %}'>
+<link rel='stylesheet' href='{% static "timetable/css/searchbar.css" %}'>
 {% endblock %}
 
 {% block content %}
@@ -291,16 +291,16 @@
   ga('send', 'pageview');
 </script>
 <!--Toast Notification-->
-<script src="{% static 'course/toastr/toastr.js' %}"></script>
+<script src="{% static 'timetable/toastr/toastr.js' %}"></script>
 <!--截圖-->
-<script src="{% static 'course/js/save/html2canvas.js' %}"></script>
-<script src="{% static 'course/js/save/saveAsPicture.js' %}"></script>
+<script src="{% static 'timetable/js/save/html2canvas.js' %}"></script>
+<script src="{% static 'timetable/js/save/saveAsPicture.js' %}"></script>
 <!--儲存 JSON 到本地端-->
-<script src="{% static 'course/js/save/Blob.js' %}"/>
-<script src="{% static 'course/js/save/FileSaver.js' %}"></script>
+<script src="{% static 'timetable/js/save/Blob.js' %}"/>
+<script src="{% static 'timetable/js/save/FileSaver.js' %}"></script>
 <!--功能主函式-->
-<script src="{% static 'course/js/csrf_post.js' %}"></script>
-<script src="{% static 'course/js/StufiniteSearchbar.js' %}"></script>
-<script src="{% static 'course/js/StufiniteTimetable.js' %}"></script>
-<script src="{% static 'course/js/main.js' %}"></script>
+<script src="{% static 'timetable/js/csrf_post.js' %}"></script>
+<script src="{% static 'timetable/js/StufiniteSearchbar.js' %}"></script>
+<script src="{% static 'timetable/js/StufiniteTimetable.js' %}"></script>
+<script src="{% static 'timetable/js/main.js' %}"></script>
 {% endblock %}
