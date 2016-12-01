@@ -152,7 +152,6 @@ class StufiniteTimetable {
                         <span class="location"></span>
                     </div>`)
                     let $td = target.find('tr[data-hour="' + courseByTime + '"] td:eq(' + (courseByDay.day - 1) + ')');
-
                     $cell
                         .find('.remove')
                         .attr('code', course.code)
@@ -245,7 +244,7 @@ class StufiniteTimetable {
 
     delCourse(code) {
         let target = this.target;
-        let major = this.major;
+        let major = this.user['major'];
 
         for (let course of this.getCourse('code', code)) {
             if (course.obligatory_tf == true && course.for_dept == major) {
