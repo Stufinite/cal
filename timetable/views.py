@@ -3,10 +3,10 @@ from django.http import JsonResponse, HttpResponseRedirect
 
 
 from userper import Userper
-User = Userper('login.stufinite.faith')
 
+def init_user(request):
+    User = Userper('login.stufinite.faith')
 
-def timetable(request):
     from urllib.error import HTTPError
     if not request.session.session_key:
         request.session.save()
@@ -16,25 +16,31 @@ def timetable(request):
     except HTTPError:
         return HttpResponseRedirect('https://login.stufinite.faith')
 
-    stufinite = {}
-    if User.username != 'None':
-        stufinite['is_authenticated'] = True
-        stufinite['username'] = User.username
-    else:
-        stufinite['is_authenticated'] = False
-
-    return render(request, 'timetable.html', {'stufinite': stufinite})
-
-
-def get_user(request):
     u = {
+        'is_authenticated': True,
         'username': User.username,
         'grade': 3,
         'major': User.major,
         'second_major': User.second_major,
         'career': User.career,
     }
-    return JsonResponse(u)
+
+    return u
+
+def timetable(request):
+    user = init_user(request)
+    if isinstance(user, HttpResponseRedirect):
+        return user
+
+    return render(request, 'timetable.html', {'user': user})
+
+
+def get_user(request):
+    user = init_user(request)
+    if isinstance(user, HttpResponseRedirect):
+        return user
+
+    return JsonResponse(user)
 
 
 def get_selected(reqeust):
