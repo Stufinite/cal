@@ -35,8 +35,8 @@
         </div>
 
         <div class='stufinite-nav-item stufinite-nav-right'>
-            {% if request.user.is_authenticated %}
-            <span class='stufinite-nav-user-info'>{{ request.user.username }}</span>
+            {% if stufinite.is_authenticated %}
+            <span class='stufinite-nav-user-info'>{{ stufinite.username }}</span>
             <a href="http://login.stufinite.faith/accounts/logout"><button class='stufinite-btn'>Logout</button></a>
             {% else %}
             <a href="http://login.stufinite.faith/accounts/login"><button class='stufinite-btn'>Login</button></a>

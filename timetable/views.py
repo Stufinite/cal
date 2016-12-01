@@ -16,7 +16,14 @@ def timetable(request):
     except HTTPError:
         return HttpResponseRedirect('https://login.stufinite.faith')
 
-    return render(request, 'timetable.html', {})
+    stufinite = {}
+    if User.username != 'None':
+        stufinite['is_authenticated'] = True
+        stufinite['username'] = User.username
+    else:
+        stufinite['is_authenticated'] = False
+
+    return render(request, 'timetable.html', {'stufinite': stufinite})
 
 
 def get_user(request):

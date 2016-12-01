@@ -129,7 +129,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-SESSION_COOKIE_DOMAIN = '.stufinite.faith'
+# SESSION_COOKIE_DOMAIN = '.stufinite.faith'
 with open(BASE_DIR + '/' + 'sessionid.txt') as f:
     SESSION_COOKIE_NAME = f.read().strip()
 
