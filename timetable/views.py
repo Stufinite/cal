@@ -4,6 +4,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 
 from userper import Userper
 
+
 def init_user(request):
     User = Userper('login.stufinite.faith')
 
@@ -19,13 +20,14 @@ def init_user(request):
     u = {
         'is_authenticated': True,
         'username': User.username,
-        'grade': 3,
+        'grade': 2,
         'major': User.major,
         'second_major': User.second_major,
         'career': User.career,
     }
 
     return u
+
 
 def timetable(request):
     user = init_user(request)

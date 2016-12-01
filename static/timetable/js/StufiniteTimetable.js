@@ -21,9 +21,9 @@ class StufiniteTimetable {
 
         //1. O.json is suitable for all kind of degree, so it will be loaded in automatically.
         //2. 當文件準備好的時候，讀入department的json檔, 因為這是顯示系所，沒多大就全部都載進來
-        $.when($.getJSON("/static/course/json/O.json", this.buildCourseIndex.bind(this)),
-            $.getJSON("/static/course/json/department.json", this.buildDeptArray.bind(this)))
-        $.when($.getJSON("/static/course/json/U.json", this.buildCourseIndex.bind(this)))
+        $.when($.getJSON("/static/timetable/json/O.json", this.buildCourseIndex.bind(this)),
+            $.getJSON("/static/timetable/json/department.json", this.buildDeptArray.bind(this)))
+        $.when($.getJSON("/static/timetable/json/U.json", this.buildCourseIndex.bind(this)))
             .then((function() {
                 this.addMajorCourses(this.user.major, this.user.grade);
             }).bind(this))
