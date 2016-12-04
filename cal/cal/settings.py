@@ -26,7 +26,7 @@ with open(BASE_DIR + '/' + 'secret_key.txt') as f:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.stufinite.faith', 'localhost']
+ALLOWED_HOSTS = ['.stufinite.faith', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -42,6 +42,7 @@ REQUIRED_APPS = [
 
 PROJECT_APPS = [
     'timetable.apps.TimetableConfig',
+    'tiagenda'
 ]
 
 INSTALLED_APPS = REQUIRED_APPS + PROJECT_APPS

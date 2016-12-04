@@ -18,5 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('timetable.urls')),
+    url(r'^timetable', include('timetable.urls')),
+    url(r'^tiagenda', include('tiagenda.urls')),
 ]
