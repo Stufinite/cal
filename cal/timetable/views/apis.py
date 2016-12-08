@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 
-from login.views.views import init_user
+from timetable.views.views import init_user
 from timetable.models import Department, Course, SelectedCourse
 
 
