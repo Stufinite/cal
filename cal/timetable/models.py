@@ -25,4 +25,4 @@ class Course(models.Model):
 
 class SelectedCourse(models.Model):
     user = models.CharField(max_length=20, default='')
-    course = models.ForeignKey(Course)
+    course = models.ForeignKey(Course, null=True)
