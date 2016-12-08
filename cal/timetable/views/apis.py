@@ -69,7 +69,7 @@ def del_selected(request):
             course = Course.objects.get(code=code)
             SelectedCourse.objects.filter(
                 course=course, user=user['username']).delete()
-            return JsonResponse({})
+            return JsonResponse({"state": "ok"}})
         except:
             raise Http404("Page does not exist")
     else:
@@ -89,6 +89,7 @@ def save_selected(request):
                     course=Course.objects.get(code=code), user=user['username'])
                 if not created:
                     sc.save()
+            return JsonResponse({"state": "ok"}})
         except:
             raise Http404("Page does not exist")
     else:
