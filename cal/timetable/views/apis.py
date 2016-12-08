@@ -25,16 +25,19 @@ def get_department(request):
     #         'title_en': d.title.split(',')[1],
     #     })
 
-    result = list(map(
-        lambda d: {
-            'code': d.code,
-            'title_zh': d.title.split(',')[0],
-            'title_en': d.title.split(',')[1],
-        },
-        Department.objects.filter(degree=user['career']).order_by('code')
-    ))  # just practicing
+    try:
+        result = list(map(
+            lambda d: {
+                'code': d.code,
+                'title_zh': d.title.split(',')[0],
+                'title_en': d.title.split(',')[1],
+            },
+            Department.objects.filter(degree=user['career']).order_by('code')
+        ))  # just practicing
 
-    return JsonResponse(result, safe=False)
+        return JsonResponse(result, safe=False)
+    except:
+        raise Http404("Page does not exist")
 
 
 def get_selected(request):
@@ -43,16 +46,17 @@ def get_selected(request):
         return user
 
     if request.method == 'GET':
-        result = list(map(
-            lambda c: c.course.code,
-            SelectedCourse.objects.filter(user=user['username'])
-        ))
-
-        return JsonResponse(result, safe=False)
+        try:
+            result = list(map(
+                lambda c: c.course.code,
+                SelectedCourse.objects.filter(user=user['username'])
+            ))
+            return JsonResponse(result, safe=False)
+        except:
+            raise Http404("Page does not exist")
     else:
         raise Http404("Page does not exist")
 
-    return JsonResponse({})
 
 def del_selected(request):
     user = init_user(request)
@@ -60,13 +64,17 @@ def del_selected(request):
         return user
 
     if request.method == 'POST':
-        code = request.POST.get('code')
-        course = Course.objects.get(code=code)
-        SelectedCourse.objects.filter(course=course, user=user['username']).delete()
+        try:
+            code = request.POST.get('code')
+            course = Course.objects.get(code=code)
+            SelectedCourse.objects.filter(
+                course=course, user=user['username']).delete()
+            return JsonResponse({})
+        except:
+            raise Http404("Page does not exist")
     else:
         raise Http404("Page does not exist")
 
-    return JsonResponse({})
 
 def save_selected(request):
     user = init_user(request)
@@ -74,16 +82,17 @@ def save_selected(request):
         return user
 
     if request.method == 'POST':
-        text = request.POST.get('text')
-        for code in text.split(','):
-            sc, created = SelectedCourse.objects.get_or_create(
-                course=Course.objects.get(code=code), user=user['username'])
-            if not created:
-                sc.save()
+        try:
+            text = request.POST.get('text')
+            for code in text.split(','):
+                sc, created = SelectedCourse.objects.get_or_create(
+                    course=Course.objects.get(code=code), user=user['username'])
+                if not created:
+                    sc.save()
+        except:
+            raise Http404("Page does not exist")
     else:
         raise Http404("Page does not exist")
-
-    return JsonResponse({})
 
 
 def build_department(request):
