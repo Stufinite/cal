@@ -16,14 +16,24 @@ def get_department(request):
     user = init_user(request)
     if isinstance(user, HttpResponseRedirect):
         return user
-    d_set = Department.objects.filter(degree=user['career']).order_by('code')
-    result = []
-    for d in d_set:
-        data = {}
-        data['code'] = d.code
-        data['title_zh'] = d.title.split(',')[0]
-        data['title_en'] = d.title.split(',')[1]
-        result.append(data)
+
+    # result = []
+    # for d in Department.objects.filter(degree=user['career']).order_by('code'):
+    #     result.append({
+    #         'code': d.code,
+    #         'title_zh': d.title.split(',')[0],
+    #         'title_en': d.title.split(',')[1],
+    #     })
+
+    result = list(map(
+        lambda d: {
+            'code': d.code,
+            'title_zh': d.title.split(',')[0],
+            'title_en': d.title.split(',')[1],
+        },
+        Department.objects.filter(degree=user['career']).order_by('code')
+    )) # just practicing
+
     return JsonResponse(result, safe=False)
 
 
