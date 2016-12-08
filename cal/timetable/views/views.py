@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponseRedirect
 
-
 from userper import Userper
 
 
@@ -35,19 +34,3 @@ def timetable(request):
         return user
 
     return render(request, 'timetable.html', {'user': user})
-
-
-def get_user(request):
-    user = init_user(request)
-    if isinstance(user, HttpResponseRedirect):
-        return user
-
-    return JsonResponse(user)
-
-
-def get_selected(reqeust):
-    pass
-
-
-def save_selected(request):
-    pass
