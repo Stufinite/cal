@@ -96,10 +96,8 @@ def save_selected(request):
 
 
 def build_department(request):
-    user = init_user(request)
-    if isinstance(user, HttpResponseRedirect):
-        return user
-    if user['username'] != 'root':
+    from cal import settings
+    if settings.DEBUG:
         raise Http404("Page does not exist")
     else:
         from cal import settings
@@ -121,10 +119,8 @@ def build_department(request):
 
 
 def build_course(request):
-    user = init_user(request)
-    if isinstance(user, HttpResponseRedirect):
-        return user
-    if user['username'] != 'root':
+    from cal import settings
+    if settings.DEBUG:
         raise Http404("Page does not exist")
     else:
         from cal import settings
