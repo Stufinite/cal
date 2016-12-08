@@ -7,6 +7,7 @@ class Department(models.Model):
 
 
 class Course(models.Model):
+    school = models.CharField(max_length=100, default='')
     semester = models.CharField(max_length=100, default='')
     code = models.CharField(max_length=100, default='')
     for_class = time = models.CharField(max_length=100, default='')
