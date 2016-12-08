@@ -12,6 +12,21 @@ def get_user(request):
     return JsonResponse(user)
 
 
+def get_department(request):
+    user = init_user(request)
+    if isinstance(user, HttpResponseRedirect):
+        return user
+    d_set = Department.objects.filter(degree=user['career']).order_by('code')
+    result = []
+    for d in d_set:
+        data = {}
+        data['code'] = d.code
+        data['title_zh'] = d.title.split(',')[0]
+        data['title_en'] = d.title.split(',')[1]
+        result.append(data)
+    return JsonResponse(result, safe=False)
+
+
 def get_selected(reqeust):
     pass
 
@@ -33,9 +48,13 @@ def build_department(request):
             data = json.loads(f.read())
             for dept_by_degree in data:
                 for dept in dept_by_degree["department"]:
-                    print("{} {} {} {}".format(dept_by_degree["degree"], dept["zh_TW"], dept["en_US"], dept["value"]))
-                    d, created = Department.objects.get_or_create(degree=dept_by_degree["degree"], code=dept[
-                                                                  "value"], title="{},{}".format(dept["zh_TW"], dept["en_US"]))
+                    # print("{} {} {} {}".format(dept_by_degree["degree"],
+                    #     dept["zh_TW"], dept["en_US"], dept["value"]))
+                    d, created = Department.objects.get_or_create(
+                        degree=dept_by_degree["degree"],
+                        code=dept["value"],
+                        title="{},{}".format(dept["zh_TW"], dept["en_US"])
+                    )
                     if not created:
                         d.save()
         return JsonResponse({"state": "ok"})
@@ -57,14 +76,17 @@ def build_course(request):
             with open(settings.STATICFILES_DIRS[0] + '/timetable/json/' + filename, 'r') as f:
                 data = json.loads(f.read())
                 for c in data["course"]:
-                    print(c)
+                    # print(c)
                     d, created = Course.objects.get_or_create(
                         school='NCHU',
                         semester="1051",
                         code=c['code'],
                         for_class=c['class'],
                         credits=c['credits'],
-                        title='{},{}'.format(c['title_parsed']['zh_TW'], c['title_parsed']['en_US']),
+                        title='{},{}'.format(
+                            c['title_parsed']['zh_TW'],
+                            c['title_parsed']['en_US']
+                        ),
                         department=c['department'],
                         professor=c['professor'],
                         time=c['time'],

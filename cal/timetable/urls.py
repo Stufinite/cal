@@ -7,7 +7,8 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    url(r'^api/get/user$', apis.get_user, name="get_user"),
+    url(r'^api/get/user$', apis.get_user),
+    url(r'^api/get/dept$', apis.get_department),
 ]
 
 urlpatterns += [
