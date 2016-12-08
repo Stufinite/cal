@@ -571,37 +571,3 @@ class StufiniteTimetable {
         });
     }
 }
-
-//
-// StufiniteTimetable.prototype.downloadJson = function() {
-//     window.user['user_name'] = $('#user_name').val();
-//     window.user['user_dept'] = $('#user_dept').val();
-//     var filename = $('#user_name').val();
-//     var json_string = JSON.stringify(window.user);
-//     var blob = new Blob([json_string], {
-//         type: "application/json"
-//     }); //這是存檔的物件
-//     saveAs(blob, filename + ".json");
-// }
-//
-// StufiniteTimetable.prototype.save = function() {
-//     var postdata = $.extend({}, window.user);
-//     postdata['csrfmiddlewaretoken'] = getCookie('csrftoken');
-//     postdata['time_table'] = JSON.stringify(window.user['time_table']);
-//     postdata['idList'] = JSON.stringify(window.user['idList']);
-//     postdata['returnarr'] = JSON.stringify(window.user['returnarr']);
-//     //post Method一定要驗證csrf token, or post會被禁止forbidden
-//     $.post(".", postdata)
-//         .done(function() {
-//             toastr.success('恭喜您成功上傳課表囉~');
-//             window.already_post = true;
-//             redirect_loc = "/course/course_zh_TW/?name=" + postdata['user_name'];
-//             document.location.href = redirect_loc; //重導向頁面到get的網址，這樣django template才能把使用者的書單丟進{% for %}
-//         })
-//         .fail(function() {
-//             toastr.error('抱歉，上傳錯誤，請重新再試');
-//         })
-//         .always(function() {
-//             console.log("finished");
-//         });
-// }
