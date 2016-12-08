@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 
 from timetable.views.views import init_user
 from timetable.models import Department, Course, SelectedCourse
