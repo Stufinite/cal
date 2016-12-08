@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Course, SelectedCourse
 
+from timetable.models import Department, Course, SelectedCourse
+
+admin.site.register(Department)
 admin.site.register(Course)
 admin.site.register(SelectedCourse)
