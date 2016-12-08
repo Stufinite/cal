@@ -32,7 +32,7 @@ def get_department(request):
             'title_en': d.title.split(',')[1],
         },
         Department.objects.filter(degree=user['career']).order_by('code')
-    )) # just practicing
+    ))  # just practicing
 
     return JsonResponse(result, safe=False)
 
@@ -40,9 +40,36 @@ def get_department(request):
 def get_selected(reqeust):
     pass
 
+def del_selected(request):
+    user = init_user(request)
+    if isinstance(user, HttpResponseRedirect):
+        return user
+
+    if request.method == 'POST':
+        code = request.POST.get('code')
+        course = Course.objects.get(code=code)
+        SelectedCourse.objects.filter(course=course, user=user['username']).delete()
+    else:
+        raise Http404("Page does not exist")
+
+    return JsonResponse({})
 
 def save_selected(request):
-    pass
+    user = init_user(request)
+    if isinstance(user, HttpResponseRedirect):
+        return user
+
+    if request.method == 'POST':
+        text = request.POST.get('text')
+        for code in text.split(','):
+            sc, created = SelectedCourse.objects.get_or_create(
+                course=Course.objects.get(code=code), user=user['username'])
+            if not created:
+                sc.save()
+    else:
+        raise Http404("Page does not exist")
+
+    return JsonResponse({})
 
 
 def build_department(request):

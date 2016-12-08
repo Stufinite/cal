@@ -1,9 +1,9 @@
 class StufiniteTimetable {
-    constructor(school, lang, user, selected) {
-        this.language = lang;
+    constructor(school, lang, user) {
         this.target = $("#time-table");
+        this.language = lang;
         this.credits = 0;
-        this.selected = selected === undefined ? {} : selected;
+        this.selected = [];
 
         this.user = user;
 
@@ -14,6 +14,10 @@ class StufiniteTimetable {
         this.coursesByDay = {}; //以日和小時為 key 的二維物件
         this.coursesByMajor = {}; //以科系和年級為 key 的二維物件
 
+        setInterval(1000, (function() {
+            this.saveSelected()
+        }).bind(this));
+
         // Initialize timetable with square plus buttons
         $("#time-table td").html(
             $('<i class="fa fa-plus-square fa-5x"></i>').on("click", this.addCourseListener.bind(this))
@@ -21,11 +25,15 @@ class StufiniteTimetable {
 
         //1. O.json is suitable for all kind of degree, so it will be loaded in automatically.
         //2. 當文件準備好的時候，讀入department的json檔, 因為這是顯示系所，沒多大就全部都載進來
-        $.when($.getJSON("/static/timetable/json/O.json", this.buildCourseIndex.bind(this)),
-            $.getJSON("/static/timetable/json/department.json", this.buildDeptArray.bind(this)))
+        $.getJSON("/static/timetable/json/department.json", this.buildDeptArray.bind(this))
+        $.getJSON("/static/timetable/json/O.json", this.buildCourseIndex.bind(this))
         $.when($.getJSON("/static/timetable/json/U.json", this.buildCourseIndex.bind(this)))
             .then((function() {
-                this.addMajorCourses(this.user.major, this.user.grade);
+                if (this.selected.length === 0) {
+                    this.addMajorCourses(this.user.major, this.user.grade);
+                } else {
+                    // pass
+                }
             }).bind(this))
     }
 
@@ -169,6 +177,7 @@ class StufiniteTimetable {
 
             this.addCredit(course.credits);
             this.addCourseMessage(course);
+            this.selected.push(course.code)
         }
     }
 
@@ -262,6 +271,8 @@ class StufiniteTimetable {
             })
             this.minusCredit(course.credits);
         }
+
+        this.delSelected(code);
     }
 
     addMajorCourses(major, grade) {
@@ -310,7 +321,7 @@ class StufiniteTimetable {
         for (let ik in this.coursesByMajor[major]) {
             let iv = this.coursesByMajor[major][ik];
             //系上所有的選修課都先填入bulletin
-            if (this.haveMultipleClasses(grade)) {
+            if (!this.haveMultipleClasses(grade)) {
                 for (let jv of iv) {
                     for (let kv of this.getCourse('code', jv)) {
                         if (kv.obligatory_tf == false && kv.for_dept == major && kv.class == grade) {
@@ -348,6 +359,10 @@ class StufiniteTimetable {
 
     haveMultipleClasses(grade) {
         //確認此系有沒有分AB班(選修用)
+
+        if (typeof(grade) === "number") {
+          return false;
+        }
         grade = grade.split("");
         return grade.length === 1 ? true : false;
     }
@@ -519,6 +534,35 @@ class StufiniteTimetable {
             };
             return course.department in types ? types[course.department] : ".obligatory-post";
         }
+    }
+
+    delSelected(code) {
+      $.ajax({
+          url: "/api/del/selected",
+          method: "POST",
+          data: {
+              code: code,
+              csrfmiddlewaretoken: getcrsftoken()
+          },
+          dataType: "text"
+      });
+    }
+
+    saveSelected() {
+        let uploadData = '';
+        for (let i of this.selected) {
+            uploadData += uploadData === '' ? i : ',' + i;
+        }
+
+        $.ajax({
+            url: "/api/put/selected",
+            method: "POST",
+            data: {
+                text: uploadData,
+                csrfmiddlewaretoken: getcrsftoken()
+            },
+            dataType: "text"
+        });
     }
 }
 
