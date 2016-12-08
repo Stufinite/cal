@@ -97,7 +97,7 @@ def save_selected(request):
 
 def build_department(request):
     from cal import settings
-    if !settings.DEBUG:
+    if not settings.DEBUG:
         raise Http404("Page does not exist")
     else:
         from cal import settings
@@ -120,7 +120,7 @@ def build_department(request):
 
 def build_course(request):
     from cal import settings
-    if !settings.DEBUG:
+    if not settings.DEBUG:
         raise Http404("Page does not exist")
     else:
         from cal import settings
