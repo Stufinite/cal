@@ -9,6 +9,7 @@ urlpatterns = [
 urlpatterns += [
     url(r'^api/get/user$', apis.get_user),
     url(r'^api/get/dept$', apis.get_department),
+    url(r'^api/get/selected$', apis.get_selected),
     url(r'^api/put/selected$', apis.save_selected),
     url(r'^api/del/selected$', apis.del_selected),
 ]

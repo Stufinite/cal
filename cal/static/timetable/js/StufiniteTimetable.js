@@ -14,9 +14,9 @@ class StufiniteTimetable {
         this.coursesByDay = {}; //以日和小時為 key 的二維物件
         this.coursesByMajor = {}; //以科系和年級為 key 的二維物件
 
-        setInterval(1000, (function() {
-            this.saveSelected()
-        }).bind(this));
+        // setInterval(1000, (function() {
+        //     this.saveSelected()
+        // }).bind(this));
 
         // Initialize timetable with square plus buttons
         $("#time-table td").html(
@@ -29,12 +29,17 @@ class StufiniteTimetable {
         $.getJSON("/static/timetable/json/O.json", this.buildCourseIndex.bind(this))
         $.when($.getJSON("/static/timetable/json/U.json", this.buildCourseIndex.bind(this)))
             .then((function() {
-                if (this.selected.length === 0) {
-                    this.addMajorCourses(this.user.major, this.user.grade);
-                } else {
-                    // pass
-                }
-            }).bind(this))
+                $.getJSON("/api/get/selected", (function(data) {
+                    if (data.length == 0) {
+                        this.addMajorCourses(this.user.major, this.user.grade);
+                    } else {
+                        this.selected = data;
+                        for (let i in this.selected) {
+                            this.addCourse(this.getCourse('code', this.selected[i])[0]);
+                        }
+                    }
+                }).bind(this))
+            }).bind(this));
     }
 
     buildDeptArray(json) {
@@ -177,7 +182,8 @@ class StufiniteTimetable {
 
             this.addCredit(course.credits);
             this.addCourseMessage(course);
-            this.selected.push(course.code)
+            this.selected.push(course.code);
+            this.saveSelected();
         }
     }
 
@@ -361,7 +367,7 @@ class StufiniteTimetable {
         //確認此系有沒有分AB班(選修用)
 
         if (typeof(grade) === "number") {
-          return false;
+            return false;
         }
         grade = grade.split("");
         return grade.length === 1 ? true : false;
@@ -537,15 +543,15 @@ class StufiniteTimetable {
     }
 
     delSelected(code) {
-      $.ajax({
-          url: "/api/del/selected",
-          method: "POST",
-          data: {
-              code: code,
-              csrfmiddlewaretoken: getcrsftoken()
-          },
-          dataType: "text"
-      });
+        $.ajax({
+            url: "/api/del/selected",
+            method: "POST",
+            data: {
+                code: code,
+                csrfmiddlewaretoken: getcrsftoken()
+            },
+            dataType: "text"
+        });
     }
 
     saveSelected() {

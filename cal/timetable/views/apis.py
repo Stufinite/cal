@@ -37,8 +37,22 @@ def get_department(request):
     return JsonResponse(result, safe=False)
 
 
-def get_selected(reqeust):
-    pass
+def get_selected(request):
+    user = init_user(request)
+    if isinstance(user, HttpResponseRedirect):
+        return user
+
+    if request.method == 'GET':
+        result = list(map(
+            lambda c: c.course.code,
+            SelectedCourse.objects.filter(user=user['username'])
+        ))
+
+        return JsonResponse(result, safe=False)
+    else:
+        raise Http404("Page does not exist")
+
+    return JsonResponse({})
 
 def del_selected(request):
     user = init_user(request)
