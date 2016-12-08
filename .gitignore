@@ -1,6 +1,6 @@
 # Project stuff
 userpool/settings_database.py
-uwsgi.deploy.ini
+cal/timetable/migrations/*
 db.sqlite3
 
 # virtualenv

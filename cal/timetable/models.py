@@ -25,5 +25,4 @@ class Course(models.Model):
 
 class SelectedCourse(models.Model):
     user = models.CharField(max_length=20, default='')
-    code = models.CharField(max_length=20, default='')
-    semester = models.CharField(max_length=6, default='')
+    course = models.ForeignKey(Course)
