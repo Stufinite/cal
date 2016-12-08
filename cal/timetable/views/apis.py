@@ -89,7 +89,7 @@ def save_selected(request):
                     course=Course.objects.get(code=code), user=user['username'])
                 if not created:
                     sc.save()
-            return JsonResponse({"state": "ok"}})
+            return JsonResponse({"state": "ok"})
         except:
             raise Http404("Page does not exist")
     else:
