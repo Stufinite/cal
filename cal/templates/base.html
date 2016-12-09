@@ -19,7 +19,7 @@
         </div>
 
         <div class='stufinite-nav-item'>
-            <a href='http://course.stufinite.faith'>選課小幫手</a>
+            <a href='http://entry.stufinite.faith'>選課小幫手</a>
         </div>
 
         <div class='stufinite-nav-item'>
@@ -31,12 +31,12 @@
         </div>
 
         <div class='stufinite-nav-item'>
-            <a href='http://t2e.stufinite.faith/'>今天吃什麼</a>
+            <a href='http://eat.stufinite.faith/t2e'>今天吃什麼</a>
         </div>
 
         <div class='stufinite-nav-item stufinite-nav-right'>
             {% if user.is_authenticated %}
-            <span class='stufinite-nav-user-info'>{{ user.username }}</span>
+            <span class='stufinite-nav-user-info'><a href="https://login.stufinite.faith/accounts/profile">{{ user.username }}</a></span>
             <a href="http://login.stufinite.faith/accounts/logout"><button class='stufinite-btn'>Logout</button></a>
             {% else %}
             <a href="http://login.stufinite.faith/accounts/login"><button class='stufinite-btn'>Login</button></a>
