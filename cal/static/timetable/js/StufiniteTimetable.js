@@ -14,20 +14,19 @@ class StufiniteTimetable {
         this.coursesByDay = {}; //以日和小時為 key 的二維物件
         this.coursesByMajor = {}; //以科系和年級為 key 的二維物件
 
-        // setInterval(1000, (function() {
-        //     this.saveSelected()
-        // }).bind(this));
-
         // Initialize timetable with square plus buttons
         $("#time-table td").html(
             $('<i class="fa fa-plus-square fa-5x"></i>').on("click", this.addCourseListener.bind(this))
         );
 
-        //1. O.json is suitable for all kind of degree, so it will be loaded in automatically.
-        //2. 當文件準備好的時候，讀入department的json檔, 因為這是顯示系所，沒多大就全部都載進來
-        $.getJSON("/static/timetable/json/department.json", this.buildDeptArray.bind(this))
+        // 讀入系所名稱及代碼
+        // $.getJSON("/static/timetable/json/department.json", this.buildDeptArray.bind(this))
+
+        // O.json is suitable for all kind of degree, so it will be loaded in automatically.
         $.getJSON("/static/timetable/json/O.json", this.buildCourseIndex.bind(this))
-        $.when($.getJSON("/static/timetable/json/U.json", this.buildCourseIndex.bind(this)))
+
+        // Load json by user's career
+        $.when($.getJSON("/static/timetable/json/" + user.career + ".json", this.buildCourseIndex.bind(this)))
             .then((function() {
                 $.getJSON("/api/get/selected", (function(data) {
                     if (data.length == 0) {
@@ -151,40 +150,42 @@ class StufiniteTimetable {
     }
 
     addCourse(course) {
+        if (this.isCourseConflict(course)) {
+            return;
+        }
+
         let target = this.target;
         let language = this.language;
-        let conflict = this.isCourseConflict(course);
-        if (!conflict) {
-            for (let courseByDay of course.time_parsed) {
-                for (let courseByTime of courseByDay.time) {
-                    let $cell = $(`
+
+        for (let courseByDay of course.time_parsed) {
+            for (let courseByTime of courseByDay.time) {
+                let $cell = $(`
                     <div class="course">
                         <i class="remove fa fa-trash" aria-hidden="true"></i>
                         <span class="title"></span>
                         <span class="professor"></span>
                         <span class="location"></span>
                     </div>`)
-                    let $td = target.find('tr[data-hour="' + courseByTime + '"] td:eq(' + (courseByDay.day - 1) + ')');
-                    $cell
-                        .find('.remove')
-                        .attr('code', course.code)
-                        .bind('click', (function(e) {
-                            let code = $(e.target).attr('code');
-                            this.delCourse(code);
-                        }).bind(this)).end()
-                        .find('.title').text(course.title_parsed[language]).end()
-                        .find('input').val(course.code).end()
-                        .find('.professor').text(course.professor).end()
-                        .find('.location').end()
-                    $td.html($cell);
-                }
+                let $td = target.find('tr[data-hour="' + courseByTime + '"] td:eq(' + (courseByDay.day - 1) + ')');
+                $cell
+                    .find('.remove')
+                    .attr('code', course.code)
+                    .bind('click', (function(e) {
+                        let code = $(e.target).attr('code');
+                        this.delCourse(code);
+                    }).bind(this)).end()
+                    .find('.title').text(course.title_parsed[language]).end()
+                    .find('input').val(course.code).end()
+                    .find('.professor').text(course.professor).end()
+                    .find('.location').end()
+                $td.html($cell);
             }
-
-            this.addCredit(course.credits);
-            this.addCourseMessage(course);
-            this.selected.push(course.code);
-            this.saveSelected();
         }
+
+        this.addCourseMessage(course);
+        this.addCredit(course.credits);
+        this.selected.push(course.code);
+        this.saveSelected();
     }
 
     addCourseMessage(course) {
@@ -246,7 +247,6 @@ class StufiniteTimetable {
     }
 
     addCourseListener(e) {
-
         let day = $(e.target).closest("td").attr("data-day");
         let hour = $(e.target).closest("tr").attr("data-hour");
 
@@ -548,7 +548,7 @@ class StufiniteTimetable {
             method: "POST",
             data: {
                 code: code,
-                csrfmiddlewaretoken: getcrsftoken()
+                csrfmiddlewaretoken: getCookie('csrftoken')
             },
             dataType: "text"
         });
@@ -565,7 +565,7 @@ class StufiniteTimetable {
             method: "POST",
             data: {
                 text: uploadData,
-                csrfmiddlewaretoken: getcrsftoken()
+                csrfmiddlewaretoken: getCookie('csrftoken')
             },
             dataType: "text"
         });
