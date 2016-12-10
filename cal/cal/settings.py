@@ -24,7 +24,7 @@ with open(BASE_DIR + '/' + 'secret_key.txt') as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['.stufinite.faith', 'localhost', '127.0.0.1']
 
@@ -134,3 +134,6 @@ STATICFILES_DIRS = [
 # SESSION_COOKIE_DOMAIN = '.stufinite.faith'
 with open(BASE_DIR + '/' + 'sessionid.txt') as f:
     SESSION_COOKIE_NAME = f.read().strip()
+
+# Dev
+# DEBUG = True

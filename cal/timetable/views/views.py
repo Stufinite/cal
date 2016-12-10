@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponseRedirect
 
 from userper import Userper
+from cal import settings
 
 
 def init_user(request):
@@ -11,8 +12,10 @@ def init_user(request):
     if not request.session.session_key:
         request.session.save()
     try:
-        User.get(request.session.session_key)
-        # User.get_test()
+        if settings.DEBUG:
+            User.get_test()
+        else:
+            User.get(request.session.session_key)
     except HTTPError:
         return HttpResponseRedirect('https://login.stufinite.faith')
 

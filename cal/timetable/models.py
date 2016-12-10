@@ -6,6 +6,9 @@ class Department(models.Model):
     code = models.CharField(max_length=100, default='')
     title = models.CharField(max_length=100, default='')
 
+    def __str__(self):
+        return '{} {}'.format(self.code, self.title)
+
 
 class Course(models.Model):
     school = models.CharField(max_length=100, default='')
@@ -24,7 +27,13 @@ class Course(models.Model):
     prerequisite = models.CharField(max_length=100, default='')
     note = models.CharField(max_length=100, default='')
 
+    def __str__(self):
+        return '{}: {} / {}'.format(self.semester, self.title, self.professor)
+
 
 class SelectedCourse(models.Model):
     user = models.CharField(max_length=20, default='')
     course = models.ForeignKey(Course, null=True)
+
+    def __str__(self):
+        return '{}: {}'.format(self.user, self.course.title)
