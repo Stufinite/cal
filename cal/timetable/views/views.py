@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponseRedirect
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from userper import Userper
 from cal import settings
@@ -31,6 +32,7 @@ def init_user(request):
     return u
 
 
+@ensure_csrf_cookie
 def timetable(request):
     user = init_user(request)
     if isinstance(user, HttpResponseRedirect):
