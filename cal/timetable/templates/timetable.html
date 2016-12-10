@@ -6,7 +6,7 @@
 {% load static %}
 {% block stylesheet %}
 <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' rel='stylesheet' integrity='sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1' crossorigin='anonymous'>
-<link rel='stylesheet' href='{% static "timetable/toastr/toastr.css" %}'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css' rel='stylesheet'>
 
 <link rel='stylesheet' href='{% static "timetable/css/timetable.css" %}'>
 <link rel='stylesheet' href='{% static "timetable/css/searchbar.css" %}'>
@@ -286,7 +286,7 @@
   ga('send', 'pageview');
 </script>
 <!--Toast Notification-->
-<script src="{% static 'timetable/toastr/toastr.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <!--功能主函式-->
 <script src="{% static 'timetable/js/StufiniteSearchbar.js' %}"></script>
 <script src="{% static 'timetable/js/StufiniteTimetable.js' %}"></script>
