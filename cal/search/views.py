@@ -2,17 +2,36 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from timetable.models import Course
 from pymongo import MongoClient
-import re
+from djangoApiDec.djangoApiDec import queryString_required
+import re, urllib, requests, json
 
 # Create your views here.
+@queryString_required(['keyword', 'school'])
 def search(request):
-	return JsonResponse({}, safe=False)
+	keyword = request.GET['keyword']
+	school = request.GET['school']
+	client = MongoClient()
+	db = client['timetable']
+	SrchCollect = db['CourseSearch']
+
+	cursor = SrchCollect.find({keyword: {"$exists": True}}).limit(1)
+	result = []
+	if cursor.count() > 0:
+		# Key Exist
+		result = tuple( i for i in list(cursor)[0][keyword][school])
+			
+	else:
+		# Key doesn't Exist
+		text = requests.get('http://140.120.13.243:32785/api/kcmApi/?keyword={}&lang=cht&num=10'.format(urllib.parse.quote(keyword)))
+		text = json.loads(text.text)
+		for i in text:
+			result.append(i)
+	return JsonResponse(result, safe=False)
 
 def InvertedIndex(request):
 	client = MongoClient()
 	db = client['timetable']
 	SrchCollect = db['CourseSearch']
-	idList = db['idSet']
 	def bigram(title):
 		bigram = (title.split(',')[0], title.split(',')[1].replace('.', ''))
 		title = re.sub(r'\(.*\)', '', title).split(',')[0].strip()
