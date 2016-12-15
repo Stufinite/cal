@@ -5,30 +5,42 @@ from pymongo import MongoClient
 from djangoApiDec.djangoApiDec import queryString_required
 import re, urllib, requests, json, queue
 
-# Create your views here.
-@queryString_required(['keyword', 'school'])
-def search(request):
-	keyword = request.GET['keyword'].split()
-	school = request.GET['school']
-	client = MongoClient()
-	db = client['timetable']
-	SrchCollect = db['CourseSearch']
-	result = []
-	def KEMSearch(keyword):
-		cursor = SrchCollect.find({keyword: {"$exists": True}}).limit(1)
+class SearchOb(object):
+	"""docstring for SearchOb"""
+	def __init__(self, keyword, school, uri=None):
+		self.client = MongoClient(uri)
+		self.db = self.client['timetable']
+		self.SrchCollect = self.db['CourseSearch']
+		self.keyword = keyword.split()
+		self.school = school
+		self.result = tuple()
+
+	def getResult(self):
+		self.doSearch()
+		return self.result
+
+	def doSearch(self):
+		if len(self.keyword) == 1:
+			self.keyword = self.keyword[0]
+			self.result = self.KEMSearch(self.keyword)
+		else:
+			self.result = self.TCsearch()
+
+	def KEMSearch(self, kw):
+		cursor = self.SrchCollect.find({kw: {"$exists": True}}).limit(1)
 		if cursor.count() > 0:
 			# Key Exist
-			return tuple( i for i in list(cursor)[0][keyword][school])
+			return tuple( i for i in list(cursor)[0][kw][self.school])
 		else:
-			text = requests.get('http://140.120.13.243:32785/api/kemApi/?keyword={}&lang=cht&num=10'.format(urllib.parse.quote(keyword)))
+			text = requests.get('http://140.120.13.243:32785/api/kemApi/?keyword={}&lang=cht&num=10'.format(urllib.parse.quote(kw)))
 			text = json.loads(text.text)
 			for i in text:
-				cursor = SrchCollect.find({i: {"$exists": True}}).limit(1)
+				cursor = self.SrchCollect.find({i: {"$exists": True}}).limit(1)
 				if cursor.count() > 0:
 					# Key Exist
 					cursor = list(cursor)[0]
-					return tuple( j for j in cursor[i][school])
-	def TCsearch(keywordList):
+					return tuple( j for j in cursor[i][self.school])
+	def TCsearch(self):
 		def Intersec(cursor1, cursor2):
 			index = 0
 			intersection = []
@@ -41,23 +53,24 @@ def search(request):
 				if index == len(cursor2): break
 			return intersection
 
-		topic1, topic2 = keywordList[0:2]
-		cursor1 = KEMSearch(topic1)
-		cursor2 = KEMSearch(topic2)
+		topic1, topic2 = self.keyword[0:2]
+		cursor1 = self.KEMSearch(topic1)
+		cursor2 = self.KEMSearch(topic2)
 		intersection = Intersec(cursor1, cursor2)
 
-		for i in keywordList[2:]:
-			cursor2 = KEMSearch(i)
+		for i in self.keyword[2:]:
+			cursor2 = self.KEMSearch(i)
 			intersection = Intersec(intersection, cursor2)
 		return intersection
 
-	if len(keyword) == 1:
-		keyword = keyword[0]
-		result = KEMSearch(keyword)
-	else:
-		result = TCsearch(keyword)
+# Create your views here.
+@queryString_required(['keyword', 'school'])
+def search(request):
+	keyword = request.GET['keyword']
+	school = request.GET['school']
+	sob = SearchOb(keyword, school)
 				
-	return JsonResponse(result, safe=False)
+	return JsonResponse(sob.getResult(), safe=False)
 
 def InvertedIndex(request):
 	client = MongoClient()
