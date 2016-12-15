@@ -7,7 +7,7 @@ import re, urllib, requests, json, queue
 
 class SearchOb(object):
 	"""docstring for SearchOb"""
-	def __init__(self, keyword, school, uri=None):
+	def __init__(self, keyword="", school=None, uri=None):
 		self.client = MongoClient(uri)
 		self.db = self.client['timetable']
 		self.SrchCollect = self.db['CourseSearch']
@@ -63,6 +63,55 @@ class SearchOb(object):
 			intersection = Intersec(intersection, cursor2)
 		return intersection
 
+	####################Build index#########################################
+	def BuildIndex(self):
+		for i in Course.objects.all():
+			key = self.bigram(i.title)
+			courseid = i.id
+			for k in key:
+				cursor = self.SrchCollect.find({k: {"$exists": True}}).limit(1)
+				if cursor.count() > 0:
+					# Key Exist
+					cursor = list(cursor)[0]
+					if i.code not in cursor[i.school+"CourseID"]:
+						################Error Detect#########
+						for v in cursor[k][i.school]:       #
+							if v['DBid'] == courseid:       #
+								print(k)                    #
+								print(i)                    #
+								print(v)                    #
+								print(cursor[0])            #
+								raise Exception('fuck')     #
+						#####################################
+						self.SrchCollect.update({k: {"$exists": True}}, {'$push': {k + "."+i.school: {
+										"DBid":courseid,
+										"weight":0}}})
+						self.SrchCollect.update({k: {"$exists":True}}, {'$push':{i.school+"CourseID": i.code}})
+				else:
+					# Key doesn't Exist
+					post_id = self.SrchCollect.insert_one(
+						{
+							k:{
+							i.school:[
+								{
+									"DBid":courseid,
+									"weight":0
+								}],
+							},
+							i.school+"CourseID":[i.code]
+						}
+					)
+
+	def bigram(self, title):
+		bigram = (title.split(',')[0], title.split(',')[1].replace('.', ''))
+		title = re.sub(r'\(.*\)', '', title).split(',')[0].strip()
+		if len(title) > 2:
+			prefix = title[0]
+			for i in range(1, len(title)):
+				if title[i:].count(title[i]) == 1:
+					bigram += (prefix + title[i],)
+		return bigram
+
 # Create your views here.
 @queryString_required(['keyword', 'school'])
 def search(request):
@@ -73,53 +122,6 @@ def search(request):
 	return JsonResponse(sob.getResult(), safe=False)
 
 def InvertedIndex(request):
-	client = MongoClient()
-	db = client['timetable']
-	SrchCollect = db['CourseSearch']
-	def bigram(title):
-		bigram = (title.split(',')[0], title.split(',')[1].replace('.', ''))
-		title = re.sub(r'\(.*\)', '', title).split(',')[0].strip()
-		if len(title) > 2:
-			prefix = title[0]
-			for i in range(1, len(title)):
-				if title[i:].count(title[i]) == 1:
-					bigram += (prefix + title[i],)
-		return bigram
-
-	for i in Course.objects.all():
-		key = bigram(i.title)
-		courseid = i.id
-		for k in key:
-			cursor = SrchCollect.find({k: {"$exists": True}}).limit(1)
-			if cursor.count() > 0:
-				# Key Exist
-				cursor = list(cursor)[0]
-				if i.code not in cursor[i.school+"CourseID"]:
-					################Error Detect#########
-					for v in cursor[0][k][i.school]:    #
-						if v['DBid'] == courseid:       #
-							print(k)                    #
-							print(i)                    #
-							print(v)                    #
-							print(cursor[0])            #
-							raise Exception('fuck')     #
-					#####################################
-					SrchCollect.update({k: {"$exists": True}}, {'$push': {k + "."+i.school: {
-									"DBid":courseid,
-									"weight":0}}})
-					SrchCollect.update({k: {"$exists":True}}, {'$push':{i.school+"CourseID": i.code}})
-			else:
-				# Key doesn't Exist
-				post_id = SrchCollect.insert_one(
-					{
-						k:{
-						i.school:[
-							{
-								"DBid":courseid,
-								"weight":0
-							}],
-						},
-						i.school+"CourseID":[i.code]
-					}
-				)
+	sob = SearchOb()
+	sob.BuildIndex()
 	return JsonResponse({"build Inverted index success":1}, safe=False)
