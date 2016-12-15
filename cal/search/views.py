@@ -14,15 +14,12 @@ def search(request):
 	db = client['timetable']
 	SrchCollect = db['CourseSearch']
 	result = []
-
-	if len(keyword) == 1:
-		keyword = keyword[0]
+	def KEMSearch(keyword):
 		cursor = SrchCollect.find({keyword: {"$exists": True}}).limit(1)
 		if cursor.count() > 0:
 			# Key Exist
-			result = tuple( i for i in list(cursor)[0][keyword][school])
+			return tuple( i for i in list(cursor)[0][keyword][school])
 		else:
-			# Key doesn't Exist
 			text = requests.get('http://140.120.13.243:32785/api/kemApi/?keyword={}&lang=cht&num=10'.format(urllib.parse.quote(keyword)))
 			text = json.loads(text.text)
 			for i in text:
@@ -30,33 +27,34 @@ def search(request):
 				if cursor.count() > 0:
 					# Key Exist
 					cursor = list(cursor)[0]
-					result = tuple( j for j in cursor[i][school])
-					break
-	else:
-		def TCsearch(keywordList):
-			def Intersec(cursor1, cursor2):
-				index = 0
-				intersection = []
-				for i in cursor1:
-					while cursor2[index]['DBid'] < i['DBid']:
-						index += 1
-					if cursor2[index]['DBid'] == i['DBid']:
-						intersection.append(i)
-						index += 1
-					if index == len(cursor2): break
-				return intersection
-
-			topic1, topic2 = keywordList[0:2]
-			cursor1 = list(SrchCollect.find({topic1: {"$exists": True}}).limit(1))[0]
-			cursor2 = list(SrchCollect.find({topic2: {"$exists": True}}).limit(1))[0]
-			intersection = Intersec(cursor1[topic1][school], cursor2[topic2][school])
-
-			for i in keywordList[2:]:
-				cursor2 = list(SrchCollect.find({i: {"$exists": True}}).limit(1))[0]
-				intersection = Intersec(intersection, cursor2[i][school])
-
-				# 需要一個函式，如果沒有相關的bigram的話就用kcm回傳最相關的id
+					return tuple( j for j in cursor[i][school])
+	def TCsearch(keywordList):
+		def Intersec(cursor1, cursor2):
+			index = 0
+			intersection = []
+			for i in cursor1:
+				while cursor2[index]['DBid'] < i['DBid']:
+					index += 1
+				if cursor2[index]['DBid'] == i['DBid']:
+					intersection.append(i)
+					index += 1
+				if index == len(cursor2): break
 			return intersection
+
+		topic1, topic2 = keywordList[0:2]
+		cursor1 = KEMSearch(topic1)
+		cursor2 = KEMSearch(topic2)
+		intersection = Intersec(cursor1, cursor2)
+
+		for i in keywordList[2:]:
+			cursor2 = KEMSearch(i)
+			intersection = Intersec(intersection, cursor2)
+		return intersection
+
+	if len(keyword) == 1:
+		keyword = keyword[0]
+		result = KEMSearch(keyword)
+	else:
 		result = TCsearch(keyword)
 				
 	return JsonResponse(result, safe=False)
