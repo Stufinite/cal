@@ -8,7 +8,7 @@ import re, urllib, requests, json, queue
 # Create your views here.
 @queryString_required(['keyword', 'school'])
 def search(request):
-	keyword = request.GET['keyword'].split('+')
+	keyword = request.GET['keyword'].split()
 	school = request.GET['school']
 	client = MongoClient()
 	db = client['timetable']
@@ -25,39 +25,39 @@ def search(request):
 			# Key doesn't Exist
 			text = requests.get('http://140.120.13.243:32785/api/kemApi/?keyword={}&lang=cht&num=10'.format(urllib.parse.quote(keyword)))
 			text = json.loads(text.text)
-			print(text)
 			for i in text:
 				cursor = SrchCollect.find({i: {"$exists": True}}).limit(1)
 				if cursor.count() > 0:
 					# Key Exist
 					cursor = list(cursor)[0]
-					print(cursor)
 					result = tuple( j for j in cursor[i][school])
 					break
 	else:
-		def TCsearch(keywordList, school):
-			def Intersec(topic1, topic2, school):
-				cursor1 = list(SrchCollect.find({topic1: {"$exists": True}}).limit(1))[0]
-				cursor2 = list(SrchCollect.find({topic2: {"$exists": True}}).limit(1))[0]
+		def TCsearch(keywordList):
+			def Intersec(cursor1, cursor2):
 				index = 0
-				intersection = {}
-				for i in cursor1[topic1][school]:
-					while cursor2[topic2][school][index] < i:
+				intersection = []
+				for i in cursor1:
+					while cursor2[index]['DBid'] < i['DBid']:
 						index += 1
-					if cursor2[topic2][school][index] == i:
-						intersection.add(cursor2[topic2][school][index])
+					if cursor2[index]['DBid'] == i['DBid']:
+						intersection.append(i)
 						index += 1
+					if index == len(cursor2): break
 				return intersection
 
-			pq = queue.PriorityQueue()
-			TwoTopic = keywordList[0:2]
-			intersection = Intersec(TwoTopic[0], TwoTopic[1], school)
+			topic1, topic2 = keywordList[0:2]
+			cursor1 = list(SrchCollect.find({topic1: {"$exists": True}}).limit(1))[0]
+			cursor2 = list(SrchCollect.find({topic2: {"$exists": True}}).limit(1))[0]
+			intersection = Intersec(cursor1[topic1][school], cursor2[topic2][school])
 
 			for i in keywordList[2:]:
-				intersection = Intersec(intersection, i, school)
+				cursor2 = list(SrchCollect.find({i: {"$exists": True}}).limit(1))[0]
+				intersection = Intersec(intersection, cursor2[i][school])
 
 				# 需要一個函式，如果沒有相關的bigram的話就用kcm回傳最相關的id
 			return intersection
+		result = TCsearch(keyword)
 				
 	return JsonResponse(result, safe=False)
 
