@@ -137,4 +137,4 @@ with open(BASE_DIR + '/' + 'sessionid.txt') as f:
     SESSION_COOKIE_NAME = f.read().strip()
 
 # Dev
-# DEBUG = True
+DEBUG = True
