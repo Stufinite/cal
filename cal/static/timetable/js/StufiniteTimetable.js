@@ -560,7 +560,7 @@ class StufiniteTimetable {
                     for (let jv of iv) {
                         for (let kv of this.getCourse('code', jv)) {
                             if (kv.obligatory_tf == false && kv.for_dept == major && kv.class.split("")[1] == class_EN && kv.class.split("")[0] == ik.split("")[0]) {
-                                window.searchbar.addResult($(getCourseType(kv)), kv, this.language)
+                                window.searchbar.addResult($(this.getCourseType(kv)), kv, this.language)
                                 return false;
                             }
                         }
