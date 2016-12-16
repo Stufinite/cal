@@ -69,40 +69,14 @@ class SearchOb(object):
 	def BuildIndex(self):
 		for i in Course.objects.all():
 			key = self.bigram(i.title)
-			courseid = i.id
+			dbid = i.id
+			courseCode = i.code
+			teacher = i.professor
+			
 			for k in key:
-				cursor = self.SrchCollect.find({k: {"$exists": True}}).limit(1)
-				if cursor.count() > 0:
-					# Key Exist
-					cursor = list(cursor)[0]
-					if i.code not in cursor[i.school+"CourseID"]:
-						################Error Detect#########
-						for v in cursor[k][i.school]:       #
-							if v['DBid'] == courseid:       #
-								print(k)                    #
-								print(i)                    #
-								print(v)                    #
-								print(cursor[0])            #
-								raise Exception('fuck')     #
-						#####################################
-						self.SrchCollect.update({k: {"$exists": True}}, {'$push': {k + "."+i.school: {
-										"DBid":courseid,
-										"weight":0}}})
-						self.SrchCollect.update({k: {"$exists":True}}, {'$push':{i.school+"CourseID": i.code}})
-				else:
-					# Key doesn't Exist
-					post_id = self.SrchCollect.insert_one(
-						{
-							k:{
-							i.school:[
-								{
-									"DBid":courseid,
-									"weight":0
-								}],
-							},
-							i.school+"CourseID":[i.code]
-						}
-					)
+				self.BuildWithKey(k, dbid, i)
+			self.BuildWithKey(courseCode, dbid, i)
+			self.BuildWithKey(teacher, dbid, i)
 
 	def bigram(self, title):
 		bigram = (title.split(',')[0], title.split(',')[1].replace('.', ''))
@@ -113,3 +87,38 @@ class SearchOb(object):
 				if title[i:].count(title[i]) == 1:
 					bigram += (prefix + title[i],)
 		return bigram
+
+	def BuildWithKey(self, k, dbid, i):
+		if k == '' or k==None: return
+		cursor = self.SrchCollect.find({k: {"$exists": True}}).limit(1)
+		if cursor.count() > 0:
+			# Key Exist
+			cursor = list(cursor)[0]
+			if i.code not in cursor[i.school+"CourseID"]:
+				################Error Detect#########
+				for v in cursor[k][i.school]:       #
+					if v['DBid'] == dbid:       #
+						print(k)                    #
+						print(i)                    #
+						print(v)                    #
+						print(cursor[0])            #
+						raise Exception('fuck')     #
+				#####################################
+				self.SrchCollect.update({k: {"$exists": True}}, {'$push': {k + "."+i.school: {
+								"DBid":dbid,
+								"weight":0}}})
+				self.SrchCollect.update({k: {"$exists":True}}, {'$push':{i.school+"CourseID": i.code}})
+		else:
+			# Key doesn't Exist
+			post_id = self.SrchCollect.insert_one(
+				{
+					k:{
+					i.school:[
+						{
+							"DBid":dbid,
+							"weight":0
+						}],
+					},
+					i.school+"CourseID":[i.code]
+				}
+			)
