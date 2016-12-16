@@ -33,7 +33,7 @@ class StufiniteTimetable {
                         this.addMajorCourses(this.user.major, this.user.grade);
                     } else {
                         for (let i in data) {
-                            this.addCourse(this.getCourse('code', this.selected[i])[0]);
+                            this.addCourse(this.getCourse('code', data[i])[0]);
                         }
                     }
                 }).bind(this))
