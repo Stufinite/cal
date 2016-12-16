@@ -24,9 +24,9 @@ with open(BASE_DIR + '/' + 'secret_key.txt') as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['.stufinite.faith', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['.campass.com.tw', 'localhost', '127,0,0,1', '0.0.0.0']
 
 
 # Application definition
@@ -79,17 +79,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'cal.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
-
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
@@ -123,6 +112,18 @@ USE_L10N = True
 USE_TZ = True
 
 
+
+# Settings for our specific uses
+
+# Database
+# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
+
+from .settings_database import DATABASE_SETTINGS
+if DEBUG:
+    DATABASES = DATABASE_SETTINGS['sqlite']
+else:
+    DATABASES = DATABASE_SETTINGS['mysql']
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
@@ -132,9 +133,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-# SESSION_COOKIE_DOMAIN = '.stufinite.faith'
+# SESSION_COOKIE_DOMAIN = '.campass.com.tw'
 with open(BASE_DIR + '/' + 'sessionid.txt') as f:
     SESSION_COOKIE_NAME = f.read().strip()
-
-# Dev
-DEBUG = True
