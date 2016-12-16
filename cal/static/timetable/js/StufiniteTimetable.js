@@ -496,6 +496,7 @@ class StufiniteTimetable {
             this.minusCredit(course.credits);
         }
 
+        this.selected.splice(this.selected.indexOf(code), 1);
         this.delSelected(code);
     }
 
