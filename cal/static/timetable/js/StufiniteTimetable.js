@@ -32,8 +32,7 @@ class StufiniteTimetable {
                     if (data.length == 0) {
                         this.addMajorCourses(this.user.major, this.user.grade);
                     } else {
-                        this.selected = data;
-                        for (let i in this.selected) {
+                        for (let i in data) {
                             this.addCourse(this.getCourse('code', this.selected[i])[0]);
                         }
                     }
@@ -111,6 +110,34 @@ class StufiniteTimetable {
             }
             this.coursesByName[iv.title_parsed.en_US].push(iv);
         }
+    }
+
+    buildTimetable() {
+        let times = {
+            '0': '07:00',
+            '1': '08:00',
+            '2': '09:00',
+            '3': '10:00',
+            '4': '11:00',
+            '5': '13:00',
+            '6': '14:00',
+            '7': '15:00',
+            '8': '16:00',
+            '9': '17:00',
+            'A': '18:00',
+            'B': '19:00',
+            'C': '20:00',
+            'D': '21:00'.
+        }
+
+        let days = ['一', '二', '三', '四', '五', '六', '日']
+
+        let table = $('<table class="table">');
+        let tr = $('<tr>')
+        for (let i = 0; i < 5; i++) {
+          $()
+        }
+        let thead = $('<thead>')
     }
 
     setCredit(num) {
