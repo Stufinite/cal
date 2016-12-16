@@ -339,7 +339,7 @@ class StufiniteTimetable {
                 var class_EN = grade.split("")[1]; //班級的A或B，就是最後那個代碼
                 if (ik.split("")[1] == class_EN) {
                     for (let jv of iv) {
-                        for (let kv of courses[jv]) {
+                        for (let kv of this.getCourse('code', jv)) {
                             if (kv.obligatory_tf == false && kv.for_dept == major && kv.class.split("")[1] == class_EN && kv.class.split("")[0] == ik.split("")[0]) {
                                 window.searchbar.addResult($(getCourseType(kv)), kv, this.language)
                                 return false;
