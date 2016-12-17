@@ -1,4 +1,9 @@
+beautifulsoup4==4.5.1
+bs4==0.0.1
 Django==1.10.4
--e git://github.com/Stufinite/userper.git#egg=userper
--e git+https://github.com/Stufinite/djangoApiDec.py.git@master#egg=djangoApiDec
-pymongo
+-e git+https://github.com/Stufinite/djangoApiDec.py.git@7d8c5beaad6d89b26a97f65c25929515b267ffe9#egg=djangoApiDec
+jieba==0.38
+pymongo==3.4.0
+requests==2.12.3
+simplejson==3.10.0
+-e git://github.com/Stufinite/userper.git@6d31e085a648f3edd8f8375aecb685535b0aed7b#egg=userper
