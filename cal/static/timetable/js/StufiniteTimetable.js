@@ -251,6 +251,8 @@ class StufiniteTimetable {
                 //決定選修課該貼到哪個年級的欄位
                 return '.optional';
             }
+        } else {
+          return '.others';
         }
     }
 
