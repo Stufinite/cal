@@ -3,11 +3,21 @@
         window.searchbar = new StufiniteSearchbar()
         window.timetable = new StufiniteTimetable("NCHU", "zh_TW", user)
 
-        document.querySelector("#search-form").addEventListener("focus", function() {
+        document.querySelector("#search-form").addEventListener("focus", () => {
             searchbar.show();
         });
 
-        document.querySelector(".stufinite-app-searchbar-toggle").addEventListener("click", function(e) {
+        document.querySelector("#search-form").addEventListener("change", (e) => {
+            let key = $(e.target).val();
+            console.log(key)
+            $.getJSON("http://www.campass.com.tw/search/?keyword=" + key + "&school=NCHU", (data) => {
+              for (let i of data) {
+                console.log(i)
+              }
+            });
+        });
+
+        document.querySelector(".stufinite-app-searchbar-toggle").addEventListener("click", (e) => {
             if (window.searchbar.isVisible) {
                 window.searchbar.hide();
             } else {
