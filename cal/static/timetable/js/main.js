@@ -9,6 +9,21 @@
             searchbar.show();
         });
 
+        // Initialize search-form behavior
+        document.querySelector("#search-form").addEventListener("input", (e) => {
+            let key = $(e.target).val();
+            $.getJSON("/search/?keyword=" + key + "&school=NCHU", (c_by_key) => {
+                for (let i of c_by_key) {
+                    $.getJSON("/api/get/course/" + i.DBid, (c_by_id) => {
+                        for (let c_by_code of window.timetable.getCourse('code', c_by_id[0].code)) {
+                            console.log(c_by_code);
+                            window.searchbar.addResult($(window.timetable.getCourseType(c_by_code)), c_by_code, window.timetable.language)
+                        }
+                    });
+                }
+            });
+        });
+
         document.querySelector(".stufinite-app-searchbar-toggle").addEventListener("click", (e) => {
             if (window.searchbar.isVisible) {
                 window.searchbar.hide();
