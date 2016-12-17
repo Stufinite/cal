@@ -16,7 +16,7 @@
                 for (let i of c_by_key) {
                     $.getJSON("/api/get/course/" + i.DBid, (c_by_id) => {
                         for (let c_by_code of window.timetable.getCourse('code', c_by_id[0].code)) {
-                            console.log(c_by_code);
+                            window.searchbar.clear()
                             window.searchbar.addResult($(window.timetable.getCourseType(c_by_code)), c_by_code, window.timetable.language)
                         }
                     });
