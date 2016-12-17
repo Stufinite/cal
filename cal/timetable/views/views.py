@@ -7,7 +7,7 @@ from cal import settings
 
 
 def init_user(request):
-    User = Userper('login.stufinite.faith')
+    User = Userper('login.campass.com.tw')
 
     from urllib.error import HTTPError
     if not request.session.session_key:
@@ -18,7 +18,7 @@ def init_user(request):
         else:
             User.get(request.session.session_key)
     except HTTPError:
-        return HttpResponseRedirect('https://login.stufinite.faith')
+        return HttpResponseRedirect('https://login.campass.com.tw')
 
     u = {
         'is_authenticated': True,
