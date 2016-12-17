@@ -15,13 +15,10 @@
 <body>
     <nav class='stufinite-nav'>
         <div class='stufinite-nav-item'>
-            <a href='http://www.stufinite.faith'>小幫手首頁</a>
+            <a href='http://www.campass.com.tw'>小幫手首頁</a>
         </div>
 
-        <div class='stufinite-nav-item'>
-            <a href='http://entry.stufinite.faith'>選課小幫手</a>
-        </div>
-
+        <!--
         <div class='stufinite-nav-item'>
             <a href='http://course.stufinite.faith/agenda'>TiAgenda</a>
         </div>
@@ -34,12 +31,14 @@
             <a href='http://eat.stufinite.faith/t2e'>今天吃什麼</a>
         </div>
 
+        -->
+
         <div class='stufinite-nav-item stufinite-nav-right'>
             {% if user.is_authenticated %}
-            <span class='stufinite-nav-user-info'><a href="https://login.stufinite.faith/accounts/profile">{{ user.username }}</a></span>
-            <a href="http://login.stufinite.faith/accounts/logout"><button class='stufinite-btn'>Logout</button></a>
+            <span class='stufinite-nav-user-info'><a href="https://login.campass.com.tw/accounts/profile">{{ user.username }}</a></span>
+            <a href="http://login.campass.com.tw/accounts/logout"><button class='stufinite-btn'>Logout</button></a>
             {% else %}
-            <a href="http://login.stufinite.faith/accounts/login"><button class='stufinite-btn'>Login</button></a>
+            <a href="http://login.campass.com.tw/accounts/login"><button class='stufinite-btn'>Login</button></a>
             {% endif %}
         </div>
     </nav>
