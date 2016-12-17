@@ -10,7 +10,7 @@
 API使用方式（下面所寫的是api的URL pattern）  
 (Usage of API (pattern written below is URL pattern))：
 
-1. 取得課程在資料庫的id (Get id of database by Course Name. Query with abbreviation is allowed. Put the Course Name you want to query after `/?keyword=`)： `/search?keyword={課程名稱, CourseName}&school={學校名稱, School Name}`
+1. 簡稱、課程名稱、老師、課號搜尋：取得課程在資料庫的id (Get id of database by Course Name. Query with abbreviation is allowed. Put the Course Name you want to query after `/?keyword=`)： `/search?keyword={課程名稱、老師名稱、課程id, CourseName, Professor, CourseID}&school={學校名稱, School Name}`
   * 範例 (Example)：`/search/?keyword=計概&school=NCHU`
   * result：
   ```
@@ -30,6 +30,12 @@ API使用方式（下面所寫的是api的URL pattern）
   ]
   ```
 
+2. 關鍵字查詢：`資訊科技與法律` 可以用 `電腦` `法律` 這樣的複數關鍵字去查詢
+  * 範例 (Example)：`/search/?keyword=電腦+法律&school=NCHU`
+  * result：
+  ```
+  還沒完成
+  ```
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
@@ -37,26 +43,24 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisities
 
 1. OS：Ubuntu / OSX would be nice
-2. environment：need python3
+2. environment：need `python3`
   * Linux：`sudo apt-get update; sudo apt-get install; python3 python3-dev`
   * OSX：`brew install python3`
+3. service：need `mongodb`：
+  * Linux：`sudo apt-get install mongodb`
 
-<!-- ### Installing
+### Installing
 
-1. `git clone https://github.com/Stufinite/time2eat.git`
-2. 使用虛擬環境：
-  1. 創建一個虛擬環境：`virtualenv venv`
-  2. 啟動方法
-    1. for Linux：`. venv/bin/activate`
-    2. for Windows：`venv\Scripts\activate`
-3. `pip install -r requirements.txt` -->
+1. 安裝此python專案所需要的套件：`pip install -r requirements.txt`(因為需要額外安裝pymongo及jieba等等套件)
 
 ## Running & Testing
 
 ## Run
 
 1. 第一次的時候，需要先初始化資料庫：`python migrate`
-2. Execute : `python manage.py runserver`. If it work fine on [here](127.0.0.1:8000) , then it's done. Congratulations~~
+2. Execute : `python manage.py runserver`.
+3. 建立搜尋引擎的key： `/search/InvertedIndex`  
+此步驟需要連接mongodb，所以請確保mongodb的service是start的狀態，然後可以去休息一下，因為要建立約15分鐘
 
 ### Break down into end to end tests
 
