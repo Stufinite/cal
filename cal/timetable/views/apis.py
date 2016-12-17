@@ -40,6 +40,20 @@ def get_department(request):
         raise Http404("Page does not exist")
 
 
+def get_course_by_id(request, course_id):
+    try:
+        result = list(map(
+            lambda c: {
+                'code': c.code,
+            },
+            Course.objects.filter(id=course_id)
+        ))  # just practicing
+
+        return JsonResponse(result, safe=False)
+    except:
+        raise Http404("Page does not exist")
+
+
 def get_selected(request):
     user = init_user(request)
     if isinstance(user, HttpResponseRedirect):
