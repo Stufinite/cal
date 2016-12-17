@@ -15,3 +15,6 @@ def InvertedIndex(request):
 	sob = SearchOb()
 	sob.BuildIndex()
 	return JsonResponse({"build Inverted index success":1}, safe=False)
+
+def recWeight(request):
+	return JsonResponse({"receive Weight success":1}, safe=False)
