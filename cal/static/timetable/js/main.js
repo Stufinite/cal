@@ -1,4 +1,6 @@
 (function main() {
+    addMask();
+
     $.getJSON("/api/get/user", function(user) {
         window.searchbar = new StufiniteSearchbar()
         window.timetable = new StufiniteTimetable("NCHU", "zh_TW", user)
@@ -18,11 +20,11 @@
 })()
 
 function addMask() {
-  $("body").append($("<div id='page-mask'>"));
+    $("body").append($("<div id='page-mask'>"));
 }
 
 function delMask() {
-  $("body").find("#page-mask").remove();
+    $("body").find("#page-mask").remove();
 }
 
 function getCookie(name) {

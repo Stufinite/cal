@@ -19,6 +19,7 @@ class StufiniteTimetable {
             $('<i class="fa fa-plus-square fa-5x"></i>').on("click", this.addCourseListener.bind(this))
         );
 
+
         // 讀入系所名稱及代碼
         // $.getJSON("/static/timetable/json/department.json", this.buildDeptArray.bind(this))
 
@@ -33,7 +34,6 @@ class StufiniteTimetable {
                     let key = $(e.target).val();
                     $.getJSON("/search/?keyword=" + key + "&school=NCHU", (c_by_key) => {
                         for (let i of c_by_key) {
-                            // console.log(i)
                             $.getJSON("/api/get/course/" + i.DBid, (c_by_id) => {
                                 for (let c_by_code of this.getCourse('code', c_by_id[0].code)) {
                                     window.searchbar.addResult($(this.getCourseType(c_by_code), c_by_code, this.language))

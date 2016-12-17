@@ -1,5 +1,5 @@
 # Project stuff
-userpool/settings_database.py
+cal/cal/settings_database.py
 cal/timetable/migrations/*
 db.sqlite3
 
