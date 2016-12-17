@@ -34,14 +34,17 @@ class SearchOb(object):
 			# Key Exist
 			return tuple( i for i in list(cursor)[0][kw][self.school])
 		else:
-			text = requests.get('http://140.120.13.243:32785/api/kemApi/?keyword={}&lang=cht&num=10'.format(urllib.parse.quote(kw)))
-			text = json.loads(text.text)
-			for i in text:
-				cursor = self.SrchCollect.find({i: {"$exists": True}}).limit(1)
-				if cursor.count() > 0:
-					# Key Exist
-					cursor = list(cursor)[0]
-					return tuple( j for j in cursor[i][self.school])
+			try:
+				text = requests.get('http://140.120.13.243:32785/api/kemApi/?keyword={}&lang=cht&num=10'.format(urllib.parse.quote(kw)), timeout=5)
+				text = json.loads(text.text)
+				for i in text:
+					cursor = self.SrchCollect.find({i: {"$exists": True}}).limit(1)
+					if cursor.count() > 0:
+						# Key Exist
+						cursor = list(cursor)[0]
+						return tuple( j for j in cursor[i][self.school])
+			except requests.exceptions.Timeout as e:
+				return []
 	def TCsearch(self):
 		def Intersec(cursor1, cursor2):
 			index = 0
