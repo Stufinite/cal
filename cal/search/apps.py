@@ -1,8 +1,8 @@
 from django.apps import AppConfig
 from pymongo import MongoClient
-import re, urllib, requests, json
+import re, urllib, requests, json, jieba, jieba.analyse
 from timetable.models import Course
-
+from bs4 import BeautifulSoup
 
 class SearchConfig(AppConfig):
     name = 'search'
@@ -125,3 +125,15 @@ class SearchOb(object):
 					i.school+"CourseID":[i.code]
 				}
 			)
+	def parseSyllabus(self):
+		res = requests.get('https://onepiece.nchu.edu.tw/cofsys/plsql/Syllabus_main_q?v_strm=1051&v_class_nbr=2761')
+		soup = BeautifulSoup(res.text)
+		profile = soup.select("table[border=1]")[0].select("tr")[-2].text
+		syllabus = soup.select("table[border=1]")[1].select("tr")[14].text
+
+		jieba.analyse.set_stop_words("search/dictionary/stop_words.txt")
+		jieba.analyse.set_idf_path("search/dictionary/idf.txt.big")
+		jieba.load_userdict('search/dictionary/dict.txt.big.txt')
+		jieba.load_userdict('search/dictionary/jieba_expandDict.txt')
+		tags = dict(jieba.analyse.extract_tags(profile, topK=2, withWeight=True))
+		print(tags)
