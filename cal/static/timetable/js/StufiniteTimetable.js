@@ -27,8 +27,23 @@ class StufiniteTimetable {
 
         // Load json by user's career
         $.when($.getJSON("/static/timetable/json/" + user.career + ".json", this.buildCourseIndex.bind(this)))
-            .then((function() {
-                $.getJSON("/api/get/selected", (function(data) {
+            .then(() => {
+                // Initialize search-form behavior
+                document.querySelector("#search-form").addEventListener("change", (e) => {
+                    let key = $(e.target).val();
+                    $.getJSON("/search/?keyword=" + key + "&school=NCHU", (c_by_key) => {
+                        for (let i of c_by_key) {
+                            // console.log(i)
+                            $.getJSON("/api/get/course/" + i.DBid, (c_by_id) => {
+                                for (let c_by_code of this.getCourse('code', c_by_id[0].code)) {
+                                    window.searchbar.addResult($(this.getCourseType(c_by_code), c_by_code, this.language))
+                                }
+                            });
+                        }
+                    });
+                });
+
+                $.getJSON("/api/get/selected", (data) => {
                     if (data.length == 0) {
                         this.addMajorCourses(this.user.major, this.user.grade);
                     } else {
@@ -36,8 +51,10 @@ class StufiniteTimetable {
                             this.addCourse(this.getCourse('code', data[i])[0]);
                         }
                     }
-                }).bind(this))
-            }).bind(this));
+
+                    delMask();
+                });
+            });
     }
 
     buildDeptArray(json) {

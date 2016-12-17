@@ -7,16 +7,6 @@
             searchbar.show();
         });
 
-        document.querySelector("#search-form").addEventListener("change", (e) => {
-            let key = $(e.target).val();
-            console.log(key)
-            $.getJSON("http://www.campass.com.tw/search/?keyword=" + key + "&school=NCHU", (data) => {
-              for (let i of data) {
-                console.log(i)
-              }
-            });
-        });
-
         document.querySelector(".stufinite-app-searchbar-toggle").addEventListener("click", (e) => {
             if (window.searchbar.isVisible) {
                 window.searchbar.hide();
@@ -26,6 +16,14 @@
         });
     });
 })()
+
+function addMask() {
+  $("body").append($("<div id='page-mask'>"));
+}
+
+function delMask() {
+  $("body").find("#page-mask").remove();
+}
 
 function getCookie(name) {
     //name should be 'csrftoken', as an argument to be sent into getCookie()
