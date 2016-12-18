@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.apps import AppConfig
 from pymongo import MongoClient
 import re, urllib, requests, json, jieba, jieba.analyse
@@ -47,15 +48,22 @@ class SearchOb(object):
 				return []
 	def TCsearch(self):
 		def Intersec(cursor1, cursor2):
+			def incOrbreak(index):
+				if index == len(cursor2)-1: return 0,True
+				else:
+					index += 1
+					return index, False			
 			index = 0
 			intersection = []
 			for i in cursor1:
 				while cursor2[index]['DBid'] < i['DBid']:
-					index += 1
+					index, end = incOrbreak(index)
+					if end:break
 				if cursor2[index]['DBid'] == i['DBid']:
 					intersection.append(i)
-					index += 1
-				if index == len(cursor2): break
+					index, end = incOrbreak(index)
+					if end:break	
+				
 			return intersection
 
 		topic1, topic2 = self.keyword[0:2]
@@ -72,12 +80,15 @@ class SearchOb(object):
 	def BuildIndex(self):
 		for i in Course.objects.all():
 			key = self.bigram(i.title)
+			titleTerms = self.title2terms(i.title)
 			dbid = i.id
 			courseCode = i.code
 			teacher = i.professor
 			
 			for k in key:
 				self.BuildWithKey(k, dbid, i)
+			for t in titleTerms:
+				self.BuildWithKey(t, dbid, i)
 			self.BuildWithKey(courseCode, dbid, i)
 			self.BuildWithKey(teacher, dbid, i)
 
@@ -125,15 +136,14 @@ class SearchOb(object):
 					i.school+"CourseID":[i.code]
 				}
 			)
-	def parseSyllabus(self):
-		res = requests.get('https://onepiece.nchu.edu.tw/cofsys/plsql/Syllabus_main_q?v_strm=1051&v_class_nbr=2761')
-		soup = BeautifulSoup(res.text)
-		profile = soup.select("table[border=1]")[0].select("tr")[-2].text
-		syllabus = soup.select("table[border=1]")[1].select("tr")[14].text
-
-		jieba.analyse.set_stop_words("search/dictionary/stop_words.txt")
-		jieba.analyse.set_idf_path("search/dictionary/idf.txt.big")
-		jieba.load_userdict('search/dictionary/dict.txt.big.txt')
-		jieba.load_userdict('search/dictionary/jieba_expandDict.txt')
-		tags = dict(jieba.analyse.extract_tags(profile, topK=2, withWeight=True))
-		print(tags)
+	def title2terms(self, title):
+		terms = jieba.cut(title)
+		return tuple(i for i in terms if len(i)>=2)
+		# res = requests.get('https://onepiece.nchu.edu.tw/cofsys/plsql/Syllabus_main_q?v_strm=1051&v_class_nbr=2761')
+		# soup = BeautifulSoup(res.text)
+		# profile = soup.select("table[border=1]")[0].select("tr")[-2].text
+		# print(profile)
+		# profile = re.sub(r'\(.*?\)','', profile)
+		# terms = jieba.cut(profile)
+		# terms = tuple(i for i in terms if i not in self.stop_words)
+		# print(terms)
