@@ -26,7 +26,7 @@ with open(BASE_DIR + '/' + 'secret_key.txt') as f:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.campass.com.tw', 'localhost', '127,0,0,1', '0.0.0.0']
+ALLOWED_HOSTS = ['.campass.com.tw', 'localhost', '127.0.0.1', '0.0.0.0']
 
 
 # Application definition
