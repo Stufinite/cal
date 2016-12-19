@@ -45,6 +45,8 @@ class SearchOb(object):
 						# Key Exist
 						cursor = list(cursor)[0]
 						return tuple( j for j in cursor[i][self.school])
+
+				return []
 			except requests.exceptions.Timeout as e:
 				return []
 	def TCsearch(self):
@@ -54,9 +56,15 @@ class SearchOb(object):
 				else:
 					index += 1
 					return index, False			
+			if cursor1 == [] or cursor2 == []: 
+				return []
 			index = 0
 			intersection = []
+			print(cursor1)
+			print(cursor2)
 			for i in cursor1:
+				print(cursor2[index]['DBid'])
+				print(i['DBid'])
 				while cursor2[index]['DBid'] < i['DBid']:
 					index, end = incOrbreak(index)
 					if end:break
@@ -73,6 +81,8 @@ class SearchOb(object):
 		intersection = Intersec(cursor1, cursor2)
 
 		for i in self.keyword[2:]:
+			if intersection == []:
+				break
 			cursor2 = self.KEMSearch(i)
 			intersection = Intersec(intersection, cursor2)
 		return intersection
