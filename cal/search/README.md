@@ -30,11 +30,28 @@ API使用方式（下面所寫的是api的URL pattern）
   ]
   ```
 
-2. 關鍵字查詢：`資訊科技與法律` 可以用 `電腦` `法律` 這樣的複數關鍵字去查詢
-  * 範例 (Example)：`/search/?keyword=電腦+法律&school=NCHU`
+2. 關鍵字查詢：`中國歷史與民間傳說` 可以用 `中國` `歷史` 這樣的複數關鍵字去查詢
+  * 範例 (Example)：`/search/?keyword=中國+歷史&school=NCHU`
   * result：
   ```
-  還沒完成
+  [
+      {
+        "DBid": 1813,
+        "weight": 0
+      },
+      {
+        "DBid": 1814,
+        "weight": 0
+      },
+      {
+        "DBid": 1815,
+        "weight": 0
+      },
+      {
+        "DBid": 1816,
+        "weight": 0
+      }
+  ]
   ```
 ## Getting Started
 
