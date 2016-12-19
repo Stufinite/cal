@@ -34,7 +34,7 @@ class SearchOb(object):
 		cursor = self.SrchCollect.find({kw: {"$exists": True}}).limit(1)
 		if cursor.count() > 0:
 			# Key Exist
-			return tuple( i for i in list(cursor)[0][kw][self.school])
+			return list(cursor)[0][kw][self.school]
 		else:
 			try:
 				text = requests.get('http://140.120.13.243:32768/api/kemApi/?keyword={}&lang=cht&num=10'.format(urllib.parse.quote(kw)), timeout=5)
@@ -44,7 +44,7 @@ class SearchOb(object):
 					if cursor.count() > 0:
 						# Key Exist
 						cursor = list(cursor)[0]
-						return tuple( j for j in cursor[i][self.school])
+						return cursor[i][self.school]
 
 				return []
 			except requests.exceptions.Timeout as e:
@@ -52,19 +52,19 @@ class SearchOb(object):
 	def TCsearch(self):
 		def Intersec(cursor1, cursor2):
 			def incOrbreak(index):
+				# True代表cursor2已經到最後一個了
 				if index == len(cursor2)-1: return 0,True
 				else:
 					index += 1
-					return index, False			
+					return index, False	
+
+			# 如果有一個為空就回傳空
 			if cursor1 == [] or cursor2 == []: 
 				return []
+
 			index = 0
 			intersection = []
-			print(cursor1)
-			print(cursor2)
 			for i in cursor1:
-				print(cursor2[index]['DBid'])
-				print(i['DBid'])
 				while cursor2[index]['DBid'] < i['DBid']:
 					index, end = incOrbreak(index)
 					if end:break
@@ -75,14 +75,18 @@ class SearchOb(object):
 				
 			return intersection
 
-		topic1, topic2 = self.keyword[0:2]
-		cursor1 = self.KEMSearch(topic1)
-		cursor2 = self.KEMSearch(topic2)
+		cursor1 = self.KEMSearch(self.keyword[0])
+		cursor2 = self.KEMSearch(self.keyword[1])
 		intersection = Intersec(cursor1, cursor2)
+		if intersection == []:
+			if cursor1:
+				return cursor1
+			elif cursor2:
+				return cursor2
+			else:
+				return self.KEMSearch(self.keyword[2])
 
 		for i in self.keyword[2:]:
-			if intersection == []:
-				break
 			cursor2 = self.KEMSearch(i)
 			intersection = Intersec(intersection, cursor2)
 		return intersection
@@ -109,7 +113,7 @@ class SearchOb(object):
 	####################Build index#########################################
 	def BuildIndex(self):
 		self.SrchCollect.remove({})
-		
+
 		for i in Course.objects.all():
 			key = self.bigram(i.title)
 			titleTerms = self.title2terms(i.title)
