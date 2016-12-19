@@ -4,6 +4,7 @@ from pymongo import MongoClient
 import re, urllib, requests, json, jieba, jieba.analyse
 from timetable.models import Course
 from bs4 import BeautifulSoup
+from django.shortcuts import get_list_or_404
 
 class SearchConfig(AppConfig):
     name = 'search'
@@ -75,6 +76,25 @@ class SearchOb(object):
 			cursor2 = self.KEMSearch(i)
 			intersection = Intersec(intersection, cursor2)
 		return intersection
+
+	def incWeight(self, code):
+		''' To increment the weight of Search Result return by Search Engine. The higher weight will be return a the first of array.
+			args: code
+			return: None
+			process: dbid will be list, cause Course having same code will be opened in many department, which will also be an entity in database. So those dbid need to increment their weight (they are all in the same document with same key)
+		'''
+		dbid = get_list_or_404(Course, code=code)
+		dbid = tuple( i.id for i in dbid )
+		for key in self.keyword:		
+			cursor = self.SrchCollect.find({key: {"$exists": True}}).limit(1)
+			document = list(cursor)[0]
+			if cursor.count()==0:
+				break
+				
+			for index, value in enumerate(document[key][self.school]):
+				if value['DBid'] in dbid:
+					newWeight = value['weight'] + 1
+					self.SrchCollect.update({key: {"$exists": True}}, {"$set":{key+"."+self.school+'.'+str(index)+'.weight':newWeight}})
 
 	####################Build index#########################################
 	def BuildIndex(self):
