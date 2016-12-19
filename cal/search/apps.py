@@ -108,6 +108,8 @@ class SearchOb(object):
 
 	####################Build index#########################################
 	def BuildIndex(self):
+		self.SrchCollect.remove({})
+		
 		for i in Course.objects.all():
 			key = self.bigram(i.title)
 			titleTerms = self.title2terms(i.title)
