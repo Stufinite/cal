@@ -2,6 +2,7 @@
 cal/cal/settings_database.py
 cal/timetable/migrations/*
 db.sqlite3
+crawler/Crawler-NCHU-course/json
 
 # virtualenv
 venv
