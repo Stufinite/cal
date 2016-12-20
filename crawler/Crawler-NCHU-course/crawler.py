@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import requests, json, os
+import requests, json, subprocess
 
 class Crawler(object):
 	"""docstring for Crawler"""
@@ -7,9 +7,8 @@ class Crawler(object):
 		self.degree = ['U', 'G', 'D', 'N', 'O', 'W']
 		self.url = 'https://onepiece.nchu.edu.tw/cofsys/plsql/json_for_course?p_career='
 		try:
-			os.mkdir('json')
-			os.chdir('json')
-			#means cd path
+			subprocess.call(['rm', '-rf', 'json'])
+			subprocess.call(['mkdir', 'json'])
 		except:
 			print('path error, the file will be dump into the current directory')
 
@@ -23,7 +22,7 @@ class Crawler(object):
 	def validateTmpJson(self, tmpFile):
 		# truncate invalid char to turn it into json
 		jsonStr = ""
-		with open(tmpFile, 'r', encoding='UTF-8') as f:
+		with open('json/'+tmpFile, 'r', encoding='UTF-8') as f:
 			for line in f:
 				tmp = self.truncateNewLineSpace(line)
 				jsonStr +=tmp
@@ -38,21 +37,21 @@ class Crawler(object):
 
 			try:
 				# dump json file, cannot ensure it's valid json. If fail, it will raise exception and then use self.validateTmpJson functin
-				with open(formalFile, 'w', encoding='UTF-8') as f:
+				with open('json/'+formalFile, 'w', encoding='UTF-8') as f:
 					json_str = json.dumps(re.json(), ensure_ascii=False, sort_keys=True)
 					#re.json() will check whether 're' is type of json
 					#json.dumps will return string.
 					f.write(json_str)#f.write only accept and write string into files.
 			except Exception as e:
 				tmpFile = d + '_tmp.json'
-				with open(tmpFile, 'w', encoding='UTF-8') as f:
+				with open('json/'+tmpFile, 'w', encoding='UTF-8') as f:
 					f.write(re.text)
 
 				jsonStr = self.validateTmpJson(tmpFile)
 				try:
 					testJsonvalid=json.loads(jsonStr)
 					formalFile = d + '.json'
-					with open(formalFile, 'w', encoding='UTF-8') as f:
+					with open('json/'+formalFile, 'w', encoding='UTF-8') as f:
 						f.write(jsonStr)
 				except Exception as e:
 					print(e)    
