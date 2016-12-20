@@ -84,7 +84,7 @@ class SearchOb(object):
 			elif cursor2:
 				return cursor2
 			else:
-				return self.KEMSearch(self.keyword[2])
+				return []
 
 		for i in self.keyword[2:]:
 			cursor2 = self.KEMSearch(i)
