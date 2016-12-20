@@ -2,15 +2,19 @@
 # -*- coding: utf-8 -*-
 class import2Mongo(object):
 	"""docstring for import2Mongo"""
-	def __init__(self):
+	def __init__(self, uri=None):
+		from pymongo import MongoClient
 		self.JSONdir = 'json'
-		self.degree = ['U.json', 'G.json', 'D.json', 'N.json', 'O.json', 'W.json']
+		self.degree = ['U', 'G', 'D', 'N', 'O', 'W']
 		self.deptSet = set()
+		self.client = MongoClient(uri)
+		self.db = self.client['timetable']
+		self.Collect = self.db['CourseOfDept']
 		
-	def parseJson(self):
+	def parseJson(self, degree):
 		import json
 		def getJson(degree):
-			with open(self.JSONdir+'/'+degree, 'r', encoding='utf8') as f:
+			with open(self.JSONdir+'/'+degree+'.json', 'r', encoding='utf8') as f:
 				return json.load(f)
 
 		def getClass(grade):
@@ -23,31 +27,32 @@ class import2Mongo(object):
 				return 'obligatory'
 			return 'optional'
 
+		result = {}
+		jsonDict = getJson(degree)
+		for i in jsonDict['course']:
+			dept = i['for_dept']
+			code = i['code']
+			grade = i['class']
+			className, grade = getClass(grade)
+			obligat = i['obligatory_tf']
+			oblAttr = getObliAttr(obligat)
+			if dept not in self.deptSet:
+				result[dept]={
+						'obligatory':{'ClassA':{}},
+						'optional':{'ClassA':{}}
+					}
+				self.deptSet.add(dept)
+			result[dept]['obligatory'].setdefault(className, {})
+			result[dept]['optional'].setdefault(className, {})
+			result[dept][oblAttr][className].setdefault(grade, []).append(code)
+
+		return result
+
+	def save2DB(self):
 		for degree in self.degree:
-			jsonDict = getJson(degree)
-			result = {}
 			#這邊需要修改，因為學校沒有完全按照學至分類乾淨，所以才需要每次都把set清空####
 			self.deptSet = set()
 			#############################
-			for i in jsonDict['course']:
-				dept = i['for_dept']
-				code = i['code']
-				grade = i['class']
-				className, grade = getClass(grade)
-				obligat = i['obligatory_tf']
-				oblAttr = getObliAttr(obligat)
-				if dept not in self.deptSet:
-					result[dept]={
-							'obligatory':{'ClassA':{}},
-							'optional':{'ClassA':{}}
-						}
-					self.deptSet.add(dept)
-				result[dept]['obligatory'].setdefault(className, {})
-				result[dept]['optional'].setdefault(className, {})
-				result[dept][oblAttr][className].setdefault(grade, []).append(code)
-			with open(degree+'.json', 'w', encoding='utf-8') as f:
-				json.dump(result, f)
-	# def transition(self):
-
-i = import2Mongo()
-i.parseJson()
+			document = self.parseJson(degree)
+			document['degree'] = degree
+			self.Collect.update({'degree':degree}, document, upsert=True)
