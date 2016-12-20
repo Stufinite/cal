@@ -10,8 +10,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 1. OS：Ubuntu / OSX would be nice
 2. environment：need python3
-  Linux：`sudo apt-get update; sudo apt-get install; python3 python3-dev`
-  OSX：`brew install python3`
+  * Linux：`sudo apt-get update; sudo apt-get install; python3 python3-dev`
+  * OSX：`brew install python3`
 
 ### Installing
 
