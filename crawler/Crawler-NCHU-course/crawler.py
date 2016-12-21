@@ -41,12 +41,12 @@ class Crawler(object):
 		# correct those Course which were placed in wrong degree dict.
 		jsonDict = json.loads(jsonStr)
 		degreeTable = {"U":["1","2","3","4","5","1A","1B","2A","2B","3A","3B", "4A", "4B", "5A", "5B"],"G":["6", "7"], "D":["8", "9"], "N":["1","2","3","4","5"],"O":["0","1","2","3","4","5"], "W":["6", "7"]}
+		cleanDict = {'course':[]}
 		for index, value in enumerate(jsonDict['course']):
 			if value['class'] not in degreeTable[degree]:
-				jsonDict['course'].remove(value)
 				if value['class'] in degreeTable['D']:
 					self.errCourse['D'].append(value)
-				elif '在職' in value['for_dept']:
+				elif '在職' in value['for_dept'] or '碩士專班' in value['for_dept']:
 					self.errCourse['W'].append(value)
 				elif '碩士' in value['for_dept'] :
 					self.errCourse['G'].append(value)
@@ -60,8 +60,14 @@ class Crawler(object):
 					self.errCourse['G'].append(value)
 				else:
 					print(value)
-					raise Exception('fuck')
-		return json.dumps(jsonDict)
+					raise Exception('clean ERR')
+			elif degree == 'G':
+				if '碩士專班' in value['for_dept']:
+					self.errCourse['W'].append(value)
+			else:
+				cleanDict['course'].append(value)
+
+		return json.dumps(cleanDict)
 
 		
 	def start(self):
@@ -95,6 +101,8 @@ class Crawler(object):
 					raise e    
 
 		for key, value in self.errCourse.items():
+			# with open(key+".json.error", 'w', encoding='utf-8') as f:
+			# 	json.dump(value, f)
 			with open("json/"+key+".json", 'r', encoding='utf-8') as f:
 				tmp = json.load(f)
 				for i in self.errCourse[key]:
