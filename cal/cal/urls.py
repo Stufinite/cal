@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^', include('timetable.urls')),
     url(r'^tiagenda/', include('tiagenda.urls')),
     url(r'^search/', include('search.urls')),
+    url(r'^course/', include('course.urls')),
 ]

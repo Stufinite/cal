@@ -43,7 +43,8 @@ REQUIRED_APPS = [
 PROJECT_APPS = [
     'timetable.apps.TimetableConfig',
     'tiagenda',
-    'search'
+    'search',
+    'course'
 ]
 
 INSTALLED_APPS = REQUIRED_APPS + PROJECT_APPS
