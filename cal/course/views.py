@@ -10,11 +10,13 @@ class Course(object):
 		self.collect = MongoClient(uri)['timetable']['CourseOfDept']
 
 	def Cursor2Dict(self, cursor):
+		if cursor.count() == 0:
+			return {}
 		return list(cursor)[0]
 
 	def getByDept(self):
 		CourseDict = self.Cursor2Dict(self.collect.find({self.dept:{"$exists":True}}).limit(1))
-		return CourseDict[self.dept]
+		return CourseDict.get(self.dept, {"error":"invalid Dept Code"})
 
 @queryString_required(['dept'])
 def CourseOfDept(request):
