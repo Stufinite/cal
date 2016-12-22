@@ -5,56 +5,28 @@
 
 <head>
     <meta charset='utf-8' />
-    <title>{% block title %}{% endblock %}小幫手</title>
+    <title>{% block title %}{% endblock %}</title>
     <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' rel='stylesheet' integrity='sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1' crossorigin='anonymous'>
-    <link rel='stylesheet' href='{% static "stufinite/css/stufinite.css" %}'>
-    {% block stylesheet %}
-    {% endblock %}
+    <link rel='stylesheet' href='{% static "stufinite/css/stufinite.css" %}'> {% block stylesheet %} {% endblock %}
 </head>
 
 <body>
-    <nav class='stufinite-nav'>
-        <div class='stufinite-nav-item'>
-            <a href='http://www.campass.com.tw'>小幫手首頁</a>
-        </div>
-
-        <!--
-        <div class='stufinite-nav-item'>
-            <a href='http://course.stufinite.faith/agenda'>TiAgenda</a>
-        </div>
-
-        <div class='stufinite-nav-item'>
-            <a href='http://course.stufinite.faith/reviews'>課程心得</a>
-        </div>
-
-        <div class='stufinite-nav-item'>
-            <a href='http://eat.stufinite.faith/t2e'>今天吃什麼</a>
-        </div>
-
-        -->
-
-        <div class='stufinite-nav-item stufinite-nav-right'>
-            {% if user.is_authenticated %}
-            <span class='stufinite-nav-user-info'><a href="https://login.campass.com.tw/accounts/profile">{{ user.username }}</a></span>
-            <a href="http://login.campass.com.tw/accounts/logout"><button class='stufinite-btn'>Logout</button></a>
-            {% else %}
-            <a href="http://login.campass.com.tw/accounts/login"><button class='stufinite-btn'>Login</button></a>
-            {% endif %}
-        </div>
-    </nav>
-
     <header class='stufinite-header'>
         <div class='stufinite-header-title'>
-            <span>{% block app_name %}{% endblock %}小幫手</span>
+            <span>{% block app_name %}{% endblock %}</span>
         </div>
+
         <div class='stufinite-header-search'>
-            <input id='search-form' type='text' placeholder='輸入課程名稱、代碼、教師名稱、系所名稱'>
-            <button><i class='fa fa-search' aria-hidden='true'></i></button>
+            <input id='search-form' type='text' placeholder='輸入課程名稱、代碼、教師名稱或進行關鍵字搜尋'>
+        </div>
+
+        <div class='stufinite-header-item'>
+            <span class='stufinite-header-user-info'><a href="https://login.campass.com.tw/accounts/profile">{{ user.username }} 使用者設定</a></span>
+            <a href="http://login.campass.com.tw/accounts/logout"><button class='stufinite-btn'>Logout</button></a>
         </div>
     </header>
 
-    {% block content %}
-    {% endblock %}
+    {% block content %} {% endblock %}
 
     <footer>
         <span>Copyright © 2016 All rights reserved.</span>
@@ -63,8 +35,7 @@
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src='{% static "stufinite/js/stufinite.js" %}'></script>
-    {% block javascript %}
-    {% endblock %}
+    {% block javascript %} {% endblock %}
 </body>
 
 </html>

@@ -20,10 +20,15 @@ class StufiniteSearchbar {
         this.isVisible = false;
     }
 
-    clear() {
+    clear(placeholder) {
+        $('.stufinite-searchbar-placeholder').show();
         $('.stufinite-searchbar-result-list').empty();
-        $('.stufinite-searchbar-placeholder').hide();
         $('.stufinite-searchbar-result-title').hide();
+        if (placeholder != undefined) {
+            $(".stufinite-searchbar-placeholder").text(placeholder).show()
+        } else {
+            $('.stufinite-searchbar-placeholder').text("請點擊空堂時段或使用關鍵字搜尋").show();
+        }
     }
 
     addResult(target, course, language) {
@@ -49,10 +54,13 @@ class StufiniteSearchbar {
                 let code = $(e.target).attr('code');
                 course = window.timetable.getCourse('code', code)[0];
                 window.timetable.addCourse(course);
+                window.timetable.addDetail(course);
                 this.hide();
             }).bind(this)).end()
             .find('a.review').attr('href', 'http://feedback.nchusg.org/search/?q=' + course.title_parsed["zh_TW"]).end()
-            .find('a.detail').attr('href', course.url).end()
+            .find('a.detail').bind('click', () => {
+                window.timetable.addDetail(course)
+            }).end()
 
         target.parent().find('.stufinite-searchbar-result-title').show();
         target.append(target, result);
