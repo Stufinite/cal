@@ -37,7 +37,7 @@ class SearchOb(object):
 			return list(cursor)[0][kw][self.school]
 		else:
 			try:
-				text = requests.get('http://140.120.13.243:32768/api/kemApi/?keyword={}&lang=cht&num=10'.format(urllib.parse.quote(kw)), timeout=5)
+				text = requests.get('http://api.udic.cs.nchu.edu.tw/api/kemApi/?keyword={}&lang=cht&num=10'.format(urllib.parse.quote(kw)), timeout=5)
 				text = json.loads(text.text)
 				for i in text:
 					cursor = self.SrchCollect.find({i: {"$exists": True}}).limit(1)
