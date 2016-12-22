@@ -31,11 +31,12 @@ class StufiniteTimetable {
             .then(() => {
                 // Initialize search-form behavior
                 document.querySelector("#search-form").addEventListener("change", (e) => {
-                    window.searchbar.clear("搜尋中...")
                     let raw_key = $(e.target).val();
                     if (raw_key.length < 2) {
+                        window.searchbar.clear();
                         return;
                     }
+                    window.searchbar.clear("搜尋中...")
 
                     let key = '';
                     for (let char of raw_key.split(' ')) {

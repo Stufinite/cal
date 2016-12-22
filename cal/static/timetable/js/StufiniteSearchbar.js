@@ -21,11 +21,13 @@ class StufiniteSearchbar {
     }
 
     clear(placeholder) {
+        $('.stufinite-searchbar-placeholder').show();
         $('.stufinite-searchbar-result-list').empty();
-        $('.stufinite-searchbar-placeholder').text("請點擊空堂時段或使用關鍵字搜尋").hide();
         $('.stufinite-searchbar-result-title').hide();
         if (placeholder != undefined) {
             $(".stufinite-searchbar-placeholder").text(placeholder).show()
+        } else {
+            $('.stufinite-searchbar-placeholder').text("請點擊空堂時段或使用關鍵字搜尋").show();
         }
     }
 
