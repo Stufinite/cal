@@ -64,6 +64,8 @@ class Crawler(object):
 			elif degree == 'G':
 				if '碩士專班' in value['for_dept']:
 					self.errCourse['W'].append(value)
+				else:
+					cleanDict['course'].append(value)
 			else:
 				cleanDict['course'].append(value)
 
