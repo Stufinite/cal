@@ -31,6 +31,7 @@ class StufiniteTimetable {
             .then(() => {
                 // Initialize search-form behavior
                 document.querySelector("#search-form").addEventListener("change", (e) => {
+                    window.searchbar.clear("搜尋中...")
                     let raw_key = $(e.target).val();
                     if (raw_key.length < 2) {
                         return;
@@ -44,6 +45,7 @@ class StufiniteTimetable {
 
                     $.getJSON("/search/?keyword=" + key + "&school=NCHU", (c_by_key) => {
                         if (c_by_key.length == 0) {
+                            window.searchbar.clear("找不到與\"" + key + "\"相關的課程")
                             return;
                         }
                         for (let i of c_by_key) {
