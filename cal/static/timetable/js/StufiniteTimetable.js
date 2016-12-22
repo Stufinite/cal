@@ -35,7 +35,7 @@ class StufiniteTimetable {
                     if (raw_key.length < 2) {
                         return;
                     }
-                    
+
                     let key = '';
                     for (let char of raw_key.split(' ')) {
                         key += char + '+';
@@ -402,6 +402,39 @@ class StufiniteTimetable {
         return grade.length === 1 ? true : false;
     }
 
+
+    clearDetail(code) {
+        if ($(".detail-code").text() != new String(code)) {
+            return;
+        }
+        $("#time-table").find("td").css("background-color", "white").css("color", "#403F3F")
+        $("#course-detail").children().remove().end().html("<li>雙擊課程顯示資訊</li>")
+    }
+
+    addDetail(course) {
+        if ($(".detail-code").text() == new String(course.code)) {
+            this.clearDetail(course.code)
+            return;
+        }
+
+        $("#time-table").find("td").css("background-color", "white").css("color", "#403F3F")
+        $("#time-table").find("i[code=" + course.code + "]").parent().parent()
+            .css("background-color", "#DEDEDE").css("color", "white")
+
+        $("#course-detail").children().remove()
+        let $detail = $(`
+          <li>指導教授： <span class='detail-professor'></span></li>
+          <li>課程代碼： <span class='detail-code'></span></li>
+          <li>選修學分： <span class='detail-credits'></span></li>
+          <li>上課地點： <a href='#' title='點擊開啟地圖'><span class='detail-location'></span></a></li>
+          `)
+            .find(".detail-professor").text(course.professor).end()
+            .find(".detail-code").text(course.code).end()
+            .find(".detail-credits").text(course.credits).end()
+            .find(".detail-location").text(course.location).end()
+        $("#course-detail").append($detail)
+    }
+
     addCourse(course) {
         if (this.isCourseConflict(course)) {
             return;
@@ -426,12 +459,17 @@ class StufiniteTimetable {
                     .bind('click', (function(e) {
                         let code = $(e.target).attr('code');
                         this.delCourse(code);
+                        this.clearDetail(code);
                     }).bind(this)).end()
                     .find('.title').text(course.title_parsed[language]).end()
                     .find('input').val(course.code).end()
                     .find('.professor').text(course.professor).end()
                     .find('.location').end()
                 $td.html($cell);
+
+                $cell.parent().bind("dblclick", (e) => {
+                    this.addDetail(course);
+                });
             }
         }
 

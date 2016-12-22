@@ -5,7 +5,7 @@
 
 <head>
     <meta charset='utf-8' />
-    <title>{% block title %}{% endblock %}小幫手</title>
+    <title>{% block title %}{% endblock %}</title>
     <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' rel='stylesheet' integrity='sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1' crossorigin='anonymous'>
     <link rel='stylesheet' href='{% static "stufinite/css/stufinite.css" %}'>
     {% block stylesheet %}
@@ -15,7 +15,7 @@
 <body>
     <nav class='stufinite-nav'>
         <div class='stufinite-nav-item'>
-            <a href='http://www.campass.com.tw'>小幫手首頁</a>
+            <a href='http://www.campass.com.tw'>選課小幫手首頁</a>
         </div>
 
         <!--
@@ -45,11 +45,11 @@
 
     <header class='stufinite-header'>
         <div class='stufinite-header-title'>
-            <span>{% block app_name %}{% endblock %}小幫手</span>
+            <span>{% block app_name %}{% endblock %}</span>
         </div>
         <div class='stufinite-header-search'>
-            <input id='search-form' type='text' placeholder='輸入課程名稱、代碼、教師名稱、系所名稱'>
-            <button><i class='fa fa-search' aria-hidden='true'></i></button>
+            <input id='search-form' type='text' placeholder='輸入課程名稱、代碼、教師名稱或進行關鍵字搜尋'>
+            <!-- <button><i class='fa fa-search' aria-hidden='true'></i></button> -->
         </div>
     </header>
 
