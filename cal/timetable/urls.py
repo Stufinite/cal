@@ -16,6 +16,7 @@ urlpatterns += [
 ]
 
 urlpatterns += [
+    url(r'^control_api/session_key/$', apis.get_session_key),
     url(r'^control_api/dept$', apis.build_department),
     url(r'^control_api/course$', apis.build_course),
 ]
