@@ -59,10 +59,12 @@ class import2Mongo(object):
 		return result
 
 	def save2DB(self):
+		self.Collect.remove({})
 		for degree in self.degree2Chi:
 			#這邊需要修改，因為學校沒有完全按照學至分類乾淨，所以才需要每次都把set清空####
 			self.deptSet = set()
 			#############################
 			document = self.parseJson(degree)
 			document['degree'] = degree
-			self.Collect.update({'degree':degree}, document, upsert=True)
+			document['school'] = "NCHU"
+			self.Collect.update({ "$and":[{"school":"NCHU"}, {'degree':degree}] }, document, upsert=True)
