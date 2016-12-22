@@ -52,6 +52,7 @@ class StufiniteSearchbar {
                 let code = $(e.target).attr('code');
                 course = window.timetable.getCourse('code', code)[0];
                 window.timetable.addCourse(course);
+                window.timetable.addDetail(course);
                 this.hide();
             }).bind(this)).end()
             .find('a.review').attr('href', 'http://feedback.nchusg.org/search/?q=' + course.title_parsed["zh_TW"]).end()

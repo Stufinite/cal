@@ -429,11 +429,15 @@ class StufiniteTimetable {
           <li>課程代碼： <span class='detail-code'></span></li>
           <li>選修學分： <span class='detail-credits'></span></li>
           <li>上課地點： <a href='#' title='點擊開啟地圖'><span class='detail-location'></span></a></li>
+          <li>先修科目： <span class='detail-prerequisite'></span></li>
+          <li>課程備註： <span class='detail-note'></span></li>
           `)
             .find(".detail-professor").text(course.professor).end()
             .find(".detail-code").text(course.code).end()
             .find(".detail-credits").text(course.credits).end()
             .find(".detail-location").text(course.location).end()
+            .find(".detail-prerequisite").text(course.prerequisite == undefined || course.prerequisite == "" ? "無" : course.prerequisite).end()
+            .find(".detail-note").text(course.note == undefined || course.note == "" ? "無" : course.note).end()
         $("#course-detail").append($detail)
     }
 
@@ -475,7 +479,7 @@ class StufiniteTimetable {
             }
         }
 
-        this.addCourseMessage(course);
+        // this.addCourseMessage(course);
         this.addCredit(course.credits);
         this.selected.push(course.code);
         this.saveSelected();
