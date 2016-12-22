@@ -24,7 +24,7 @@ with open(BASE_DIR + '/' + 'secret_key.txt') as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['.campass.com.tw', 'localhost', '127.0.0.1', '0.0.0.0']
 
@@ -134,6 +134,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-# SESSION_COOKIE_DOMAIN = '.campass.com.tw'
+SESSION_COOKIE_DOMAIN = '.campass.com.tw'
 with open(BASE_DIR + '/' + 'sessionid.txt') as f:
     SESSION_COOKIE_NAME = f.read().strip()
