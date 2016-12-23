@@ -6,7 +6,7 @@ class import2Mongo(object):
 	"""docstring for import2Mongo"""
 	def __init__(self, uri=None):
 		self.JSONdir = 'json'
-		self.degree2Chi = {"U":"學士班", "G":"碩士班","D":"博士班","N":"進修學士班","W":"碩專班"}
+		self.degree2Chi = {"U":"學士班", "G":"碩士班","D":"博士班","N":"進修學士班","W":"碩專班", "O":"全校共同"}
 		self.deptSet = set()
 		self.client = MongoClient(uri)
 		self.db = self.client['timetable']
@@ -89,9 +89,10 @@ class import2Mongo(object):
 			# #這邊需要修改，因為學校沒有完全按照學至分類乾淨，所以才需要每次都把set清空####
 			# self.deptSet = set()
 			# #############################
-			deptDoc = self.BuildByDept(degree, jsonDict)
-			deptDoc = self.AddHeader(deptDoc, degree)
-			self.DeptCollect.update({ "$and":[{"school":"NCHU"}, {'degree':degree}] }, deptDoc, upsert=True)
+			if degree != "O":
+				deptDoc = self.BuildByDept(degree, jsonDict)
+				deptDoc = self.AddHeader(deptDoc, degree)
+				self.DeptCollect.update({ "$and":[{"school":"NCHU"}, {'degree':degree}] }, deptDoc, upsert=True)
 			
 			timeDoc = self.BuildByTime(degree, jsonDict)
 			timeDoc = self.AddHeader(timeDoc, degree)
