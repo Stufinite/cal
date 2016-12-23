@@ -15,60 +15,17 @@ API使用方式（下面所寫的是api的URL pattern）<br>
   - result：
 
     ```
-    [
-    {
-      "weight": 0,
-      "DBid": 759
-    },
-    {
-      "weight": 0,
-      "DBid": 2208
-    },
-    {
-      "weight": 0,
-      "DBid": 2210
-    }
-    ]
+    等等補上
     ```
 
-2. 關鍵字查詢：`西方電影文學` 可以用 `歐美` `電影` 這樣的複數關鍵字去查詢，因為找不到同時符合`歐美`和`電影`的課程，所以這時會啟動`kem`去將所有的關鍵字找出同義詞。`歐美`=>`西方`，所以`西方`和`電影`的交集就可以查到`西方電影文學`
+2. 查詢該時段有什麼課可以上：  
+需要指定哪一天的哪一節課 `/search?degree=<學制>&day=<星期幾>&time=<第幾節課>&school=<學校名稱>`
 
-  - 範例 (Example)：`/search/?keyword=電影+西方&school=NCHU`
+  - 範例 (Example)：`/?school=NCHU&degree=U&day=1&time=1`
   - result：
 
     ```
-    [{"DBid": 1805, "weight": 0}]
-    ```
-
-3. 累積關鍵字權重：需要給使用者查詢了哪個`關鍵字`、`課程代碼`、`學校`。例如`普物`這個key在mongodb裏面有非常多堂課程，透過指定`課程代碼`累積權重，下次使用者查詢時，權重高的課程會優先出現。
-
-  - 範例 (Example)：`incWeight/?keyword=普物&code=1108&school=NCHU`
-  - result：
-
-    ```
-    {
-    "_id": "58562b5caaa5b630c0c70e76",
-    "普物": {
-    "NCHU": [
-    {
-      "DBid": 2349,
-      "weight": 55575
-    },
-    {
-      "DBid": 2433,
-      "weight": 700
-    },
-    {
-      "DBid": 2434,
-      "weight": 300
-    }
-    ]
-    },
-    "NCHUCourseID": [
-    "1108",
-    "2277"
-    ]
-    }
+    "8" : [ "1206", "1228", "2026", "2089", "2190", "2201", "2264", "2311", "2323", "3049", "3056", "3056", "3081", "3145", "3145", "3237", "3237", "3290", "3290", "3290", "3290", "3331", "3331", "3404", "3409", "3428", "4085", "4127", "4141", "4189", "4231", "4232", "4232" ]
     ```
 
     ## Getting Started
@@ -97,8 +54,6 @@ These instructions will get you a copy of the project up and running on your loc
 
 1. 第一次的時候，需要先初始化資料庫：`python migrate`
 2. Execute : `python manage.py runserver`.
-3. 建立搜尋引擎的key： `/search/InvertedIndex`<br>
-  此步驟需要連接mongodb，所以請確保mongodb的service是start的狀態，然後可以去休息一下，因為要建立約15分鐘
 
 ### Break down into end to end tests
 
@@ -114,7 +69,7 @@ There is no difference between other Django project
 
 You can deploy it with uwsgi, gunicorn or other choice as you want
 
-`搜尋引擎` 是一般的django專案，所以他佈署的方式並沒有不同
+是一般的django專案，所以他佈署的方式並沒有不同
 
 ## Built With
 
