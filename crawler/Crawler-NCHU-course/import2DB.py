@@ -11,7 +11,7 @@ class import2Mongo(object):
 		self.client = MongoClient(uri)
 		self.db = self.client['timetable']
 		self.DeptCollect = self.db['CourseOfDept']
-		self.TimeCollect = self.db['TimeCollect']
+		self.CourseOfTime = self.db['CourseOfTime']
 		self.chgTable = json.load(open('fallback/json/department.json', 'r'))
 		
 	def AddHeader(self, document, degree):
@@ -73,8 +73,8 @@ class import2Mongo(object):
 			for time in course['time_parsed']:
 				day = str(time['day'])
 				for t in time['time']:
-					# print(t)
-					result[day][str(t)].append(course['code'])
+					if course['code'] not in result[day][str(t)]:
+						result[day][str(t)].append(course['code'])
 		return result
 
 	def save2DB(self):
@@ -83,7 +83,7 @@ class import2Mongo(object):
 				return json.load(f)
 
 		self.DeptCollect.remove({})
-		self.TimeCollect.remove({})
+		self.CourseOfTime.remove({})
 		for degree in self.degree2Chi:
 			jsonDict = getJson(degree)
 			# #這邊需要修改，因為學校沒有完全按照學至分類乾淨，所以才需要每次都把set清空####
@@ -95,4 +95,4 @@ class import2Mongo(object):
 			
 			timeDoc = self.BuildByTime(degree, jsonDict)
 			timeDoc = self.AddHeader(timeDoc, degree)
-			self.TimeCollect.update({ "$and":[{"school":"NCHU"}, {'degree':degree}] }, timeDoc, upsert=True)
+			self.CourseOfTime.update({ "$and":[{"school":"NCHU"}, {'degree':degree}] }, timeDoc, upsert=True)
