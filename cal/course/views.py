@@ -5,10 +5,13 @@ from pymongo import MongoClient
 
 class Course(object):
 	"""docstring for Course"""
-	def __init__(self, dept, school, uri=None):
+	def __init__(self, school, uri=None, degree=None, dept=None, day=None, time=None):
+		self.degree = degree
 		self.dept = dept
+		self.day = day
+		self.time = time
 		self.school = school
-		self.collect = MongoClient(uri)['timetable']['CourseOfDept']
+		self.db = MongoClient(uri)['timetable']
 
 	def Cursor2Dict(self, cursor):
 		if cursor.count() == 0:
@@ -16,9 +19,16 @@ class Course(object):
 		return list(cursor)[0]
 
 	def getByDept(self):
-		CourseDict = self.Cursor2Dict(self.collect.find({ "$and":[{"school":self.school}, {self.dept:{"$exists":True}}] }))
-
+		CourseDict = self.Cursor2Dict(self.db['CourseOfDept'].find({ "$and":[{"school":self.school}, {self.dept:{"$exists":True}}] }).limit(1))
 		return CourseDict.get(self.dept, {"error":"invalid Dept Code"})
+
+	def getByTime(self):
+		CourseDict = self.Cursor2Dict(self.db['TimeCollect'].find({ "$and":[{"school":self.school}, {"degree": self.degree}] }).limit(1))
+		try:
+			CourseDict = CourseDict[self.day][self.time]
+		except Exception as e:
+			CourseDict = {"error":"invalid day or time or degree or school"}
+		return CourseDict
 
 @queryString_required(['dept', 'school'])
 def CourseOfDept(request):
@@ -29,3 +39,15 @@ def CourseOfDept(request):
 	school = request.GET['school']
 	c = Course(dept, school)
 	return JsonResponse(c.getByDept(), safe=False)
+
+@queryString_required(['degree', 'day', 'time', 'school'])
+def TimeOfCourse(request):
+	"""
+		Generate list of obligatory and optional course of specific Dept.
+	"""
+	degree = request.GET['degree']
+	day = request.GET['day']
+	time = request.GET['time']
+	school = request.GET['school']
+	c = Course(degree=degree, day=day, time=time, school=school)
+	return JsonResponse(c.getByTime(), safe=False)
