@@ -1,7 +1,10 @@
-from django.http import JsonResponse, HttpResponseRedirect, Http404
+from django.http import JsonResponse, HttpResponseRedirect, Http404, HttpResponse
 
 from timetable.views.views import init_user
 from timetable.models import Department, Course, SelectedCourse
+
+def get_session_key(request):
+    return HttpResponse(request.session.session_key)
 
 
 def get_user(request):
