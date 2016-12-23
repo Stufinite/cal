@@ -10,14 +10,16 @@ class import2Mongo(object):
 		self.deptSet = set()
 		self.client = MongoClient(uri)
 		self.db = self.client['timetable']
-		self.Collect = self.db['CourseOfDept']
+		self.DeptCollect = self.db['CourseOfDept']
+		self.TimeCollect = self.db['TimeCollect']
 		self.chgTable = json.load(open('fallback/json/department.json', 'r'))
 		
-	def parseJson(self, degree):
-		def getJson(degree):
-			with open(self.JSONdir+'/'+degree+'.json', 'r', encoding='utf8') as f:
-				return json.load(f)
+	def AddHeader(self, document, degree):
+		document['degree'] = degree
+		document['school'] = "NCHU"
+		return document
 
+	def BuildByDept(self, degree, jsonDict):
 		def getClass(grade):
 			if len(grade) == 1:
 				return 'ClassA', grade
@@ -38,7 +40,6 @@ class import2Mongo(object):
 			raise Exception("fuck")
 
 		result = {}
-		jsonDict = getJson(degree)
 		for i in jsonDict['course']:
 			dept = getDeptCode(degree, i['for_dept'])
 			code = i['code']
@@ -58,13 +59,40 @@ class import2Mongo(object):
 
 		return result
 
+	def BuildByTime(self, degree, jsonDict):
+		result = {
+			"1":{"1":[],"2":[],"3":[],"4":[],"5":[],"6":[],"7":[],"8":[],"9":[],"10":[],"11":[],"12":[],"13":[]},
+			"2":{"1":[],"2":[],"3":[],"4":[],"5":[],"6":[],"7":[],"8":[],"9":[],"10":[],"11":[],"12":[],"13":[]},
+			"3":{"1":[],"2":[],"3":[],"4":[],"5":[],"6":[],"7":[],"8":[],"9":[],"10":[],"11":[],"12":[],"13":[]},
+			"4":{"1":[],"2":[],"3":[],"4":[],"5":[],"6":[],"7":[],"8":[],"9":[],"10":[],"11":[],"12":[],"13":[]},
+			"5":{"1":[],"2":[],"3":[],"4":[],"5":[],"6":[],"7":[],"8":[],"9":[],"10":[],"11":[],"12":[],"13":[]},
+			"6":{"1":[],"2":[],"3":[],"4":[],"5":[],"6":[],"7":[],"8":[],"9":[],"10":[],"11":[],"12":[],"13":[]},
+			"7":{"1":[],"2":[],"3":[],"4":[],"5":[],"6":[],"7":[],"8":[],"9":[],"10":[],"11":[],"12":[],"13":[]}
+		}
+		for course in jsonDict['course']:
+			for time in course['time_parsed']:
+				day = str(time['day'])
+				for t in time['time']:
+					# print(t)
+					result[day][str(t)].append(course['code'])
+		return result
+
 	def save2DB(self):
-		self.Collect.remove({})
+		def getJson(degree):
+			with open(self.JSONdir+'/'+degree+'.json', 'r', encoding='utf8') as f:
+				return json.load(f)
+
+		self.DeptCollect.remove({})
+		self.TimeCollect.remove({})
 		for degree in self.degree2Chi:
-			#這邊需要修改，因為學校沒有完全按照學至分類乾淨，所以才需要每次都把set清空####
-			self.deptSet = set()
-			#############################
-			document = self.parseJson(degree)
-			document['degree'] = degree
-			document['school'] = "NCHU"
-			self.Collect.update({ "$and":[{"school":"NCHU"}, {'degree':degree}] }, document, upsert=True)
+			jsonDict = getJson(degree)
+			# #這邊需要修改，因為學校沒有完全按照學至分類乾淨，所以才需要每次都把set清空####
+			# self.deptSet = set()
+			# #############################
+			deptDoc = self.BuildByDept(degree, jsonDict)
+			deptDoc = self.AddHeader(deptDoc, degree)
+			self.DeptCollect.update({ "$and":[{"school":"NCHU"}, {'degree':degree}] }, deptDoc, upsert=True)
+			
+			timeDoc = self.BuildByTime(degree, jsonDict)
+			timeDoc = self.AddHeader(timeDoc, degree)
+			self.TimeCollect.update({ "$and":[{"school":"NCHU"}, {'degree':degree}] }, timeDoc, upsert=True)
