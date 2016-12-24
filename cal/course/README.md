@@ -56,7 +56,7 @@ API使用方式（下面所寫的是api的URL pattern）<br>
     [ "1206", "1228", "2026", "2089", "2190", "2201", "2264", "2311", "2323", "3049", "3056", "3056", "3081", "3145", "3145", "3237", "3237", "3290", "3290", "3290", "3290", "3331", "3331", "3404", "3409", "3428", "4085", "4127", "4141", "4189", "4231", "4232", "4232" ]
     ```
 
-    ## Getting Started
+## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
