@@ -83,7 +83,7 @@ def del_selected(request):
     if request.method == 'POST':
         try:
             code = request.POST.get('code')
-            course = Course.objects.get(code=code)
+            course = Course.objects.filter(code=code).first()
             SelectedCourse.objects.filter(
                 course=course, user=user['username']).delete()
             return JsonResponse({"state": "ok"})
@@ -103,7 +103,7 @@ def save_selected(request):
             text = request.POST.get('text')
             for code in text.split(','):
                 sc, created = SelectedCourse.objects.get_or_create(
-                    course=Course.objects.get(code=code), user=user['username'])
+                    course=Course.objects.filter(code=code).first(), user=user['username'])
                 if not created:
                     sc.save()
             return JsonResponse({"state": "ok"})
@@ -151,26 +151,29 @@ def build_course(request):
                 data = json.loads(f.read())
                 for c in data["course"]:
                     # print(c)
-                    d, created = Course.objects.get_or_create(
-                        school='NCHU',
-                        semester="1051",
-                        code=c['code'],
-                        for_class=c['class'],
-                        credits=c['credits'],
-                        title='{},{}'.format(
-                            c['title_parsed']['zh_TW'],
-                            c['title_parsed']['en_US']
-                        ),
-                        department=c['department'],
-                        professor=c['professor'],
-                        time=c['time'],
-                        location=c['location'][0],
-                        obligatory=c['obligatory_tf'],
-                        language=c['language'],
-                        duration=c['year'],
-                        prerequisite=c['prerequisite'],
-                        note=c['note']
-                    )
-                    if not created:
-                        d.save()
+                    try:
+                        d, created = Course.objects.get_or_create(
+                            school='NCHU',
+                            semester="1051",
+                            code=c['code'],
+                            for_class=c['class'],
+                            credits=c['credits'],
+                            title='{},{}'.format(
+                                c['title_parsed']['zh_TW'],
+                                c['title_parsed']['en_US']
+                            ),
+                            department=c['department'],
+                            professor=c['professor'],
+                            time=c['time'],
+                            location=c['location'][0],
+                            obligatory=c['obligatory_tf'],
+                            language=c['language'],
+                            duration=c['year'],
+                            prerequisite=c['prerequisite'],
+                            note=c['note']
+                        )
+                        if not created:
+                            d.save()
+                    except:
+                        pass
         return JsonResponse({"state": "ok"})

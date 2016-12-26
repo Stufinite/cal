@@ -269,8 +269,8 @@ class StufiniteTimetable {
     }
 
     getCourseType(course) {
-        var major = this.user['major'];
-        var level = this.user['grade'];
+        var major = this.user['major'].split(" ")[0];
+        var level = this.user['major'].split(" ")[1] == undefined ? this.user['grade'] : this.user['grade'].toString() + this.user['major'].split(" ")[1];
         var d_major = this.user['second_major'];
         var d_level = this.user['grade'];
 
@@ -408,7 +408,6 @@ class StufiniteTimetable {
         return grade.length === 1 ? true : false;
     }
 
-
     clearDetail(code) {
         if ($(".detail-code").text() != new String(code)) {
             return;
@@ -445,7 +444,7 @@ class StufiniteTimetable {
         $("#course-detail").append($detail)
     }
 
-    addCourse(course) {
+    addCourse(course, auto) {
         if (this.isCourseConflict(course)) {
             return;
         }
@@ -486,7 +485,9 @@ class StufiniteTimetable {
         // this.addCourseMessage(course);
         this.addCredit(course.credits);
         this.selected.push(course.code);
-        this.saveSelected();
+        if (auto == undefined) {
+            this.saveSelected();
+        }
     }
 
     addCourseMessage(course) {
@@ -560,7 +561,7 @@ class StufiniteTimetable {
 
     delCourse(code) {
         let target = this.target;
-        let major = this.user['major'];
+        let major = this.user['major'].split(" ")[0];
 
         for (let course of this.getCourse('code', code)) {
             if (course.obligatory_tf == true && course.for_dept == major) {
@@ -585,8 +586,10 @@ class StufiniteTimetable {
 
     addMajorCourses(major, grade) {
         let duplicatedCourseNames = [];
-
-        for (let course of this.getCourse('major', major, grade)) {
+        let courses = this.getCourse('major', major, grade)
+        grade = major.split(" ")[1] == undefined ? grade : grade.toString() + major.split(" ")[1];
+        major = major.split(" ")[0]
+        for (let course of courses) {
             if (course.obligatory_tf == true && course.for_dept == major && course.class == grade) {
                 //這樣就可以保證我計算到的必修數量一定是該科系該年級該班級了
                 //用來確認這個系有幾堂必修課是同名的
@@ -615,7 +618,7 @@ class StufiniteTimetable {
                     //表示應該為實習課，所以無時間,他沒有正課時間和實習時間，反正就是都沒有時間，神奇的是[]在boolean判斷式中居然會被當作0
                     searchbar.addResult($(".optional"), course, language);
                 } else {
-                    this.addCourse(course);
+                    this.addCourse(course, true);
                     //如果這個課名只有出現過一次，就可以自動填入
                 }
             } else {
@@ -625,6 +628,7 @@ class StufiniteTimetable {
                 }
             }
         }
+        this.saveSelected();
 
         for (let ik in this.coursesByMajor[major]) {
             let iv = this.coursesByMajor[major][ik];
