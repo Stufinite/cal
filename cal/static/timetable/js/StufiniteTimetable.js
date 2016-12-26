@@ -213,8 +213,9 @@ class StufiniteTimetable {
     }
 
     getCourseByMajor(major, grade) {
-        major = major.split(" ")[0] // Dirty fix for depts has more than one class
-        grade = major.split(" ")[1] != undefined ? grade.toString() + major.split(" ")[1] : grade
+        let origin_major = major
+        major = origin_major.split(" ")[0] // Dirty fix for depts has more than one class
+        grade = origin_major.split(" ")[1] != undefined ? grade.toString() + origin_major.split(" ")[1] : grade
         var result = [];
         if (grade == 0) {
             for (let g in this.coursesByMajor[major]) {
