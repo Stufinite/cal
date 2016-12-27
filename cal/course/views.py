@@ -23,7 +23,7 @@ class Course(object):
 		return CourseDict.get(self.dept, {"error":"invalid Dept Code"})
 
 	def getByTime(self):
-		CourseDict = self.Cursor2Dict(self.db['TimeCollect'].find({ "$and":[{"school":self.school}, {"degree": self.degree}] }).limit(1))
+		CourseDict = self.Cursor2Dict(self.db['CourseOfTime'].find({ "$and":[{"school":self.school}, {"degree": self.degree}] }).limit(1))
 		try:
 			CourseDict = CourseDict[self.day][self.time]
 		except Exception as e:
@@ -37,7 +37,7 @@ def CourseOfDept(request):
 	"""
 	dept = request.GET['dept']
 	school = request.GET['school']
-	c = Course(dept, school)
+	c = Course(dept=dept, school=school)
 	return JsonResponse(c.getByDept(), safe=False)
 
 @queryString_required(['degree', 'day', 'time', 'school'])
