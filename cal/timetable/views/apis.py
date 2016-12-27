@@ -56,6 +56,17 @@ def get_course_by_id(request, course_id):
     except:
         raise Http404("Page does not exist")
 
+def get_course_by_code(request, course_code):
+    # try:
+    result = list(map(
+        lambda x: dict(x),
+        Course.objects.filter(code=course_code).values()
+    ))  # just practicing
+
+    return JsonResponse(result, safe=False)
+    # except:
+    #     raise Http404("Page does not exist")
+
 
 def get_selected(request):
     user = init_user(request)
