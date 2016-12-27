@@ -21,7 +21,7 @@ class StufiniteTimetable {
 
 
         // 讀入系所名稱及代碼
-        // $.getJSON("/static/timetable/json/department.json", this.buildDeptArray.bind(this))
+        $.getJSON("/static/timetable/json/department.json", this.buildDeptArray.bind(this))
 
         // O.json is suitable for all kind of degree, so it will be loaded in automatically.
         $.getJSON("/static/timetable/json/O.json", this.buildCourseIndex.bind(this))
@@ -88,12 +88,14 @@ class StufiniteTimetable {
                 }
 
                 var option = "";
-                option += jv.value + '-' + jv["zh_TW"];
-                this.department_name[iv.degree][jv.zh_TW]["zh_TW"] = option;
-
-                var option = "";
-                option += jv.value + '-' + jv["en_US"];
-                this.department_name[iv.degree][jv.zh_TW]["en_US"] = option;
+                option += jv.value;
+                this.department_name[iv.degree][jv.zh_TW] = option;
+                // option += jv.value + '-' + jv["zh_TW"];
+                // this.department_name[iv.degree][jv.zh_TW]["zh_TW"] = option;
+                //
+                // var option = "";
+                // option += jv.value + '-' + jv["en_US"];
+                // this.department_name[iv.degree][jv.zh_TW]["en_US"] = option;
             }
         }
     }
