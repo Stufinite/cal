@@ -34,7 +34,7 @@ class SearchOb(object):
 		cursor = self.SrchCollect.find({kw: {"$exists": True}}).limit(1)
 		if cursor.count() > 0:
 			# Key Exist
-			return list(cursor)[0][kw][self.school]
+			return sorted(list(cursor)[0][kw][self.school], key=lambda x:x['CourseCode'])
 		else:
 			try:
 				text = requests.get('http://api.udic.cs.nchu.edu.tw/api/kemApi/?keyword={}&lang=cht&num=10'.format(urllib.parse.quote(kw)), timeout=5)
@@ -65,10 +65,10 @@ class SearchOb(object):
 			index = 0
 			intersection = []
 			for i in cursor1:
-				while cursor2[index]['DBid'] < i['DBid']:
+				while cursor2[index]['CourseCode'] < i['CourseCode']:
 					index, end = incOrbreak(index)
 					if end:break
-				if cursor2[index]['DBid'] == i['DBid']:
+				if cursor2[index]['CourseCode'] == i['CourseCode']:
 					intersection.append(i)
 					index, end = incOrbreak(index)
 					if end:break	
@@ -95,10 +95,10 @@ class SearchOb(object):
 		''' To increment the weight of Search Result return by Search Engine. The higher weight will be return a the first of array.
 			args: code
 			return: None
-			process: dbid will be list, cause Course having same code will be opened in many department, which will also be an entity in database. So those dbid need to increment their weight (they are all in the same document with same key)
+			process: CourseCode will be list, cause Course having same code will be opened in many department, which will also be an entity in database. So those CourseCode need to increment their weight (they are all in the same document with same key)
 		'''
-		dbid = get_list_or_404(Course, code=code)
-		dbid = tuple( i.id for i in dbid )
+		CourseCode = get_list_or_404(Course, code=code)
+		CourseCode = tuple( i.id for i in CourseCode )
 		for key in self.keyword:		
 			cursor = self.SrchCollect.find({key: {"$exists": True}}).limit(1)
 			document = list(cursor)[0]
@@ -106,7 +106,7 @@ class SearchOb(object):
 				break
 				
 			for index, value in enumerate(document[key][self.school]):
-				if value['DBid'] in dbid:
+				if value['CourseCode'] in CourseCode:
 					newWeight = value['weight'] + 1
 					self.SrchCollect.update({key: {"$exists": True}}, {"$set":{key+"."+self.school+'.'+str(index)+'.weight':newWeight}})
 
@@ -117,16 +117,16 @@ class SearchOb(object):
 		for i in Course.objects.all():
 			key = self.bigram(i.title)
 			titleTerms = self.title2terms(i.title)
-			dbid = i.id
+			CourseCode = i.code
 			courseCode = i.code
 			teacher = i.professor
 			
 			for k in key:
-				self.BuildWithKey(k, dbid, i)
+				self.BuildWithKey(k, CourseCode, i)
 			for t in titleTerms:
-				self.BuildWithKey(t, dbid, i)
-			self.BuildWithKey(courseCode, dbid, i)
-			self.BuildWithKey(teacher, dbid, i)
+				self.BuildWithKey(t, CourseCode, i)
+			self.BuildWithKey(courseCode, CourseCode, i)
+			self.BuildWithKey(teacher, CourseCode, i)
 
 	def bigram(self, title):
 		bigram = (title.split(',')[0], title.split(',')[1].replace('.', ''))
@@ -138,7 +138,7 @@ class SearchOb(object):
 					bigram += (prefix + title[i],)
 		return bigram
 
-	def BuildWithKey(self, k, dbid, i):
+	def BuildWithKey(self, k, CourseCode, i):
 		if k == '' or k==None: return
 		cursor = self.SrchCollect.find({k: {"$exists": True}}).limit(1)
 		if cursor.count() > 0:
@@ -147,7 +147,7 @@ class SearchOb(object):
 			if i.code not in cursor[i.school+"CourseID"]:
 				################Error Detect#########
 				for v in cursor[k][i.school]:       #
-					if v['DBid'] == dbid:       #
+					if v['CourseCode'] == CourseCode:       #
 						print(k)                    #
 						print(i)                    #
 						print(v)                    #
@@ -155,7 +155,7 @@ class SearchOb(object):
 						raise Exception('fuck')     #
 				#####################################
 				self.SrchCollect.update({k: {"$exists": True}}, {'$push': {k + "."+i.school: {
-								"DBid":dbid,
+								"CourseCode":CourseCode,
 								"weight":0}}})
 				self.SrchCollect.update({k: {"$exists":True}}, {'$push':{i.school+"CourseID": i.code}})
 		else:
@@ -165,7 +165,7 @@ class SearchOb(object):
 					k:{
 					i.school:[
 						{
-							"DBid":dbid,
+							"CourseCode":CourseCode,
 							"weight":0
 						}],
 					},
