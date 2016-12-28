@@ -19,11 +19,14 @@ class Course(object):
 		return list(cursor)[0]
 
 	def getByDept(self):
-		CourseDict = self.Cursor2Dict(self.db['CourseOfDept'].find({ "$and":[{"school":self.school}, {self.dept:{"$exists":True}}] }).limit(1))
-		return CourseDict.get(self.dept, {"error":"invalid Dept Code"})
+		CourseDict = self.Cursor2Dict(self.db['CourseOfDept'].find({ "$and":[{"school":self.school}, {self.dept:{"$exists":True}}] },
+		 {self.dept:1, '_id': False}).limit(1))
+		return CourseDict
 
 	def getByTime(self):
-		CourseDict = self.Cursor2Dict(self.db['TimeCollect'].find({ "$and":[{"school":self.school}, {"degree": self.degree}] }).limit(1))
+		CourseDict = self.Cursor2Dict(self.db['CourseOfTime'].find({ "$and":[{"school":self.school}, {"degree": self.degree}] }
+			,{"{}.{}".format(self.day, self.time):1, '_id': False}
+			).limit(1))
 		try:
 			CourseDict = CourseDict[self.day][self.time]
 		except Exception as e:
@@ -37,7 +40,7 @@ def CourseOfDept(request):
 	"""
 	dept = request.GET['dept']
 	school = request.GET['school']
-	c = Course(dept, school)
+	c = Course(dept=dept, school=school)
 	return JsonResponse(c.getByDept(), safe=False)
 
 @queryString_required(['degree', 'day', 'time', 'school'])
