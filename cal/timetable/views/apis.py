@@ -3,9 +3,6 @@ from django.http import JsonResponse, HttpResponseRedirect, Http404, HttpRespons
 from timetable.views.views import init_user
 from timetable.models import Department, Course, SelectedCourse
 
-def get_session_key(request):
-    return HttpResponse(request.session.session_key)
-
 
 def get_user(request):
     user = init_user(request)
@@ -20,23 +17,22 @@ def get_department(request):
     if isinstance(user, HttpResponseRedirect):
         return user
 
-    # result = []
-    # for d in Department.objects.filter(degree=user['career']).order_by('code'):
-    #     result.append({
-    #         'code': d.code,
-    #         'title_zh': d.title.split(',')[0],
-    #         'title_en': d.title.split(',')[1],
-    #     })
-
     try:
-        result = list(map(
-            lambda d: {
-                'code': d.code,
-                'title_zh': d.title.split(',')[0],
-                'title_en': d.title.split(',')[1],
-            },
-            Department.objects.filter(degree=user['career']).order_by('code')
-        ))  # just practicing
+        result = {}
+        for d in Department.objects.filter(degree=user['career']).order_by('code'):
+            try:
+                result[d.degree].append({
+                    'code': d.code,
+                    'title_zh': d.title.split(',')[0],
+                    'title_en': d.title.split(',')[1],
+                })
+            except KeyError:
+                result[d.degree] = []
+                result[d.degree].append({
+                    'code': d.code,
+                    'title_zh': d.title.split(',')[0],
+                    'title_en': d.title.split(',')[1],
+                })
 
         return JsonResponse(result, safe=False)
     except:
@@ -50,7 +46,31 @@ def get_course_by_id(request, course_id):
                 'code': c.code,
             },
             Course.objects.filter(id=course_id)
-        ))  # just practicing
+        ))
+
+        return JsonResponse(result, safe=False)
+    except:
+        raise Http404("Page does not exist")
+
+
+def get_course_by_code(request, course_code):
+    try:
+        result = list(map(
+            lambda c: {
+                "code": c.code,
+                "credits": c.credits,
+                "location": c.location,
+                "professor": c.professor,
+                "title": {
+                    "zh_TW": c.title.split(",")[0],
+                    "en_US": c.title.split(",")[1],
+                },
+                "time": c.time,
+                "prerequisite": c.prerequisite,
+                "note": c.note,
+            },
+            Course.objects.filter(code=course_code)
+        ))
 
         return JsonResponse(result, safe=False)
     except:
@@ -83,7 +103,7 @@ def del_selected(request):
     if request.method == 'POST':
         try:
             code = request.POST.get('code')
-            course = Course.objects.get(code=code)
+            course = Course.objects.filter(code=code).first()
             SelectedCourse.objects.filter(
                 course=course, user=user['username']).delete()
             return JsonResponse({"state": "ok"})
@@ -103,7 +123,7 @@ def save_selected(request):
             text = request.POST.get('text')
             for code in text.split(','):
                 sc, created = SelectedCourse.objects.get_or_create(
-                    course=Course.objects.get(code=code), user=user['username'])
+                    course=Course.objects.filter(code=code).first(), user=user['username'])
                 if not created:
                     sc.save()
             return JsonResponse({"state": "ok"})
@@ -113,7 +133,11 @@ def save_selected(request):
         raise Http404("Page does not exist")
 
 
-def build_department(request):
+def get_session_key(request):
+    return HttpResponse(request.session.session_key)
+
+
+def build_department():
     from cal import settings
     if not settings.DEBUG:
         raise Http404("Page does not exist")
@@ -124,8 +148,8 @@ def build_department(request):
             data = json.loads(f.read())
             for dept_by_degree in data:
                 for dept in dept_by_degree["department"]:
-                    # print("{} {} {} {}".format(dept_by_degree["degree"],
-                    #     dept["zh_TW"], dept["en_US"], dept["value"]))
+                    print("{} {} {} {}".format(dept_by_degree["degree"],
+                                               dept["zh_TW"], dept["en_US"], dept["value"]))
                     d, created = Department.objects.get_or_create(
                         degree=dept_by_degree["degree"],
                         code=dept["value"],
@@ -136,7 +160,7 @@ def build_department(request):
         return JsonResponse({"state": "ok"})
 
 
-def build_course(request):
+def build_course():
     from cal import settings
     if not settings.DEBUG:
         raise Http404("Page does not exist")
@@ -150,7 +174,13 @@ def build_course(request):
             with open(settings.STATICFILES_DIRS[0] + '/timetable/json/' + filename, 'r') as f:
                 data = json.loads(f.read())
                 for c in data["course"]:
-                    # print(c)
+                    print(c['title'])
+                    time = ''
+                    for i in c['time_parsed']:
+                        time += str(i['day'])
+                        for j in i['time']:
+                            time += str(j)
+                        time += ','
                     d, created = Course.objects.get_or_create(
                         school='NCHU',
                         semester="1051",
@@ -163,7 +193,7 @@ def build_course(request):
                         ),
                         department=c['department'],
                         professor=c['professor'],
-                        time=c['time'],
+                        time=time[:-1],
                         location=c['location'][0],
                         obligatory=c['obligatory_tf'],
                         language=c['language'],

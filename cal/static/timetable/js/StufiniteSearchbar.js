@@ -31,7 +31,10 @@ class StufiniteSearchbar {
         }
     }
 
-    addResult(target, course, language) {
+    addResult(course) {
+        let target = $(window.timetable.getCourseType(course));
+        let language = window.timetable.language
+
         if ($('.stufinite-searchbar-placeholder').is(':visible')) {
             $('.stufinite-searchbar-placeholder').hide();
         }
@@ -48,16 +51,17 @@ class StufiniteSearchbar {
             </div>`);
 
         result
-            .find('h4.title').text(language == "zh_TW" ? course.title_parsed["zh_TW"] : course.title_parsed["en_US"]).end()
-            .find('span.info').text(window.timetable.getCourseTime(course) + ' | ' + course.professor).end()
-            .find('a.join').attr('code', course.code).bind('click', (function(e) {
+            .find('h4.title').text(language == "zh_TW" ? course.title["zh_TW"] : course.title["en_US"]).end()
+            .find('span.info').text(course.professor).end()
+            .find('a.join').attr('code', course.code).bind('click', (e) => {
                 let code = $(e.target).attr('code');
-                course = window.timetable.getCourse('code', code)[0];
-                window.timetable.addCourse(course);
-                window.timetable.addDetail(course);
+                window.timetable.getCourse(window.timetable.addCourse.bind(window.timetable), 'code', code);
+                // course = window.timetable.getCourse('code', code)[0];
+                // window.timetable.addCourse(course);
+                // window.timetable.addDetail(course);
                 this.hide();
-            }).bind(this)).end()
-            .find('a.review').attr('href', 'http://feedback.nchusg.org/search/?q=' + course.title_parsed["zh_TW"]).end()
+            }).end()
+            .find('a.review').attr('href', 'http://feedback.nchusg.org/search/?q=' + course.title["zh_TW"]).end()
             .find('a.detail').bind('click', () => {
                 window.timetable.addDetail(course)
             }).end()

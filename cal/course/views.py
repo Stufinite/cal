@@ -27,6 +27,7 @@ class Course(object):
 		CourseDict = self.Cursor2Dict(self.db['CourseOfTime'].find({ "$and":[{"school":self.school}, {"degree": self.degree}] }
 			,{"{}.{}".format(self.day, self.time):1, '_id': False}
 			).limit(1))
+
 		try:
 			CourseDict = CourseDict[self.day][self.time]
 		except Exception as e:
