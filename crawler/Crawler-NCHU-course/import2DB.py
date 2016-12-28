@@ -23,6 +23,8 @@ class import2Mongo(object):
 		def getClass(grade):
 			if len(grade) == 1:
 				return 'ClassA', grade
+			if grade == "":
+				return "ClassA", '0'
 			return 'Class'+str.capitalize(grade[-1]), grade[0]
 
 		def getObliAttr(obligat):
@@ -37,11 +39,13 @@ class import2Mongo(object):
 						if j['name'] == deptName or deptName in j['name']:
 							return j['value']
 			print(degree, deptName)
-			raise Exception("fuck")
+			return False
 
 		result = {}
 		for i in jsonDict['course']:
-			dept = getDeptCode(degree, i['for_dept'])
+			dept = getDeptCode(degree, i['for_dept']) 
+			# dept == False means getDeptCode has error
+			if dept == False: continue
 			code = i['code']
 			grade = i['class']
 			className, grade = getClass(grade)
