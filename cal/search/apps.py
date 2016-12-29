@@ -113,7 +113,6 @@ class SearchOb(object):
 	####################Build index#########################################
 	def BuildIndex(self):
 		self.SrchCollect.remove({})
-
 		for i in Course.objects.all():
 			key = self.bigram(i.title)
 			titleTerms = self.title2terms(i.title)
@@ -130,7 +129,8 @@ class SearchOb(object):
 
 	def bigram(self, title):
 		bigram = (title.split(',')[0], title.split(',')[1].replace('.', ''))
-		title = re.sub(r'\(.*\)', '', title).split(',')[0].strip()
+		title = re.sub(r'\(.*\)', '', title.split(',')[0]).split()[0].strip()
+		bigram += (title, )
 		if len(title) > 2:
 			prefix = title[0]
 			for i in range(1, len(title)):
