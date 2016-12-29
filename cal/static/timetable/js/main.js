@@ -36,15 +36,11 @@
                     window.searchbar.clear("找不到與\"" + key + "\"相關的課程")
                     return;
                 }
+                window.searchbar.clear()
                 for (let i of c_by_key) {
-                    window.searchbar.clear()
-                    $.getJSON("/api/get/course/code/" + i.DBid, (c_by_id) => {
-                        let c_by_code = window.timetable.getCourse('code', c_by_id[0].code)
-                        if (c_by_code == undefined) {
-                            return;
-                        }
-                        window.searchbar.addResult($(window.timetable.getCourseType(c_by_code)), c_by_code[0], window.timetable.language)
-                    });
+                    window.timetable.getCourseByCode((course) => {
+                        window.searchbar.addResult(course)
+                    }, i.CourseCode)
                 }
             });
         });

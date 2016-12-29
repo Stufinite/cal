@@ -71,21 +71,6 @@ def get_department(request):
     except:
         raise Http404("Page does not exist")
 
-
-def get_course_by_id(request, course_id):
-    try:
-        result = list(map(
-            lambda c: {
-                'code': c.code,
-            },
-            Course.objects.filter(id=course_id)
-        ))
-
-        return JsonResponse(result, safe=False)
-    except:
-        raise Http404("Page does not exist")
-
-
 def get_course_by_code(request, course_code):
     try:
         result = list(map(
@@ -97,6 +82,7 @@ def get_course_by_code(request, course_code):
                     "en_US": c.title.split(",")[1],
                 },
                 "professor": c.professor,
+                "department": c.department,
                 "time": c.time,
                 "location": c.location,
                 "intern_location": c.intern_location,
@@ -173,6 +159,7 @@ def build_department():
 
 
 def build_course():
+    Course.objects.all().delete()
     from cal import settings
     if not settings.DEBUG:
         raise Http404("Page does not exist")
@@ -190,9 +177,10 @@ def build_course():
                         print(c['title'], c['professor'])
                         time = ''
                         for i in c['time_parsed']:
-                            time += str(i['day'])
+                            time += str(i['day']) + '-'
                             for j in i['time']:
-                                time += str(j)
+                                time += str(j) + '-'
+                            time = time[:-1]
                             time += ','
                         d, created = Course.objects.get_or_create(
                             school='NCHU',
@@ -203,6 +191,7 @@ def build_course():
                                 c['title_parsed']['zh_TW'],
                                 c['title_parsed']['en_US']
                             ),
+                            department=c['department'],
                             professor=c['professor'],
                             time=time[:-1],
                             intern_location=c['intern_location'][0],

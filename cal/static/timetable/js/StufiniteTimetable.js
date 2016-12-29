@@ -91,7 +91,7 @@ class StufiniteTimetable {
             let formattedTime = {
                 'time': []
             }
-            let t = timesByDay.split('')
+            let t = timesByDay.split('-')
             formattedTime['day'] = t.shift()
             while (t.length != 0) {
                 formattedTime['time'].push(t.shift())
@@ -155,18 +155,19 @@ class StufiniteTimetable {
             };
             return course.discipline in types ? types[course.discipline] : '.others';
         } else {
-            // let types = {
-            //     "語言中心": ".english",
-            //     "夜共同科": ".english",
-            //     "夜外文": ".english",
-            //     "通識教育中心": ".chinese",
-            //     "夜中文": ".chinese",
-            //     "體育室": ".PE",
-            //     "師資培育中心": ".teacher-post"
-            // };
-            // return course.department in types ? types[course.department] : ".obligatory-post";
-            return '.others'
+            let types = {
+                "語言中心": ".english",
+                "夜共同科": ".english",
+                "夜外文": ".english",
+                "通識教育中心": ".chinese",
+                "夜中文": ".chinese",
+                "體育室": ".PE",
+                "教官室": ".military-post",
+                "師資培育中心": ".teacher-post",
+            };
+            return course.department in types ? types[course.department] : ".others";
         }
+
     }
 
     delSelected(code) {
