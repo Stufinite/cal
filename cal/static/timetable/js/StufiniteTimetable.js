@@ -3,40 +3,40 @@ class StufiniteTimetable {
         this.target = $("#time-table");
         this.language = lang;
         this.credits = 0;
-        this.selected = [];
 
         this.user = user;
 
-        this.department_name = {}; //包含科系完整名稱的物件
+        this.obligatory = {};
+        this.optional = {};
+        this.second_obligatory = {};
+        this.second_optional = {};
 
         // Initialize timetable with square plus buttons
         $("#time-table td").html(
-            $('<i class="fa fa-plus-square fa-5x"></i>').on("click", this.addCourseListener.bind(this))
+            $('<i class="fa fa-plus-square fa-5x"></i>').on("click", this.addCourseToSearchbar.bind(this))
         );
 
-
-        // 讀入系所名稱及代碼
-        $.when($.getJSON("/api/get/dept", this.buildDeptArray.bind(this)))
-            .then(() => {
-                $.getJSON("/api/get/selected", (data) => {
-                    if (data.length == 0) {
-                        this.getCourse(this.addMajorCourses.bind(this), 'major', this.user.major, this.user.grade)
-                        this.getCourse(this.addMajorOptionalCourses.bind(this), 'major', this.user.major, this.user.grade)
-                    } else {
-                        for (let i in data) {
-                            this.getCourse(this.addCourse.bind(this), 'code', data[i])
-                        }
-                        this.getCourse(this.addMajorOptionalCourses.bind(this), 'major', this.user.major, this.user.grade)
-                    }
-
-                    delMask();
-                });
-            })
+        this.getCourseByMajor((jsonOfCode) => {
+            this.buildObligatoryIndex(jsonOfCode);
+            if (this.user.selected.length == 0) {
+                this.addMajorCourses();
+                this.addMajorOptionalCourses();
+            } else {
+                for (let i in this.user.selected) {
+                    this.getCourseByCode(this.addCourse.bind(this), this.user.selected[i]);
+                }
+                this.addMajorOptionalCourses();
+            }
+            delMask();
+        });
     }
 
-    buildDeptArray(json) {
-        for (let dept of json[this.user.career]) {
-            this.department_name[dept["title_zh"]] = dept["code"]
+    buildObligatoryIndex(json) {
+        for (let i in json['obligatory']['ClassA']) {
+            this.obligatory[i] = json['obligatory']['ClassA'][i];
+        }
+        for (let i in json['optional']['ClassA']) {
+            this.optional[i] = json['optional']['ClassA'][i];
         }
     }
 
@@ -55,49 +55,16 @@ class StufiniteTimetable {
         this.setCredit(this.credits)
     }
 
-    getCourse(method, mode, key, grade) {
-        if (key === undefined || key === "") {
-            return [];
-        }
-
-        if (mode === "code") {
-            this.getCourseByCode(key, method);
-        } else if (mode === "major") {
-            if (grade === null || grade === undefined) {
-                grade = 0;
-            }
-            return this.getCourseByMajor(method, key, parseInt(grade, 10));
-        } else {
-            return [];
-        }
-    }
-
-    getCourseByCode(key, method) {
+    getCourseByCode(method, key) {
         $.getJSON('/api/get/course/code/' + key, (course) => {
             method(course[0]);
         });
     }
 
-    getCourseByMajor(method, major, grade) {
-        let dept = this.department_name[this.user.major];
-        $.getJSON('/course/CourseOfDept/?dept=' + dept + '&school=NCHU', method);
-    }
-
-    getCourseLocation(course) {
-        var location = "";
-        if (course.location != [""] && course.location != undefined) {
-            //要確保真的有location這個key才可以進if，不然undefined進到each迴圈
-            // 就會跳 [Uncaught TypeError: Cannot read property 'length' of undefined]這個error
-            $.each(course.location, function(_, iv) {
-                location = location + " " + iv;
-            })
+    getCourseByMajor(method) {
+        for (let dept of this.user.dept_id) {
+            $.getJSON('/course/CourseOfDept/?dept=' + dept + '&school=NCHU', method);
         }
-        if (course.intern_location != [""] && course.intern_location != undefined) {
-            $.each(course.intern_location, function(_, iv) {
-                location = location + " " + iv;
-            })
-        }
-        return location;
     }
 
     getCourseTime(course) {
@@ -135,43 +102,40 @@ class StufiniteTimetable {
         return result
     }
 
-    getCourseType(course) {
-        var major = this.user['major'].split(" ")[0];
-        var level = this.user['major'].split(" ")[1] == undefined ? this.user['grade'] : this.user['grade'].toString() + this.user['major'].split(" ")[1];
-        var d_major = this.user['second_major'];
-        var d_level = this.user['grade'];
-
-        if (course.for_dept == major || ((course.for_dept == d_major) && (course.class == d_level)) || course.for_dept == "全校共同" || course.for_dept == "共同學科(進修學士班)") {
-            //判斷如果是主系的課就不分年級全部都會顯示出來，如果是輔系的就只顯示該年級的課；如果for_dept==undefined就代表是通識課
-            //如果為全校共同或共同學科(進修學士班)就會是體育、國防、服務學習、全校英外語 or general education, chinese and english.
-            if (course.obligatory_tf == false && course.for_dept != major && course.for_dept != d_major) {
-                //代表是教務處綜合課程查詢裡面的所有課、國防、師培、全校選修、全校英外語  (obligatory of 師培 can be true or false!!!)
-                return this.getCommonSubjectType(course);
-            } else if (course.obligatory_tf == true) {
-                //判斷為國英文或是必修課和通識課!!!，包含體育 (obligatory of 師培 can be true or false!!!)
-                return this.getSubjectType(course);
-            } else if (course.obligatory_tf == false) {
-                //決定選修課該貼到哪個年級的欄位
-                return '.optional';
+    isCourseObligatory(code) {
+        for (let i in this.obligatory) {
+            for (let j in this.obligatory[i]) {
+                if (this.obligatory[i][j] == code) {
+                    return true;
+                }
             }
+        }
+        return false;
+    }
+
+    isCourseOptional(code) {
+        for (let i in this.optional) {
+            for (let j in this.optional[i]) {
+                if (this.optional[i][j] == code) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    getCourseType(course) {
+        if (this.isCourseObligatory(course.code)) {
+            return '.obligatory';
+        } else if (this.isCourseOptional(course.code)) {
+            return '.optional';
         } else {
-            return '.others';
+            return this.getGeneralCourseType(course);
         }
     }
 
-    getCommonSubjectType(course) {
-        let types = {
-            '師資培育中心': '.teacher-post',
-            '教官室': '.military-post',
-            '語言中心': '.foreign-post'
-        };
-
-        return course.department in types ? types[course.department] : '.non-graded-optional-post';
-    }
-
-    getSubjectType(course) {
+    getGeneralCourseType(course) {
         if (course.discipline != undefined && course.discipline != "") {
-            //通識課有細分不同領域
             let types = {
                 "文學學群": ".human",
                 "歷史學群": ".human",
@@ -189,18 +153,19 @@ class StufiniteTimetable {
                 "數學統計學群": ".nature",
                 "工程科技學群": ".nature"
             };
-            return course.discipline in types ? types[course.discipline] : '';
+            return course.discipline in types ? types[course.discipline] : '.others';
         } else {
-            let types = {
-                "語言中心": ".english",
-                "夜共同科": ".english",
-                "夜外文": ".english",
-                "通識教育中心": ".chinese",
-                "夜中文": ".chinese",
-                "體育室": ".PE",
-                "師資培育中心": ".teacher-post"
-            };
-            return course.department in types ? types[course.department] : ".obligatory-post";
+            // let types = {
+            //     "語言中心": ".english",
+            //     "夜共同科": ".english",
+            //     "夜外文": ".english",
+            //     "通識教育中心": ".chinese",
+            //     "夜中文": ".chinese",
+            //     "體育室": ".PE",
+            //     "師資培育中心": ".teacher-post"
+            // };
+            // return course.department in types ? types[course.department] : ".obligatory-post";
+            return '.others'
         }
     }
 
@@ -216,9 +181,9 @@ class StufiniteTimetable {
         });
     }
 
-    saveSelected() {
+    addSelected() {
         let uploadData = '';
-        for (let i of this.selected) {
+        for (let i of this.user.selected) {
             uploadData += uploadData === '' ? i : ',' + i;
         }
 
@@ -253,27 +218,6 @@ class StufiniteTimetable {
             }
         });
         return flag;
-    }
-
-    isDuplicated(input) {
-        //input is the last character of short title.
-        var code = input.charCodeAt(0);
-        if (((code >= 65) && (code <= 90)) || ((code >= 97) && (code <= 122))) {
-            // it is a letter
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    haveMultipleClasses(grade) {
-        //確認此系有沒有分AB班(選修用)
-
-        if (typeof(grade) === "number") {
-            return false;
-        }
-        grade = grade.split("");
-        return grade.length === 1 ? true : false;
     }
 
     clearDetail(code) {
@@ -312,6 +256,18 @@ class StufiniteTimetable {
         $("#course-detail").append($detail)
     }
 
+    addCourseToSearchbar(e) {
+        let day = $(e.target).closest("td").attr("data-day");
+        let hour = $(e.target).closest("tr").attr("data-hour");
+
+        $.getJSON('/course/TimeOfCourse/?school=NCHU&degree=' + this.user.career + '&day=' + day + '&time=' + hour, (codes) => {
+            window.searchbar.clear();
+            for (let c of codes) {
+                this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), c);
+            }
+            window.searchbar.show();
+        });
+    }
 
     addCourse(course) {
         if (this.isCourseConflict(course)) {
@@ -336,7 +292,7 @@ class StufiniteTimetable {
                     .attr('code', course.code)
                     .bind('click', (function(e) {
                         let code = $(e.target).attr('code');
-                        this.getCourse(this.delCourse.bind(this), 'code', code)
+                        this.getCourseByCode(this.delCourse.bind(this), code)
                         this.clearDetail(code);
                     }).bind(this)).end()
                     .find('.title').text(course.title[language]).end()
@@ -351,116 +307,44 @@ class StufiniteTimetable {
             }
         }
 
-        // this.addCourseMessage(course);
         this.addCredit(course.credits);
-        this.selected.push(course.code);
-        this.saveSelected();
-    }
-
-    addCourseMessage(course) {
-        var language = this.language
-        var toast_mg = [];
-        var toastr1;
-        var toastr2;
-        if (language == 'zh_TW') {
-            toastr1 = "代碼:";
-            toastr2 = "剩餘名額:";
-            toast_mg.push('課名:' + course.title_parsed[language]);
-        } else if (language == 'en_US') {
-            toastr1 = "Course ID:";
-            toastr2 = "Remaining Seat:";
-            toast_mg.push('Title:' + course.title_parsed[language]);
-        }
-        toast_mg.push(toastr1 + course.code);
-        toast_mg.push(toastr2 + (course.number - course.enrolled_num));
-
-        if (course.discipline != "" && course.discipline != undefined) {
-            //代表他是通識課
-            if (language == 'zh_TW') {
-                toastr1 = "學群:";
-            } else if (language == 'en_US') {
-                toastr1 = "Discipline:";
-            }
-            toast_mg.push(toastr1 + course.discipline);
-            var possibility = function(course) {
-                // a fuction that return the possibility of enrolling that course successfully.
-                var pos = (course.number - course.enrolled_num) / course.number * 100;
-                pos = new Number(pos);
-                pos = pos.toFixed(2);
-                if (pos < 0) {
-                    return 0;
-                }
-                return pos;
-            }(course);
-            //toast_mg.push("中籤率:" + possibility + "%");
-        }
-        if (course.note != "") {
-            if (language == 'zh_TW') {
-                toastr1 = "備註:";
-            } else if (language == 'en_US') {
-                toastr1 = "Note:";
-            }
-            toast_mg.push(toastr1 + course.note);
-        }
-        if (course.prerequisite != "") {
-            //prerequisite means you need to enroll that course before enroll this course
-            if (language == 'zh_TW') {
-                toastr1 = "先修科目:";
-            } else if (language == 'en_US') {
-                toastr1 = "Prerequisite:";
-            }
-            toast_mg.push(toastr1 + course.prerequisite);
-        }
-        toast_mg = toast_mg.join('<br/>');
-        toastr.info(toast_mg);
-    }
-
-    addCourseListener(e) {
-        let day = $(e.target).closest("td").attr("data-day");
-        let hour = $(e.target).closest("tr").attr("data-hour");
-
-        window.searchbar.clear();
-        $.getJSON('http://localhost:8080/course/TimeOfCourse/?school=NCHU&degree=' + this.user.career + '&day=' + day + '&time=' + hour, (codes) => {
-            for (let c of codes) {
-                this.getCourse(window.searchbar.addResult.bind(window.searchbar), 'code', c)
-            }
-        });
-        window.searchbar.show();
+        this.user.selected.push(course.code);
+        this.addSelected();
     }
 
     delCourse(course) {
         let target = this.target;
         let major = this.user['major'].split(" ")[0];
 
-        if (course.obligatory_tf == true && course.for_dept == major) {
+        if (this.isCourseObligatory(course.code)) {
             toastr.warning(this.language == "zh_TW" ? "此為必修課，若要復原請點擊課表空格" : "This is a required course, if you want to undo, please click the \"plus\" symbol", {
                 timeOut: 2500
             });
         }
 
-        $.each(this.parseCourseTime(course.time), function(_, iv) {
-            $.each(iv.time, function(_, jv) {
+        $.each(this.parseCourseTime(course.time), (_, iv) => {
+            $.each(iv.time, (_, jv) => {
                 var $td = target.find('tr[data-hour=' + jv + '] td:eq(' + (iv.day - 1) + ')');
                 //td:eq()為搜尋td的陣列索引值，找到課程的時間    iv.day為星期，但因為td為陣列所以iv.day要減一    find()是找class!!
-                $td.html($('<i class="fa fa-plus-square fa-5x"></i>').bind('click', window.timetable.addCourseListener.bind(window.timetable)));
+                $td.html($('<i class="fa fa-plus-square fa-5x"></i>').bind('click', this.addCourseToSearchbar.bind(this)));
             })
         })
 
         this.minusCredit(course.credits);
-        this.selected.splice(this.selected.indexOf(course.code), 1);
+        this.user.selected.splice(this.user.selected.indexOf(course.code), 1);
         this.delSelected(course.code);
     }
 
-    addMajorCourses(courses) {
-        for (let code of courses['obligatory']['ClassA'][this.user.grade]) {
-            this.getCourse(this.addCourse.bind(this), 'code', code)
+    addMajorCourses() {
+        for (let code of this.obligatory[this.user.grade]) {
+            this.getCourseByCode(this.addCourse.bind(this), code);
         }
     }
 
-    addMajorOptionalCourses(courses) {
-        for (let grade in courses['optional']['ClassA']) {
-            for (let code of courses['optional']['ClassA'][grade]) {
-                this.getCourse(window.searchbar.addResult.bind(window.searchbar), 'code', code);
+    addMajorOptionalCourses() {
+        for (let grade in this.optional) {
+            for (let code of this.optional[grade]) {
+                this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), code);
             }
 
         }
