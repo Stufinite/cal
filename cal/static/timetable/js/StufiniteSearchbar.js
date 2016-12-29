@@ -55,13 +55,10 @@ class StufiniteSearchbar {
             .find('span.info').text(course.professor).end()
             .find('a.join').attr('code', course.code).bind('click', (e) => {
                 let code = $(e.target).attr('code');
-                window.timetable.getCourse(window.timetable.addCourse.bind(window.timetable), 'code', code);
-                // course = window.timetable.getCourse('code', code)[0];
-                // window.timetable.addCourse(course);
-                // window.timetable.addDetail(course);
+                window.timetable.getCourseByCode(window.timetable.addCourse.bind(window.timetable), code);
                 this.hide();
             }).end()
-            .find('a.review').attr('href', 'http://feedback.nchusg.org/search/?q=' + course.title["zh_TW"]).end()
+            .find('a.review').attr('href', '#').end()
             .find('a.detail').bind('click', () => {
                 window.timetable.addDetail(course)
             }).end()

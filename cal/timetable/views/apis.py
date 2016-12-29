@@ -9,7 +9,36 @@ def get_user(request):
     if isinstance(user, HttpResponseRedirect):
         return user
 
+    user['selected'] = get_selected_course(user)
+    user['dept_id'] = get_department_id(user)
+
     return JsonResponse(user)
+
+
+def get_department_id(user):
+    dept_id = []
+
+    for d in Department.objects.filter(degree=user['career']):
+        if (d.title.split(',')[0] == user['major']):
+            dept_id.append(d.code)
+
+    if user['second_major'] != '':
+        for d in Department.objects.filter(degree=user['career']):
+            if (d.title.split(',')[0] == user['second_major']):
+                dept_id.append(d.code)
+
+    return dept_id
+
+
+def get_selected_course(user):
+    try:
+        result = list(map(
+            lambda c: c.code,
+            SelectedCourse.objects.filter(user=user['username'])
+        ))
+        return result
+    except:
+        return []
 
 
 def get_department(request):
@@ -23,15 +52,19 @@ def get_department(request):
             try:
                 result[d.degree].append({
                     'code': d.code,
-                    'title_zh': d.title.split(',')[0],
-                    'title_en': d.title.split(',')[1],
+                    'title': {
+                        'zh_TW': d.title.split(',')[0],
+                        'en_US': d.title.split(',')[1],
+                    },
                 })
             except KeyError:
                 result[d.degree] = []
                 result[d.degree].append({
                     'code': d.code,
-                    'title_zh': d.title.split(',')[0],
-                    'title_en': d.title.split(',')[1],
+                    'title': {
+                        'zh_TW': d.title.split(',')[0],
+                        'en_US': d.title.split(',')[1],
+                    },
                 })
 
         return JsonResponse(result, safe=False)
@@ -59,39 +92,23 @@ def get_course_by_code(request, course_code):
             lambda c: {
                 "code": c.code,
                 "credits": c.credits,
-                "location": c.location,
-                "professor": c.professor,
                 "title": {
                     "zh_TW": c.title.split(",")[0],
                     "en_US": c.title.split(",")[1],
                 },
+                "professor": c.professor,
                 "time": c.time,
+                "location": c.location,
+                "intern_location": c.intern_location,
                 "prerequisite": c.prerequisite,
                 "note": c.note,
+                "discipline": c.discipline,
             },
             Course.objects.filter(code=course_code)
         ))
 
         return JsonResponse(result, safe=False)
     except:
-        raise Http404("Page does not exist")
-
-
-def get_selected(request):
-    user = init_user(request)
-    if isinstance(user, HttpResponseRedirect):
-        return user
-
-    if request.method == 'GET':
-        try:
-            result = list(map(
-                lambda c: c.course.code,
-                SelectedCourse.objects.filter(user=user['username'])
-            ))
-            return JsonResponse(result, safe=False)
-        except:
-            raise Http404("Page does not exist")
-    else:
         raise Http404("Page does not exist")
 
 
@@ -103,9 +120,8 @@ def del_selected(request):
     if request.method == 'POST':
         try:
             code = request.POST.get('code')
-            course = Course.objects.filter(code=code).first()
             SelectedCourse.objects.filter(
-                course=course, user=user['username']).delete()
+                code=code, user=user['username']).delete()
             return JsonResponse({"state": "ok"})
         except:
             raise Http404("Page does not exist")
@@ -123,7 +139,7 @@ def save_selected(request):
             text = request.POST.get('text')
             for code in text.split(','):
                 sc, created = SelectedCourse.objects.get_or_create(
-                    course=Course.objects.filter(code=code).first(), user=user['username'])
+                    code=code, user=user['username'])
                 if not created:
                     sc.save()
             return JsonResponse({"state": "ok"})
@@ -131,10 +147,6 @@ def save_selected(request):
             raise Http404("Page does not exist")
     else:
         raise Http404("Page does not exist")
-
-
-def get_session_key(request):
-    return HttpResponse(request.session.session_key)
 
 
 def build_department():
@@ -169,38 +181,40 @@ def build_course():
         from os import listdir
         import json
         onlycourse = [x for x in listdir(settings.STATICFILES_DIRS[
-                                         0] + '/timetable/json/') if x != 'department.json']
+            0] + '/timetable/json/') if x != 'department.json']
         for filename in onlycourse:
             with open(settings.STATICFILES_DIRS[0] + '/timetable/json/' + filename, 'r') as f:
                 data = json.loads(f.read())
                 for c in data["course"]:
-                    print(c['title'])
-                    time = ''
-                    for i in c['time_parsed']:
-                        time += str(i['day'])
-                        for j in i['time']:
-                            time += str(j)
-                        time += ','
-                    d, created = Course.objects.get_or_create(
-                        school='NCHU',
-                        semester="1051",
-                        code=c['code'],
-                        for_class=c['class'],
-                        credits=c['credits'],
-                        title='{},{}'.format(
-                            c['title_parsed']['zh_TW'],
-                            c['title_parsed']['en_US']
-                        ),
-                        department=c['department'],
-                        professor=c['professor'],
-                        time=time[:-1],
-                        location=c['location'][0],
-                        obligatory=c['obligatory_tf'],
-                        language=c['language'],
-                        duration=c['year'],
-                        prerequisite=c['prerequisite'],
-                        note=c['note']
-                    )
-                    if not created:
-                        d.save()
+                    try:
+                        print(c['title'], c['professor'])
+                        time = ''
+                        for i in c['time_parsed']:
+                            time += str(i['day'])
+                            for j in i['time']:
+                                time += str(j)
+                            time += ','
+                        d, created = Course.objects.get_or_create(
+                            school='NCHU',
+                            semester="1051",
+                            code=c['code'],
+                            credits=c['credits'],
+                            title='{},{}'.format(
+                                c['title_parsed']['zh_TW'],
+                                c['title_parsed']['en_US']
+                            ),
+                            professor=c['professor'],
+                            time=time[:-1],
+                            intern_location=c['intern_location'][0],
+                            location=c['location'][0],
+                            obligatory=c['obligatory_tf'],
+                            language=c['language'],
+                            prerequisite=c['prerequisite'],
+                            note=c['note'],
+                            discipline=c['discipline'],
+                        )
+                        if not created:
+                            d.save()
+                    except:
+                        pass
         return JsonResponse({"state": "ok"})
