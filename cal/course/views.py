@@ -21,7 +21,7 @@ class Course(object):
 	def getByDept(self):
 		CourseDict = self.Cursor2Dict(self.db['CourseOfDept'].find({ "$and":[{"school":self.school}, {self.dept:{"$exists":True}}] },
 		 {self.dept:1, '_id': False}).limit(1))
-		return CourseDict
+		return CourseDict[self.dept]
 
 	def getByTime(self):
 		CourseDict = self.Cursor2Dict(self.db['CourseOfTime'].find({ "$and":[{"school":self.school}, {"degree": self.degree}] }
