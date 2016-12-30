@@ -20,6 +20,7 @@ class Course(models.Model):
     time = models.CharField(max_length=100, default='')
     intern_location = models.CharField(max_length=100, default='')
     location = models.CharField(max_length=100, default='')
+    department = models.CharField(max_length=100, default='')
     obligatory = models.BooleanField(default=True)
     language = models.CharField(max_length=100, default='')
     prerequisite = models.CharField(max_length=100, default='')
