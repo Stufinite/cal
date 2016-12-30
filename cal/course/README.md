@@ -9,7 +9,7 @@ API使用方式（下面所寫的是api的URL pattern）<br>
 
 1. 取得系所的課程代碼<br>
   (Get Course code of Dept Name.)：<br>
-  `/search?dept=<department code>&school=<school>`
+  `/course/CourseOfDept/?dept=<department code>&school=<school>`
 
   - 範例 (Example)：`/course/CourseOfDept/?dept=U56&school=NCHU`
   - result：
@@ -19,7 +19,7 @@ API使用方式（下面所寫的是api的URL pattern）<br>
     ```
 
 2. 查詢該時段有什麼課可以上：<br>
-  需要指定哪一天的哪一節課 `/search?degree=<學制>&day=<星期幾>&time=<第幾節課>&school=<學校名稱>`
+  需要指定哪一天的哪一節課 `/course/TimeOfCourse/?degree=<學制>&day=<星期幾>&time=<第幾節課>&school=<學校名稱>`
 
   - 範例 (Example)：`/course/TimeOfCourse/?degree=U&school=NCHU&day=1&time=10`
   - result：
