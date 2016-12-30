@@ -1,6 +1,7 @@
 class StufiniteTimetable {
   constructor(school, lang, user) {
     this.target = $("#time-table");
+    this.school = school
     this.language = lang;
     this.credits = 0;
 
@@ -11,8 +12,14 @@ class StufiniteTimetable {
     this.secondObligatory = {};
     this.secondOptional = {};
 
+    this.classroom = {};
+
     // Initialize timetable with square plus buttons
     $("#time-table td").html($('<i class="fa fa-plus-square fa-5x"></i>').on("click", this.addCourseToSearchbar.bind(this)));
+
+    $.getJSON('/static/timetable/json/NCHU/Classroom.json', (json) => {
+      this.classroom = json;
+    });
 
     this.getCourseByMajor((jsonOfCode) => {
       this.InitializeByMajor(jsonOfCode);
@@ -31,7 +38,7 @@ class StufiniteTimetable {
       }
       this.addMajorOptionalCourses();
     }
-    if (this.user.deptId.length > 1) {
+    if (this.user.dept_id.length > 1) {
       this.InitializeBySecondMajor();
     }
   }
@@ -93,11 +100,11 @@ class StufiniteTimetable {
   }
 
   getCourseByMajor(method) {
-    $.getJSON('/course/CourseOfDept/?dept=' + this.user.deptId[0] + '&school=NCHU', method);
+    $.getJSON('/course/CourseOfDept/?dept=' + this.user.dept_id[0] + '&school=' + this.school, method);
   }
 
   getCourseBySecondMajor(method) {
-    $.getJSON('/course/CourseOfDept/?dept=' + this.user.deptId[1] + '&school=NCHU', method);
+    $.getJSON('/course/CourseOfDept/?dept=' + this.user.dept_id[1] + '&school=' + this.school, method);
   }
 
   setCredit(num) {
@@ -135,6 +142,25 @@ class StufiniteTimetable {
     } else {}
     time = time.join(' '); //把多個陣列用" "分隔並合併指派給time，此為字串型態，若是將字串split('')，則會回傳一個陣列型態
     return time;
+  }
+
+  getCourseLocation(location) {
+    if (location != "") {
+      for (let c in this.classroom) {
+        let index = 0;
+        for (let i = 0; i < location.length; i++) {
+          // Find code of the building
+          if (!isNaN(location.charAt(i))) {
+            index = i;
+            break;
+          }
+        }
+        if (location.substring(0, index) == c) {
+          return this.classroom[c] + location.substring(index, location.length)
+        }
+      }
+    }
+    return location;
   }
 
   parseCourseTime(time) {
@@ -336,14 +362,18 @@ class StufiniteTimetable {
           <li>指導教授： <span class='detail-professor'></span></li>
           <li>課程代碼： <span class='detail-code'></span></li>
           <li>選修學分： <span class='detail-credits'></span></li>
-          <li>上課地點： <a href='#' title='點擊開啟地圖'><span class='detail-location'></span></a></li>
+          <li>上課地點： <a href='#' title=''><span class='detail-location'></span></a></li>
           <li>先修科目： <span class='detail-prerequisite'></span></li>
           <li>課程備註： <span class='detail-note'></span></li>
-          `).find(".detail-professor").text(course.professor).end().find(".detail-code").text(course.code).end().find(".detail-credits").text(course.credits).end().find(".detail-location").text(course.location).end().find(".detail-prerequisite").text(course.prerequisite == undefined || course.prerequisite == ""
-      ? "無"
-      : course.prerequisite).end().find(".detail-note").text(course.note == undefined || course.note == ""
-      ? "無"
-      : course.note).end()
+          `)
+          .find(".detail-professor").text(course.professor).end()
+          .find(".detail-code").text(course.code).end()
+          .find(".detail-credits").text(course.credits).end()
+          .find(".detail-location").text(this.getCourseLocation(course.location)).end()
+          .find(".detail-prerequisite")
+          .text(course.prerequisite == undefined || course.prerequisite == ""? "無": course.prerequisite).end()
+          .find(".detail-note")
+          .text(course.note == undefined || course.note == ""? "無": course.note).end()
     $("#course-detail").append($detail)
   }
 
@@ -351,7 +381,7 @@ class StufiniteTimetable {
     let day = $(e.target).closest("td").attr("data-day");
     let hour = $(e.target).closest("tr").attr("data-hour");
 
-    $.getJSON('/course/TimeOfCourse/?school=NCHU&degree=' + this.user.career + '&day=' + day + '&time=' + hour, (codes) => {
+    $.getJSON('/course/TimeOfCourse/?school=' + this.school + '&degree=' + this.user.career + '&day=' + day + '&time=' + hour, (codes) => {
       window.searchbar.clear();
       for (let c of codes) {
         this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), c);
