@@ -23,14 +23,19 @@
     letter-spacing: 1px;
 }
 
+.timetable .detail {
+    position: relative;
+    left: 25%;
+    color: #222;
+}
+
 .timetable .remove {
     position: relative;
     left: 25%;
     color: red;
-    ;
 }
 
-.timetable .remove:hover {
+.timetable .detail:hover, .timetable .remove:hover {
     cursor: pointer;
 }
 

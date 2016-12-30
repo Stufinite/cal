@@ -359,7 +359,7 @@ class StufiniteTimetable {
       return;
     }
     $("#time-table").find("td").css("background-color", "white").css("color", "#403F3F")
-    $("#course-detail").children().remove().end().html("<li>雙擊課程顯示資訊</li>")
+    $("#course-detail").children().remove().end().html("<li>點擊圖示顯示課程詳細資訊</li>")
   }
 
   addDetail(course) {
@@ -369,7 +369,7 @@ class StufiniteTimetable {
     }
 
     $("#time-table").find("td").css("background-color", "white").css("color", "#403F3F")
-    $("#time-table").find("i[code=" + course.code + "]").parent().parent().css("background-color", "#DEDEDE").css("color", "white")
+    $("#time-table").find(".course[code=" + course.code + "]").parent().css("background-color", "#DEDEDE").css("color", "white")
 
     $("#course-detail").children().remove()
     let $detail = $(`
@@ -416,22 +416,28 @@ class StufiniteTimetable {
       for (let courseByTime of courseByDay.time) {
         let $cell = $(`
                     <div class="course">
+                        <i class="detail fa fa-book" aria-hidden="true"></i>
                         <i class="remove fa fa-trash" aria-hidden="true"></i>
                         <span class="title"></span>
                         <span class="professor"></span>
                         <span class="location"></span>
                     </div>`)
         let $td = target.find('tr[data-hour="' + courseByTime + '"] td:eq(' + (courseByDay.day - 1) + ')');
-        $cell.find('.remove').attr('code', course.code).bind('click', (function(e) {
-          let code = $(e.target).attr('code');
-          this.getCourseByCode(this.delCourse.bind(this), code)
-          this.clearDetail(code);
-        }).bind(this)).end().find('.title').text(course.title[language]).end().find('input').val(course.code).end().find('.professor').text(course.professor).end().find('.location').end()
-        $td.html($cell);
 
-        $cell.parent().bind("dblclick", (e) => {
-          this.addDetail(course);
-        });
+        $cell
+        .find('.detail').bind('click', (e) => {
+          this.addDetail(course)
+        }).end()
+        .find('.remove').bind('click', (e) => {
+          this.delCourse(course)
+          this.clearDetail(course.code);
+        }).end()
+        .find('.title').text(course.title[language]).end()
+        .find('input').val(course.code).end()
+        .find('.professor').text(course.professor).end().find('.location').end()
+        .attr('code', course.code)
+
+        $td.html($cell);
       }
     }
 
