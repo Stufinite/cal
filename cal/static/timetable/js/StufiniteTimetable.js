@@ -5,7 +5,6 @@ class StufiniteTimetable {
     this.credits = 0;
 
     this.user = user;
-    user.deptId = ["U56", "U66"]
 
     this.obligatory = {};
     this.optional = {};
