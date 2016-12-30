@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Department(models.Model):
+    school = models.CharField(max_length=100, default='')
     degree = models.CharField(max_length=100, default='')
     code = models.CharField(max_length=100, default='')
     title = models.CharField(max_length=100, default='')

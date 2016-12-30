@@ -182,17 +182,17 @@ class StufiniteTimetable {
         });
     }
 
-    addSelected() {
-        let uploadData = '';
-        for (let i of this.user.selected) {
-            uploadData += uploadData === '' ? i : ',' + i;
-        }
+    addSelected(code) {
+        // let uploadData = '';
+        // for (let i of this.user.selected) {
+        //     uploadData += uploadData === '' ? i : ',' + i;
+        // }
 
         $.ajax({
             url: "/api/put/selected",
             method: "POST",
             data: {
-                text: uploadData,
+                text: code,
                 csrfmiddlewaretoken: getCookie('csrftoken')
             },
             dataType: "text"
@@ -310,7 +310,7 @@ class StufiniteTimetable {
 
         this.addCredit(course.credits);
         this.user.selected.push(course.code);
-        this.addSelected();
+        this.addSelected(course.code);
     }
 
     delCourse(course) {
