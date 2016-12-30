@@ -54,4 +54,5 @@ def TimeOfCourse(request):
 	time = request.GET['time']
 	school = request.GET['school']
 	c = Course(degree=degree, day=day, time=time, school=school)
-	return JsonResponse(c.getByTime(), safe=False)
+	other = Course(degree='O', day=day, time=time, school=school)
+	return JsonResponse(c.getByTime() + other.getByTime(), safe=False)
