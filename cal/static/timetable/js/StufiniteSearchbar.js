@@ -45,20 +45,18 @@ class StufiniteSearchbar {
               <span class='info'></span>
               <div class="action-btn">
                 <button><a class='join'>加入</a></button>
-                <button><a class='review'>心得</a></button>
                 <button><a class='detail'>詳細資料</a></button>
               </div>
             </div>`);
 
         result
             .find('h4.title').text(language == "zh_TW" ? course.title["zh_TW"] : course.title["en_US"]).end()
-            .find('span.info').text(course.professor).end()
+            .find('span.info').text(window.timetable.getCourseTime(course.time) + ' | ' + course.professor).end()
             .find('a.join').attr('code', course.code).bind('click', (e) => {
                 let code = $(e.target).attr('code');
                 window.timetable.getCourseByCode(window.timetable.addCourse.bind(window.timetable), code);
                 this.hide();
             }).end()
-            .find('a.review').attr('href', '#').end()
             .find('a.detail').bind('click', () => {
                 window.timetable.addDetail(course)
             }).end()

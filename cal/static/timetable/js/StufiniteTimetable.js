@@ -155,12 +155,26 @@ class StufiniteTimetable {
             break;
           }
         }
-        if (location.substring(0, index) == c) {
-          return this.classroom[c] + location.substring(index, location.length)
+        if (location.slice(0, index) == c) {
+          return this.classroom[c] + location.slice(index, location.length)
         }
       }
     }
     return location;
+  }
+
+  getCourseTime(time) {
+    time = this.parseCourseTime(time);
+    let dayChar = ['一', '二', '三', '四', '五', '六', '日'];
+    let result = ''
+    for (let d of time) {
+      result += dayChar[parseInt(d.day, 10) - 1] + ' ';
+      for (let h of d.time) {
+        result += h + ' '
+      }
+      result += ', '
+    }
+    return result.slice(0, -3);
   }
 
   parseCourseTime(time) {
