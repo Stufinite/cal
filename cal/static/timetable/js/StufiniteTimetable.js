@@ -6,6 +6,7 @@ class StufiniteTimetable {
     this.credits = 0;
 
     this.user = user;
+    this.user.dept_id = ["U56", "U61A"]
 
     this.obligatory = {};
     this.optional = {};
@@ -52,49 +53,49 @@ class StufiniteTimetable {
   }
 
   buildMajorObligatoryIndex(json) {
-    for (let i in json['obligatory']['ClassA']) {
-      this.obligatory[i] = json['obligatory']['ClassA'][i];
+    for (let i in json['obligatory']) {
+      this.obligatory[i] = json['obligatory'][i];
     }
-    for (let i in json['optional']['ClassA']) {
-      this.optional[i] = json['optional']['ClassA'][i];
+    for (let i in json['optional']) {
+      this.optional[i] = json['optional'][i];
     }
   }
 
   buildSecondMajorObligatoryIndex(json) {
-    for (let i in json['obligatory']['ClassA']) {
-      this.secondObligatory[i] = json['obligatory']['ClassA'][i];
+    for (let i in json['obligatory']) {
+      this.secondObligatory[i] = json['obligatory'][i];
     }
-    for (let i in json['optional']['ClassA']) {
-      this.secondOptional[i] = json['optional']['ClassA'][i];
+    for (let i in json['optional']) {
+      this.secondOptional[i] = json['optional'][i];
     }
   }
 
   addMajorCourses() {
-    for (let code of this.obligatory[this.user.grade]) {
-      this.getCourseByCode(this.addCourse.bind(this), code);
+    for (let code in this.obligatory[this.user.grade]) {
+      this.getCourseByCode(this.addCourse.bind(this), this.obligatory[this.user.grade][code]);
     }
   }
 
   addMajorOptionalCourses() {
     for (let grade in this.optional) {
-      for (let code of this.optional[grade]) {
-        this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), code);
+      for (let code in this.optional[grade]) {
+        this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), this.optional[grade][code]);
       }
     }
   }
 
   addSecondMajorCourses() {
     for (let grade in this.secondObligatory) {
-      for (let code of this.secondObligatory[grade]) {
-        this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), code);
+      for (let code in this.secondObligatory[grade]) {
+        this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), this.secondObligatory[grade][code]);
       }
     }
   }
 
   addSecondMajorOptionalCourses() {
     for (let grade in this.secondOptional) {
-      for (let code of this.secondOptional[grade]) {
-        this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), code);
+      for (let code in this.secondOptional[grade]) {
+        this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), this.secondOptional[grade][code]);
       }
     }
   }
@@ -295,7 +296,7 @@ class StufiniteTimetable {
 
   isSelected(code) {
     for (let i in this.user.selected) {
-      if (this.user.selected == code) {
+      if (i == code) {
         return true;
       }
     }

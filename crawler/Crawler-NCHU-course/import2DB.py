@@ -35,7 +35,7 @@ class import2Mongo(object):
 		def getDeptCode(degree, deptName, grade):
 			if len(grade) > 1:
 				deptName = deptName + ' ' + grade[-1].upper()
-				
+
 			for i in self.chgTable:
 				if i['degree'] == self.degree2Chi[degree]:
 					for j in i['department']:
@@ -56,13 +56,11 @@ class import2Mongo(object):
 			oblAttr = getObliAttr(obligat)
 			if dept not in self.deptSet:
 				result[dept]={
-						'obligatory':{'ClassA':{}},
-						'optional':{'ClassA':{}}
+						'obligatory':{},
+						'optional':{}
 					}
 				self.deptSet.add(dept)
-			result[dept]['obligatory'].setdefault(className, {})
-			result[dept]['optional'].setdefault(className, {})
-			result[dept][oblAttr][className].setdefault(grade, []).append(code)
+			result[dept][oblAttr].setdefault(grade, []).append(code)
 
 		return result
 
