@@ -13,7 +13,7 @@ class import2Mongo(object):
 		self.DeptCollect = self.db['CourseOfDept']
 		self.CourseOfTime = self.db['CourseOfTime']
 		self.chgTable = json.load(open('fallback/json/department.json', 'r'))
-		
+
 	def AddHeader(self, document, degree):
 		document['degree'] = degree
 		document['school'] = "NCHU"
@@ -32,7 +32,10 @@ class import2Mongo(object):
 				return 'obligatory'
 			return 'optional'
 
-		def getDeptCode(degree, deptName):
+		def getDeptCode(degree, deptName, grade):
+			if len(grade) > 1:
+				deptName = deptName + ' ' + grade[-1].upper()
+				
 			for i in self.chgTable:
 				if i['degree'] == self.degree2Chi[degree]:
 					for j in i['department']:
@@ -43,7 +46,7 @@ class import2Mongo(object):
 
 		result = {}
 		for i in jsonDict['course']:
-			dept = getDeptCode(degree, i['for_dept']) 
+			dept = getDeptCode(degree, i['for_dept'], i['class'])
 			# dept == False means getDeptCode has error
 			if dept == False: continue
 			code = i['code']
@@ -97,7 +100,7 @@ class import2Mongo(object):
 				deptDoc = self.BuildByDept(degree, jsonDict)
 				deptDoc = self.AddHeader(deptDoc, degree)
 				self.DeptCollect.update({ "$and":[{"school":"NCHU"}, {'degree':degree}] }, deptDoc, upsert=True)
-			
+
 			timeDoc = self.BuildByTime(degree, jsonDict)
 			timeDoc = self.AddHeader(timeDoc, degree)
 			self.CourseOfTime.update({ "$and":[{"school":"NCHU"}, {'degree':degree}] }, timeDoc, upsert=True)
