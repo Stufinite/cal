@@ -6,7 +6,6 @@ class StufiniteTimetable {
     this.credits = 0;
 
     this.user = user;
-    this.user.dept_id = ["U56", "U61A"]
 
     this.obligatory = {};
     this.optional = {};
@@ -296,7 +295,7 @@ class StufiniteTimetable {
 
   isSelected(code) {
     for (let i in this.user.selected) {
-      if (i == code) {
+      if (this.user.selected[i] == code) {
         return true;
       }
     }
