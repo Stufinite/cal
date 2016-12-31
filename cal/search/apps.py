@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.apps import AppConfig
 from pymongo import MongoClient
-import re, urllib, requests, json, jieba, jieba.analyse
+import re, urllib, requests, json, jieba, pyprind
 from timetable.models import Course
 from bs4 import BeautifulSoup
 from django.shortcuts import get_list_or_404
@@ -113,7 +113,9 @@ class SearchOb(object):
 	####################Build index#########################################
 	def BuildIndex(self):
 		self.SrchCollect.remove({})
+		ProgreBar = pyprind.ProgBar(Course.objects.count())
 		for i in Course.objects.all():
+			ProgreBar.update(1,item_id = i.title, force_flush=True)
 			key = self.bigram(i.title)
 			titleTerms = self.title2terms(i.title)
 			CourseCode = i.code
