@@ -4,9 +4,6 @@ from timetable.models import Department, Course, SelectedCourse
 
 def build_department(school: str):
     Department.objects.all().delete()
-    from cal import settings
-    if not settings.DEBUG:
-        raise Http404("Page does not exist")
 
     from cal import settings
     import json
@@ -29,9 +26,6 @@ def build_department(school: str):
 
 def build_course(school: str, semester: str):
     Course.objects.all().delete()
-    from cal import settings
-    if not settings.DEBUG:
-        raise Http404("Page does not exist")
 
     from cal import settings
     from os import listdir
