@@ -13,3 +13,7 @@ urlpatterns += [
     url(r'^api/del/selected$', apis.del_selected),
     url(r'^api/get/dept$', apis.get_department),
 ]
+
+urlpatterns += [
+    url(r'^control_api/session_key$', apis.get_session_key),
+]
