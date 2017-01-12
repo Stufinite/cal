@@ -28,16 +28,16 @@ class StufiniteTimetable {
   }
 
   InitializeByMajor(jsonOfCode) {
-    this.buildMajorObligatoryIndex(jsonOfCode);
+    this.buildObligatoryIndex(jsonOfCode, 'obligatory', 'optional');
     if (this.user.selected.length == 0) {
       this.addMajorCourses();
-      this.addMajorOptionalCourses();
     } else {
       for (let i in this.user.selected) {
         this.getCourseByCode(this.addCourse.bind(this), this.user.selected[i]);
       }
-      this.addMajorOptionalCourses();
     }
+
+    this.addMajorCoursesToSearchbar('obligatory', 'optional');
     if (this.user.dept_id.length > 1) {
       this.InitializeBySecondMajor();
     }
@@ -45,56 +45,38 @@ class StufiniteTimetable {
 
   InitializeBySecondMajor() {
     this.getCourseBySecondMajor((jsonOfCode) => {
-      this.buildSecondMajorObligatoryIndex(jsonOfCode);
-      this.addSecondMajorCourses();
-      this.addSecondMajorOptionalCourses();
+      this.buildObligatoryIndex(jsonOfCode, 'secondObligatory', 'secondOptional');
+      this.addMajorCoursesToSearchbar('secondObligatory', 'secondOptional');
     });
   }
 
-  buildMajorObligatoryIndex(json) {
-    for (let i in json['obligatory']) {
-      this.obligatory[i] = json['obligatory'][i];
+  buildObligatoryIndex(json, obligatory, optional) {
+    for (let i in json[obligatory]) {
+      this[obligatory][i] = json['obligatory'][i];
     }
     for (let i in json['optional']) {
-      this.optional[i] = json['optional'][i];
-    }
-  }
-
-  buildSecondMajorObligatoryIndex(json) {
-    for (let i in json['obligatory']) {
-      this.secondObligatory[i] = json['obligatory'][i];
-    }
-    for (let i in json['optional']) {
-      this.secondOptional[i] = json['optional'][i];
+      this[optional][i] = json['optional'][i];
     }
   }
 
   addMajorCourses() {
-    for (let code in this.obligatory[this.user.grade]) {
-      this.getCourseByCode(this.addCourse.bind(this), this.obligatory[this.user.grade][code]);
+    for (let code in this['obligatory'][this.user.grade]) {
+      this.getCourseByCode(this.addCourse.bind(this), this['obligatory'][this.user.grade][code]);
     }
   }
 
-  addMajorOptionalCourses() {
-    for (let grade in this.optional) {
-      for (let code in this.optional[grade]) {
-        this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), this.optional[grade][code]);
+  addMajorCoursesToSearchbar(obligatory, optional) {
+    /* Obligatory part */
+    for (let grade in this[obligatory]) {
+      for (let code in this[obligatory][grade]) {
+        this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), this[obligatory][grade][code]);
       }
     }
-  }
 
-  addSecondMajorCourses() {
-    for (let grade in this.secondObligatory) {
-      for (let code in this.secondObligatory[grade]) {
-        this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), this.secondObligatory[grade][code]);
-      }
-    }
-  }
-
-  addSecondMajorOptionalCourses() {
-    for (let grade in this.secondOptional) {
-      for (let code in this.secondOptional[grade]) {
-        this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), this.secondOptional[grade][code]);
+    /* Optioanl part */
+    for (let grade in this[optional]) {
+      for (let code in this[optional][grade]) {
+        this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), this[optional][grade][code]);
       }
     }
   }
@@ -128,22 +110,6 @@ class StufiniteTimetable {
     });
   }
 
-  getCourseTime(course) {
-    var week = ["一", "二", "三", "四", "五"];
-    var time = [];
-
-    $.each(course.time, function(_, iv) {
-      //push是把裡面的元素變成陣列的一格
-      time.push("(" + week[iv.day - 1] + ")" + iv.time);
-    })
-    if (course.intern_time != "" && course.intern_time != undefined) {
-      //不是每一堂課都會有實習時間
-      time.push("實習時間:" + course.intern_time);
-    } else {}
-    time = time.join(' '); //把多個陣列用" "分隔並合併指派給time，此為字串型態，若是將字串split('')，則會回傳一個陣列型態
-    return time;
-  }
-
   getCourseLocation(location) {
     if (location != "") {
       for (let c in this.classroom) {
@@ -164,6 +130,9 @@ class StufiniteTimetable {
   }
 
   getCourseTime(time) {
+    if (time == "" || time == undefined) {
+      return "無上課時間";
+    }
     time = this.parseCourseTime(time);
     let dayChar = ['一', '二', '三', '四', '五', '六', '日'];
     let result = ''
@@ -273,9 +242,9 @@ class StufiniteTimetable {
         "數學統計學群": ".nature",
         "工程科技學群": ".nature"
       };
-      return course.discipline in types
-        ? types[course.discipline]
-        : '.others';
+      return course.discipline in types ?
+        types[course.discipline] :
+        '.others';
     } else {
       let types = {
         "語言中心": ".english",
@@ -287,9 +256,9 @@ class StufiniteTimetable {
         "教官室": ".military-post",
         "師資培育中心": ".teacher-post"
       };
-      return course.department in types
-        ? types[course.department]
-        : ".others";
+      return course.department in types ?
+        types[course.department] :
+        ".others";
     }
   }
 
@@ -341,9 +310,11 @@ class StufiniteTimetable {
         var $td = target.find('tr[data-hour=' + jv + '] td:eq(' + (iv.day - 1) + ')');
         if ($td.text() != "") { //用來判斷td裡面是不已經有放過課程了，但若先在裡面放個按鈕那.text()回傳回來的也是空字串
           flag = true;
-          toastr.error(language == "zh_TW"
-            ? "衝堂喔!請手動刪除衝堂的課程"
-            : "Conflict! please drop some course manually.", {timeOut: 2500});
+          toastr.error(language == "zh_TW" ?
+            "衝堂喔!請手動刪除衝堂的課程" :
+            "Conflict! please drop some course manually.", {
+              timeOut: 2500
+            });
           return;
         }
       });
@@ -380,14 +351,14 @@ class StufiniteTimetable {
           <li>先修科目： <span class='detail-prerequisite'></span></li>
           <li>課程備註： <span class='detail-note'></span></li>
           `)
-          .find(".detail-professor").text(course.professor).end()
-          .find(".detail-code").text(course.code).end()
-          .find(".detail-credits").text(course.credits).end()
-          .find(".detail-location").text(this.getCourseLocation(course.location)).end()
-          .find(".detail-prerequisite")
-          .text(course.prerequisite == undefined || course.prerequisite == ""? "無": course.prerequisite).end()
-          .find(".detail-note")
-          .text(course.note == undefined || course.note == ""? "無": course.note).end()
+      .find(".detail-professor").text(course.professor).end()
+      .find(".detail-code").text(course.code).end()
+      .find(".detail-credits").text(course.credits).end()
+      .find(".detail-location").text(this.getCourseLocation(course.location)).end()
+      .find(".detail-prerequisite")
+      .text(course.prerequisite == undefined || course.prerequisite == "" ? "無" : course.prerequisite).end()
+      .find(".detail-note")
+      .text(course.note == undefined || course.note == "" ? "無" : course.note).end()
     $("#course-detail").append($detail)
   }
 
@@ -425,17 +396,17 @@ class StufiniteTimetable {
         let $td = target.find('tr[data-hour="' + courseByTime + '"] td:eq(' + (courseByDay.day - 1) + ')');
 
         $cell
-        .find('.detail').bind('click', (e) => {
-          this.addDetail(course)
-        }).end()
-        .find('.remove').bind('click', (e) => {
-          this.delCourse(course)
-          this.clearDetail(course.code);
-        }).end()
-        .find('.title').text(course.title[language]).end()
-        .find('input').val(course.code).end()
-        .find('.professor').text(course.professor).end().find('.location').end()
-        .attr('code', course.code)
+          .find('.detail').bind('click', (e) => {
+            this.addDetail(course)
+          }).end()
+          .find('.remove').bind('click', (e) => {
+            this.delCourse(course)
+            this.clearDetail(course.code);
+          }).end()
+          .find('.title').text(course.title[language]).end()
+          .find('input').val(course.code).end()
+          .find('.professor').text(course.professor).end().find('.location').end()
+          .attr('code', course.code)
 
         $td.html($cell);
       }
@@ -450,9 +421,11 @@ class StufiniteTimetable {
     let major = this.user['major'].split(" ")[0];
 
     if (this.isCourseObligatory(course.code)) {
-      toastr.warning(this.language == "zh_TW"
-        ? "此為必修課，若要復原請點擊課表空格"
-        : "This is a required course, if you want to undo, please click the \"plus\" symbol", {timeOut: 2500});
+      toastr.warning(this.language == "zh_TW" ?
+        "此為必修課，若要復原請點擊課表空格" :
+        "This is a required course, if you want to undo, please click the \"plus\" symbol", {
+          timeOut: 2500
+        });
     }
 
     $.each(this.parseCourseTime(course.time), (_, iv) => {
