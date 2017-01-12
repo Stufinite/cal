@@ -37,14 +37,17 @@ class SearchOb(object):
 			return sorted(list(cursor)[0][kw][self.school], key=lambda x:x['CourseCode'])
 		else:
 			try:
-				text = requests.get('http://api.udic.cs.nchu.edu.tw/api/kemApi/?keyword={}&lang=cht&num=10'.format(urllib.parse.quote(kw)), timeout=5)
+				text = requests.get('http://api.udic.cs.nchu.edu.tw/api/kcm/?keyword={}&lang=cht&num=20'.format(urllib.parse.quote(kw)), timeout=5)
+				if text == []:
+					text = requests.get('http://api.udic.cs.nchu.edu.tw/api/kem/?keyword={}&lang=cht&num=200'.format(urllib.parse.quote(kw)))
+
 				text = json.loads(text.text)
 				for i in text:
-					cursor = self.SrchCollect.find({i: {"$exists": True}}).limit(1)
+					cursor = self.SrchCollect.find({i[0]: {"$exists": True}}).limit(1)
 					if cursor.count() > 0:
 						# Key Exist
 						cursor = list(cursor)[0]
-						return cursor[i][self.school]
+						return cursor[i[0]][self.school]
 
 				return []
 			except requests.exceptions.Timeout as e:
@@ -52,13 +55,13 @@ class SearchOb(object):
 	def TCsearch(self):
 		def Intersec(cursor1, cursor2):
 			def incOrbreak(index):
-				# True´ú±ícursor2ÒÑ½›µ½×îááÒ»‚€ÁË
+				# Trueä»£è¡¨cursor2å·²ç¶“åˆ°æœ€å¾Œä¸€å€‹äº†
 				if index == len(cursor2)-1: return 0,True
 				else:
 					index += 1
 					return index, False	
 
-			# Èç¹ûÓÐÒ»‚€žé¿Õ¾Í»Ø‚÷¿Õ
+			# å¦‚æžœæœ‰ä¸€å€‹ç‚ºç©ºå°±å›žå‚³ç©º
 			if cursor1 == [] or cursor2 == []: 
 				return []
 
