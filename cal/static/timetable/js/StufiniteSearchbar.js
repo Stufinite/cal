@@ -9,17 +9,19 @@ class StufiniteSearchbar {
       tab.find('span.tab-' + t).bind('click', this.displayTab.bind(this));
       $('.' + t + '-container').hide();
     }
-    tab.find('dept-container').show();
+    $('.tab-dept').css("background-color", "#DEDEDE").css("color", "white")
+    $('.dept-container').show();
   }
 
-    displayTab(e) {
-      let className = $(e.target).attr('class');
-      console.log(className)
-      for (let t of this.tabs) {
-        $('.' + t + '-container').hide();
-      }
-      $('.' + className.split('-')[1] + '-container').show();
+  displayTab(e) {
+    let className = $(e.target).attr('class');
+    for (let t of this.tabs) {
+      $('.tab-' + t).css("background-color", "white").css("color", "#403F3F")
+      $('.' + t + '-container').hide();
     }
+    $('.tab-' + className.split('-')[1]).css("background-color", "#DEDEDE").css("color", "white")
+    $('.' + className.split('-')[1] + '-container').show();
+  }
 
   show() {
     $(".stufinite-app-searchbar-toggle").attr("data-toggle", "true")

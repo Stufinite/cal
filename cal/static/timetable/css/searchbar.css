@@ -62,8 +62,7 @@
     width: 100%;
 }
 
-.stufinite-searchbar-result-title {
-    display: none;
+.stufinite-searchbar-result-title, .stufinite-searchbar-dept-title {
     margin-left: 8px;
     padding: 8px 16px 8px 16px;
     width: 90%;
@@ -71,7 +70,12 @@
     box-shadow: 1px 1px 1px grey;
 }
 
-.stufinite-searchbar-result-list {
+.stufinite-searchbar-result-title {
+  display: none;
+}
+
+
+.stufinite-searchbar-result-list, .stufinite-searchbar-dept-list {
     margin-top: 2px;
     width: 100%;
 }
