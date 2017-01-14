@@ -52,7 +52,7 @@ function InitializeSearchForm() {
           window.searchbar.clear()
           for (let i of c_by_key) {
               window.timetable.getCourseByCode((course) => {
-                  window.searchbar.addResult(course)
+                  window.searchbar.addResult(course, true);
               }, i)
           }
       });

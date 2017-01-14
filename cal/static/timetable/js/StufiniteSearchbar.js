@@ -2,7 +2,7 @@ class StufiniteSearchbar {
   constructor() {
     this.isVisible = false;
     this.type = ['optional', 'human', 'society', 'nature', 'PE']
-    this.tabs = ['dept', 'general', 'PE', 'others'];
+    this.tabs = ['dept', 'general', 'PE', 'others', 'search'];
 
     let tab = $('.stufinite-searchbar-tab');
     for (let t of this.tabs) {
@@ -21,6 +21,15 @@ class StufiniteSearchbar {
     }
     $('.tab-' + className.split('-')[1]).css("background-color", "#DEDEDE").css("color", "white")
     $('.' + className.split('-')[1] + '-container').show();
+  }
+
+  displaySearchTab() {
+    for (let t of this.tabs) {
+      $('.tab-' + t).css("background-color", "white").css("color", "#403F3F")
+      $('.' + t + '-container').hide();
+    }
+    $('.tab-search').css("background-color", "#DEDEDE").css("color", "white")
+    $('.search-container').show();
   }
 
   show() {
@@ -50,9 +59,11 @@ class StufiniteSearchbar {
     }
   }
 
-  addResult(course) {
-    let target = $(window.timetable.getCourseType(course));
+  addResult(course, search) {
+    let target = $(window.timetable.getCourseType(course) + (search == undefined ? '':'-search'));
     let language = window.timetable.language
+    console.log(search)
+    console.log(target)
 
     if ($('.stufinite-searchbar-placeholder').is(':visible')) {
       $('.stufinite-searchbar-placeholder').hide();
@@ -83,5 +94,9 @@ class StufiniteSearchbar {
 
     target.parent().find('.stufinite-searchbar-result-title').show();
     target.append(target, result);
+
+    if (search != undefined) {
+      this.displaySearchTab()
+    }
   }
 }
