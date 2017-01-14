@@ -69,8 +69,9 @@ class StufiniteTimetable {
     /* Obligatory part */
     for (let grade in this[obligatory]) {
       for (let code in this[obligatory][grade]) {
+        let g = grade;
         this.getCourseByCode((course) => {
-          window.searchbar.addResult(course, undefined, grade);
+          window.searchbar.addResult(course, undefined, g);
         }, this[obligatory][grade][code]);
       }
     }
@@ -78,8 +79,9 @@ class StufiniteTimetable {
     /* Optioanl part */
     for (let grade in this[optional]) {
       for (let code in this[optional][grade]) {
+        let g = grade;
         this.getCourseByCode((course) => {
-          window.searchbar.addResult(course, undefined, grade);
+          window.searchbar.addResult(course, undefined, g);
         }, this[optional][grade][code]);
       }
     }
