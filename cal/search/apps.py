@@ -32,10 +32,10 @@ class SearchOb(object):
 			self.result = self.TCsearch()
 
 	def KEMSearch(self, kw):
-		cursor = self.SrchCollect.find({kw: {"$exists": True}}).limit(1)
+		cursor = self.SrchCollect.find({'key':kw, "school":self.school}, {'value':1, '_id':False}).limit(1)
 		if cursor.count() > 0:
 			# Key Exist
-			return sorted(list(cursor)[0][kw][self.school], key=lambda x:x['CourseCode'])
+			return list(cursor)[0]['value']
 		else:
 			try:
 				text = requests.get('http://api.udic.cs.nchu.edu.tw/api/kcm/?keyword={}&lang=cht&num=20'.format(urllib.parse.quote(kw)), timeout=5)
@@ -44,15 +44,15 @@ class SearchOb(object):
 
 				text = json.loads(text.text)
 				for i in text:
-					cursor = self.SrchCollect.find({i[0]: {"$exists": True}}).limit(1)
+					cursor = self.SrchCollect.find({'key':i[0], "school":self.school}, {'value':1, '_id':False}).limit(1)
 					if cursor.count() > 0:
 						# Key Exist
-						cursor = list(cursor)[0]
-						return cursor[i[0]][self.school]
+						return list(cursor)[0]['value']
 
 				return []
 			except requests.exceptions.Timeout as e:
 				return []
+
 	def TCsearch(self):
 		def Intersec(cursor1, cursor2):
 			def incOrbreak(index):
@@ -144,54 +144,6 @@ class SearchOb(object):
 		result = tuple(dict(key=key, value=value, school='NCHU') for key, value in tmp.items() if key != '' and key!=None)
 		self.SrchCollect.insert(result)
 
-		# for k in key:
-		# 	self.BuildWithKey(k, CourseCode, i)
-		# for t in titleTerms:
-		# 	self.BuildWithKey(t, CourseCode, i)
-		# self.BuildWithKey(CourseCode, CourseCode, i)
-		# self.BuildWithKey(teacher, CourseCode, i)
-
-	def BuildWithKey(self, k, CourseCode, i):
-		cursor = self.SrchCollect.find({k: {"$exists": True}}).limit(1)
-		if cursor.count() > 0:
-			# Key Exist
-			cursor = list(cursor)[0]
-			if i.code not in cursor[i.school+"CourseID"]:
-				################Error Detect#########
-				for v in cursor[k][i.school]:       #
-					if v['CourseCode'] == CourseCode:       #
-						print(k)                    #
-						print(i)                    #
-						print(v)                    #
-						print(cursor[0])            #
-						raise Exception('fuck')     #
-				#####################################
-				self.SrchCollect.update({k: {"$exists": True}}, {'$push': {k + "."+i.school: {
-								"CourseCode":CourseCode,
-								"weight":0}}})
-				self.SrchCollect.update({k: {"$exists":True}}, {'$push':{i.school+"CourseID": i.code}})
-		else:
-			# Key doesn't Exist
-			post_id = self.SrchCollect.insert_one(
-				{
-					k:{
-					i.school:[
-						{
-							"CourseCode":CourseCode,
-							"weight":0
-						}],
-					},
-					i.school+"CourseID":[i.code]
-				}
-			)
 	def title2terms(self, title):
 		terms = jieba.cut(title)
 		return tuple(i for i in terms if len(i)>=2)
-		# res = requests.get('https://onepiece.nchu.edu.tw/cofsys/plsql/Syllabus_main_q?v_strm=1051&v_class_nbr=2761')
-		# soup = BeautifulSoup(res.text)
-		# profile = soup.select("table[border=1]")[0].select("tr")[-2].text
-		# print(profile)
-		# profile = re.sub(r'\(.*?\)','', profile)
-		# terms = jieba.cut(profile)
-		# terms = tuple(i for i in terms if i not in self.stop_words)
-		# print(terms)
