@@ -7,9 +7,10 @@
 API使用方式（下面所寫的是api的URL pattern）<br>
 (Usage of API (pattern written below is URL pattern))：
 
-1. 取得系所的課程代碼<br>
+1. *`/course/CourseOfDept/?dept=<>&grade=<>&school=<>`*  
+取得系所的課程代碼<br>
   (Get Course code of Dept Name.)：<br>
-  `/course/CourseOfDept/?dept=<department code>&grade=<your grade>&school=<school>`
+
 
   - 範例 (Example)：`/course/CourseOfDept/?dept=U56&grade=3&school=NCHU`
   - result：
@@ -27,8 +28,8 @@ API使用方式（下面所寫的是api的URL pattern）<br>
     }
     ```
 
-2. 查詢該時段有什麼課可以上：<br>
-  需要指定哪一天的哪一節課 `/course/TimeOfCourse/?day=<星期幾>&time=<第幾節課>&school=<學校名稱>`
+2. *`/course/TimeOfCourse/?day=<星期幾>&time=<第幾節課>&school=<學校名稱>`*  
+查詢該時段有什麼課可以上：
 
   - 範例 (Example)：`/course/TimeOfCourse/?day=1&time=1&school=NCHU`
   - result：
