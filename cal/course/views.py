@@ -5,11 +5,7 @@ from pymongo import MongoClient
 
 class Course(object):
 	"""docstring for Course"""
-	def __init__(self, school, uri=None, degree=None, dept=None, day=None, time=None):
-		self.degree = degree
-		self.dept = dept
-		self.day = day
-		self.time = time
+	def __init__(self, school, uri=None):
 		self.school = school
 		self.db = MongoClient(uri)['timetable']
 
@@ -18,41 +14,32 @@ class Course(object):
 			return {}
 		return list(cursor)[0]
 
-	def getByDept(self):
-		CourseDict = self.Cursor2Dict(self.db['CourseOfDept'].find({ "$and":[{"school":self.school}, {self.dept:{"$exists":True}}] },
-		 {self.dept:1, '_id': False}).limit(1))
-		return CourseDict[self.dept]
-
-	def getByTime(self):
-		CourseDict = self.Cursor2Dict(self.db['CourseOfTime'].find({ "$and":[{"school":self.school}, {"degree": self.degree}] }
-			,{"{}.{}".format(self.day, self.time):1, '_id': False}
-			).limit(1))
-
-		try:
-			CourseDict = CourseDict[self.day][self.time]
-		except Exception as e:
-			CourseDict = {"error":"invalid day or time or degree or school"}
+	def getByDept(self, dept, grade):
+		CourseDict = self.Cursor2Dict(self.db['CourseOfDept'].find({ "$and":[{"school":self.school}, {'dept':dept}] },{'course.obligatory.{}'.format(grade):1, 'course.optional.{}'.format(grade):1, '_id':False}).limit(1))
 		return CourseDict
 
-@queryString_required(['dept', 'school'])
+	def getByTime(self, day, time):
+		CourseDict = self.Cursor2Dict(self.db['CourseOfTime'].find({'school':self.school, 'day':int(day), 'time':int(time)}, {'value':1, '_id':False}).limit(1))
+		return CourseDict.get('value', [])
+
+@queryString_required(['dept', 'grade', 'school'])
 def CourseOfDept(request):
 	"""
 		Generate list of obligatory and optional course of specific Dept.
 	"""
 	dept = request.GET['dept']
+	grade = request.GET['grade']
 	school = request.GET['school']
-	c = Course(dept=dept, school=school)
-	return JsonResponse(c.getByDept(), safe=False)
+	c = Course(school=school)
+	return JsonResponse(c.getByDept(dept=dept, grade=grade), safe=False)
 
-@queryString_required(['degree', 'day', 'time', 'school'])
+@queryString_required(['day', 'time', 'school'])
 def TimeOfCourse(request):
 	"""
 		Generate list of obligatory and optional course of specific Dept.
 	"""
-	degree = request.GET['degree']
 	day = request.GET['day']
 	time = request.GET['time']
 	school = request.GET['school']
-	c = Course(degree=degree, day=day, time=time, school=school)
-	other = Course(degree='O', day=day, time=time, school=school)
-	return JsonResponse(c.getByTime() + other.getByTime(), safe=False)
+	c = Course(school=school)
+	return JsonResponse(c.getByTime(day=day, time=time), safe=False)

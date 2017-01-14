@@ -9,19 +9,28 @@ API使用方式（下面所寫的是api的URL pattern）<br>
 
 1. 取得系所的課程代碼<br>
   (Get Course code of Dept Name.)：<br>
-  `/course/CourseOfDept/?dept=<department code>&school=<school>`
+  `/course/CourseOfDept/?dept=<department code>&grade=<your grade>&school=<school>`
 
-  - 範例 (Example)：`/course/CourseOfDept/?dept=U56&school=NCHU`
+  - 範例 (Example)：`/course/CourseOfDept/?dept=U56&grade=3&school=NCHU`
   - result：
 
     ```
-    {"U56": {"obligatory": {"ClassA": {"3": ["3359", "3360", "3365", "3366", "3367", "3368", "3369", "3370", "3371", "3372"], "2": ["2347", "2348", "2349", "2351", "2352"], "1": ["1260", "1268", "1285", "1301", "1302"]}}, "optional": {"ClassA": {"3": ["3105", "3110", "3117", "3185", "3198", "3314", "3364"], "2": ["2313", "2353"], "4": ["4117", "4159"]}}}}
+    {
+      "course": {
+        "optional": {
+          "3": ["3105","3110","3117","3185","3198","3314","3364"]
+        },
+        "obligatory": {
+          "3": ["3359","3360","3365","3366","3367","3368","3369","3370","3371","3372"]
+        }
+      }
+    }
     ```
 
 2. 查詢該時段有什麼課可以上：<br>
-  需要指定哪一天的哪一節課 `/course/TimeOfCourse/?degree=<學制>&day=<星期幾>&time=<第幾節課>&school=<學校名稱>`
+  需要指定哪一天的哪一節課 `/course/TimeOfCourse/?day=<星期幾>&time=<第幾節課>&school=<學校名稱>`
 
-  - 範例 (Example)：`/course/TimeOfCourse/?degree=U&school=NCHU&day=1&time=10`
+  - 範例 (Example)：`/course/TimeOfCourse/?day=1&time=1&school=NCHU`
   - result：
 
     ```
