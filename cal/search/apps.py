@@ -47,6 +47,7 @@ class SearchOb(object):
 					cursor = self.SrchCollect.find({'key':i[0], "school":self.school}, {'value':1, '_id':False}).limit(1)
 					if cursor.count() > 0:
 						# Key Exist
+						# print(list(cursor))
 						return list(cursor)[0]['value']
 
 				return []
@@ -54,34 +55,9 @@ class SearchOb(object):
 				return []
 
 	def TCsearch(self):
-		def Intersec(cursor1, cursor2):
-			def incOrbreak(index):
-				# True代表cursor2已經到最後一個了
-				if index == len(cursor2)-1: return 0,True
-				else:
-					index += 1
-					return index, False	
-
-			# 如果有一個為空就回傳空
-			if cursor1 == [] or cursor2 == []: 
-				return []
-
-			index = 0
-			intersection = []
-			for i in cursor1:
-				while cursor2[index]['CourseCode'] < i['CourseCode']:
-					index, end = incOrbreak(index)
-					if end:break
-				if cursor2[index]['CourseCode'] == i['CourseCode']:
-					intersection.append(i)
-					index, end = incOrbreak(index)
-					if end:break	
-				
-			return intersection
-
 		cursor1 = self.KEMSearch(self.keyword[0])
 		cursor2 = self.KEMSearch(self.keyword[1])
-		intersection = Intersec(cursor1, cursor2)
+		intersection = set(cursor1).intersection(cursor2)
 		if intersection == []:
 			if cursor1:
 				return cursor1
@@ -92,8 +68,8 @@ class SearchOb(object):
 
 		for i in self.keyword[2:]:
 			cursor2 = self.KEMSearch(i)
-			intersection = Intersec(intersection, cursor2)
-		return intersection
+			intersection = intersection.intersection(cursor2)
+		return list(intersection)
 
 	def incWeight(self, code):
 		''' To increment the weight of Search Result return by Search Engine. The higher weight will be return a the first of array.
@@ -135,13 +111,13 @@ class SearchOb(object):
 			CourseCode = i.code
 
 			for k in key:
-				tmp.setdefault(k, []).append(CourseCode)
+				tmp.setdefault(k, set()).add(CourseCode)
 			for t in titleTerms:
-				tmp.setdefault(t, []).append(CourseCode)
-			tmp.setdefault(i.professor, []).append(CourseCode)
-			tmp.setdefault(CourseCode, []).append(CourseCode)
+				tmp.setdefault(t, set()).add(CourseCode)
+			tmp.setdefault(i.professor, set()).add(CourseCode)
+			tmp.setdefault(CourseCode, set()).add(CourseCode)
 
-		result = tuple(dict(key=key, value=value, school='NCHU') for key, value in tmp.items() if key != '' and key!=None)
+		result = tuple(dict(key=key, value=list(value), school='NCHU') for key, value in tmp.items() if key != '' and key!=None)
 		self.SrchCollect.insert(result)
 
 	def title2terms(self, title):
