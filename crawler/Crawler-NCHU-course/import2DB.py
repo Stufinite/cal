@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import json
-from pymongo import MongoClient
+import json, pymongo
 class import2Mongo(object):
 	"""docstring for import2Mongo"""
 	def __init__(self, uri=None):
+		from pymongo import MongoClient
+
 		self.JSONdir = 'json'
 		self.degree2Chi = {"U":'學士班', "G":'碩士班',"D":'博士班',"N":'進修學士班',"W":'碩專班', "O":'全校共同'}
 		self.deptSet = set()
@@ -64,6 +65,7 @@ class import2Mongo(object):
 
 		resultList = tuple( dict(dept=dept, course=course, school='NCHU') for dept, course in result.items())
 		self.DeptCollect.insert(resultList)
+		self.CourseOfTime.create_index([("school", pymongo.ASCENDING),("dept", pymongo.ASCENDING)])
 
 	def BuildByTime(self, jsonDict):
 		result = {
@@ -83,6 +85,7 @@ class import2Mongo(object):
 
 		resultList = tuple(dict(school='NCHU', day=d, time=t, value=codeArr) for d in result for t, codeArr in result[d].items())
 		self.CourseOfTime.insert(resultList)
+		self.CourseOfTime.create_index([("school", pymongo.ASCENDING),("day", pymongo.ASCENDING), ('time',pymongo.ASCENDING)])
 
 	def save2DB(self):
 		def getJson(degree):
