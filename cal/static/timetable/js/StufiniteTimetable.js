@@ -69,14 +69,18 @@ class StufiniteTimetable {
     /* Obligatory part */
     for (let grade in this[obligatory]) {
       for (let code in this[obligatory][grade]) {
-        this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), this[obligatory][grade][code]);
+        this.getCourseByCode((course) => {
+          window.searchbar.addResult(course, undefined, grade);
+        }, this[obligatory][grade][code]);
       }
     }
 
     /* Optioanl part */
     for (let grade in this[optional]) {
       for (let code in this[optional][grade]) {
-        this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), this[optional][grade][code]);
+        this.getCourseByCode((course) => {
+          window.searchbar.addResult(course, undefined, grade);
+        }, this[optional][grade][code]);
       }
     }
   }

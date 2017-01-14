@@ -59,12 +59,16 @@ class StufiniteSearchbar {
     }
   }
 
-  addResult(course, search) {
-    let target = $(window.timetable.getCourseType(course) + (search == undefined ? '':'-search'));
+  addResult(course, search=undefined, grade=undefined) {
+    let targetName = window.timetable.getCourseType(course)
+    if (search != undefined) {
+      targetName += '-search';
+    } else if (grade != undefined) {
+      targetName += '-' + grade;
+    }
+    let target = $(targetName);
     let language = window.timetable.language
-    console.log(search)
-    console.log(target)
-
+    
     if ($('.stufinite-searchbar-placeholder').is(':visible')) {
       $('.stufinite-searchbar-placeholder').hide();
     }
@@ -73,6 +77,7 @@ class StufiniteSearchbar {
       `<div class="stufinite-searchbar-result-item">
               <h4 class='title'></h4>
               <span class='info'></span>
+              <span class='grade'></span>
               <div class="action-btn">
                 <button class='join'>加入</button>
                 <button class='detail'>詳細資料</button>
@@ -82,6 +87,7 @@ class StufiniteSearchbar {
     result
       .find('h4.title').text(language == "zh_TW" ? course.title["zh_TW"] : course.title["en_US"]).end()
       .find('span.info').text(window.timetable.getCourseTime(course.time) + ' | ' + course.professor).end()
+      .find('span.info').text(grade != undefined ? grade + '年級' : '').end()
       .find('button.join').attr('code', course.code).bind('click', (e) => {
         let code = $(e.target).attr('code');
         console.log(code)
