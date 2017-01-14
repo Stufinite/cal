@@ -82,11 +82,11 @@ class StufiniteTimetable {
   }
 
   getCourseByMajor(method) {
-    $.getJSON('/course/CourseOfDept/?dept=' + this.user.dept_id[0] + '&school=' + this.school, method);
+    $.getJSON('/course/CourseOfDept/?dept=' + this.user.dept_id[0] + '&grade=' + this.user.grade + '&school=' + this.school, method);
   }
 
   getCourseBySecondMajor(method) {
-    $.getJSON('/course/CourseOfDept/?dept=' + this.user.dept_id[1] + '&school=' + this.school, method);
+    $.getJSON('/course/CourseOfDept/?dept=' + this.user.dept_id[1] + '&grade=' + this.user.grade + '&school=' + this.school, method);
   }
 
   setCredit(num) {
