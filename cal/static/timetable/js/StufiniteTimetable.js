@@ -344,6 +344,7 @@ class StufiniteTimetable {
 
     $("#course-detail").children().remove()
     let $detail = $(`
+          <li>開設系所： <span class='detail-department'></span></li>
           <li>指導教授： <span class='detail-professor'></span></li>
           <li>課程代碼： <span class='detail-code'></span></li>
           <li>選修學分： <span class='detail-credits'></span></li>
@@ -351,6 +352,7 @@ class StufiniteTimetable {
           <li>先修科目： <span class='detail-prerequisite'></span></li>
           <li>課程備註： <span class='detail-note'></span></li>
           `)
+      .find(".detail-department").text(course.department).end()
       .find(".detail-professor").text(course.professor).end()
       .find(".detail-code").text(course.code).end()
       .find(".detail-credits").text(course.credits).end()
