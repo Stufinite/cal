@@ -121,7 +121,7 @@ class SearchOb(object):
 
 		result = tuple( {'key':key, self.school:list(value)} for key, value in tmp.items() if key != '' and key!=None)
 		self.SrchCollect.insert(result)
-		self.SrchCollect.create_index([('key', pymongo.TEXT)], default_language='hant', language_override= "hant" )
+		self.SrchCollect.create_index([("key", pymongo.HASHED)])
 
 	def title2terms(self, title):
 		terms = jieba.cut(title)
