@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.apps import AppConfig
-from pymongo import MongoClient
 import re, urllib, requests, json, jieba, pyprind
 from timetable.models import Course
-from bs4 import BeautifulSoup
-from django.shortcuts import get_list_or_404
 
 class SearchConfig(AppConfig):
     name = 'search'
@@ -12,6 +9,7 @@ class SearchConfig(AppConfig):
 class SearchOb(object):
 	"""docstring for SearchOb"""
 	def __init__(self, keyword="", school=None, uri=None):
+		from pymongo import MongoClient
 		self.client = MongoClient(uri)
 		self.db = self.client['timetable']
 		self.SrchCollect = self.db['CourseSearch']
@@ -72,6 +70,7 @@ class SearchOb(object):
 		return list(intersection)
 
 	def incWeight(self, code):
+		from django.shortcuts import get_list_or_404
 		''' To increment the weight of Search Result return by Search Engine. The higher weight will be return a the first of array.
 			args: code
 			return: None
@@ -92,6 +91,8 @@ class SearchOb(object):
 
 	####################Build index#########################################
 	def BuildIndex(self):
+		import pymongo
+
 		self.SrchCollect.remove({})
 		def bigram(title):
 			bigram = (title.split(',')[0], title.split(',')[1].replace('.', ''))
@@ -117,8 +118,9 @@ class SearchOb(object):
 			tmp.setdefault(i.professor, set()).add(CourseCode)
 			tmp.setdefault(CourseCode, set()).add(CourseCode)
 
-		result = tuple(dict(key=key, value=list(value), school='NCHU') for key, value in tmp.items() if key != '' and key!=None)
+		result = tuple( {'key':key, self.school:list(value)} for key, value in tmp.items() if key != '' and key!=None)
 		self.SrchCollect.insert(result)
+		self.SrchCollect.create_index([("key", pymongo.HASHED)])
 
 	def title2terms(self, title):
 		terms = jieba.cut(title)

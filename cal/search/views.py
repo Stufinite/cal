@@ -12,7 +12,7 @@ def search(request):
 	return JsonResponse(sob.getResult(), safe=False)
 
 def InvertedIndex(request):
-	sob = SearchOb()
+	sob = SearchOb(school='NCHU')
 	sob.BuildIndex()
 	return JsonResponse({"build Inverted index success":1}, safe=False)
 
