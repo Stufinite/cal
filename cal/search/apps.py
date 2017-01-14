@@ -30,18 +30,19 @@ class SearchOb(object):
 			self.result = self.TCsearch()
 
 	def KEMSearch(self, kw):
+		from functools import reduce 
+
 		cursor = self.SrchCollect.find({'key':kw}, {self.school:1, '_id':False}).limit(1)
 		if cursor.count() > 0:
 			# Key Exist
 			return list(cursor)[0][self.school]
 		else:
 			try:
-				text = requests.get('http://api.udic.cs.nchu.edu.tw/api/kem/?keyword={}&lang=cht&num=50'.format(urllib.parse.quote(kw)), timeout=5)
-				if text == []:
-					text = requests.get('http://api.udic.cs.nchu.edu.tw/api/kcm/?keyword={}&lang=cht&num=200'.format(urllib.parse.quote(kw)))
+				kcm = json.loads(requests.get('http://api.udic.cs.nchu.edu.tw/api/kcm/?keyword={}&lang=cht&num=200'.format(urllib.parse.quote(kw))).text)
+				kem = json.loads(requests.get('http://api.udic.cs.nchu.edu.tw/api/kem/?keyword={}&lang=cht&num=200'.format(urllib.parse.quote(kw)), timeout=0.07).text)
 
-				text = json.loads(text.text)
-				for i in text:
+
+				for i in reduce(lambda x, y: x + y, zip(a, b)):
 					cursor = self.SrchCollect.find({'key':i[0]}, {self.school:1, '_id':False}).limit(1)
 					if cursor.count() > 0:
 						# Key Exist
@@ -49,6 +50,7 @@ class SearchOb(object):
 
 				return []
 			except requests.exceptions.Timeout as e:
+				print(e)
 				return []
 
 	def TCsearch(self):
@@ -119,7 +121,7 @@ class SearchOb(object):
 
 		result = tuple( {'key':key, self.school:list(value)} for key, value in tmp.items() if key != '' and key!=None)
 		self.SrchCollect.insert(result)
-		self.SrchCollect.create_index([("key", pymongo.HASHED)])
+		self.SrchCollect.create_index([('key', pymongo.TEXT)], default_language='hant', language_override= "hant" )
 
 	def title2terms(self, title):
 		terms = jieba.cut(title)
