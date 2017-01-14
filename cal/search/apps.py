@@ -36,9 +36,9 @@ class SearchOb(object):
 			return list(cursor)[0][self.school]
 		else:
 			try:
-				text = requests.get('http://api.udic.cs.nchu.edu.tw/api/kcm/?keyword={}&lang=cht&num=20'.format(urllib.parse.quote(kw)), timeout=5)
+				text = requests.get('http://api.udic.cs.nchu.edu.tw/api/kem/?keyword={}&lang=cht&num=50'.format(urllib.parse.quote(kw)), timeout=5)
 				if text == []:
-					text = requests.get('http://api.udic.cs.nchu.edu.tw/api/kem/?keyword={}&lang=cht&num=200'.format(urllib.parse.quote(kw)))
+					text = requests.get('http://api.udic.cs.nchu.edu.tw/api/kcm/?keyword={}&lang=cht&num=200'.format(urllib.parse.quote(kw)))
 
 				text = json.loads(text.text)
 				for i in text:
