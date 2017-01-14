@@ -68,7 +68,7 @@ class StufiniteSearchbar {
     }
     let target = $(targetName);
     let language = window.timetable.language
-    
+
     if ($('.stufinite-searchbar-placeholder').is(':visible')) {
       $('.stufinite-searchbar-placeholder').hide();
     }
@@ -87,7 +87,7 @@ class StufiniteSearchbar {
     result
       .find('h4.title').text(language == "zh_TW" ? course.title["zh_TW"] : course.title["en_US"]).end()
       .find('span.info').text(window.timetable.getCourseTime(course.time) + ' | ' + course.professor).end()
-      .find('span.info').text(grade != undefined ? grade + '年級' : '').end()
+      .find('span.grade').text(grade != undefined ? grade + '年級' : '').end()
       .find('button.join').attr('code', course.code).bind('click', (e) => {
         let code = $(e.target).attr('code');
         console.log(code)
