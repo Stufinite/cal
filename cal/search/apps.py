@@ -15,6 +15,7 @@ class SearchOb(object):
 		self.client = MongoClient(uri)
 		self.db = self.client['timetable']
 		self.SrchCollect = self.db['CourseSearch']
+
 		self.keyword = keyword.split()
 		self.school = school
 		self.result = tuple()
@@ -116,35 +117,41 @@ class SearchOb(object):
 	####################Build index#########################################
 	def BuildIndex(self):
 		self.SrchCollect.remove({})
-		ProgreBar = pyprind.ProgBar(Course.objects.count())
-		for i in Course.objects.all():
-			ProgreBar.update(1,item_id = i.title, force_flush=True)
-			key = self.bigram(i.title)
+		def bigram(title):
+			bigram = (title.split(',')[0], title.split(',')[1].replace('.', ''))
+			title = re.sub(r'\(.*\)', '', title.split(',')[0]).split()[0].strip()
+			bigram += (title, )
+			if len(title) > 2:
+				prefix = title[0]
+				for i in range(1, len(title)):
+					if title[i:].count(title[i]) == 1:
+						bigram += (prefix + title[i],)
+			return bigram
+
+		tmp = dict()
+		for i in pyprind.prog_percent(Course.objects.all()):
+			key = bigram(i.title)
 			titleTerms = self.title2terms(i.title)
 			CourseCode = i.code
-			courseCode = i.code
-			teacher = i.professor
-			
-			for k in key:
-				self.BuildWithKey(k, CourseCode, i)
-			for t in titleTerms:
-				self.BuildWithKey(t, CourseCode, i)
-			self.BuildWithKey(courseCode, CourseCode, i)
-			self.BuildWithKey(teacher, CourseCode, i)
 
-	def bigram(self, title):
-		bigram = (title.split(',')[0], title.split(',')[1].replace('.', ''))
-		title = re.sub(r'\(.*\)', '', title.split(',')[0]).split()[0].strip()
-		bigram += (title, )
-		if len(title) > 2:
-			prefix = title[0]
-			for i in range(1, len(title)):
-				if title[i:].count(title[i]) == 1:
-					bigram += (prefix + title[i],)
-		return bigram
+			for k in key:
+				tmp.setdefault(k, []).append(CourseCode)
+			for t in titleTerms:
+				tmp.setdefault(t, []).append(CourseCode)
+			tmp.setdefault(i.professor, []).append(CourseCode)
+			tmp.setdefault(CourseCode, []).append(CourseCode)
+
+		result = tuple(dict(key=key, value=value, school='NCHU') for key, value in tmp.items() if key != '' and key!=None)
+		self.SrchCollect.insert(result)
+
+		# for k in key:
+		# 	self.BuildWithKey(k, CourseCode, i)
+		# for t in titleTerms:
+		# 	self.BuildWithKey(t, CourseCode, i)
+		# self.BuildWithKey(CourseCode, CourseCode, i)
+		# self.BuildWithKey(teacher, CourseCode, i)
 
 	def BuildWithKey(self, k, CourseCode, i):
-		if k == '' or k==None: return
 		cursor = self.SrchCollect.find({k: {"$exists": True}}).limit(1)
 		if cursor.count() > 0:
 			# Key Exist
