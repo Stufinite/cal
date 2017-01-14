@@ -7,6 +7,26 @@
     background-color: rgba(230, 230, 230, 0.9);
 }
 
+.stufinite-searchbar-title {
+    margin-bottom: 2px;
+    padding: 8px 16px 8px 16px;
+    width: 100%;
+    background-color: white;
+    box-shadow: 1px 1px 1px grey;
+}
+
+.stufinite-searchbar-tab {
+    margin-bottom: 8px;
+    display: flex;
+    background-color: white;
+}
+
+.stufinite-searchbar-tab span {
+    border-right: 1px solid black;
+    text-align: center;
+    flex: 1;
+}
+
 .stufinite-app-searchbar-toggle {
     position: absolute;
     top: 0;
@@ -40,14 +60,6 @@
 .stufinite-searchbar-result {
     margin-bottom: 31px;
     width: 100%;
-}
-
-.stufinite-searchbar-title {
-    margin-bottom: 8px;
-    padding: 8px 16px 8px 16px;
-    width: 100%;
-    background-color: white;
-    box-shadow: 1px 1px 1px grey;
 }
 
 .stufinite-searchbar-result-title {
@@ -105,15 +117,15 @@
 }
 
 .stufinite-searchbar-result-item .action-btn button:nth-child(1) {
-  background-color: lightgrey;
+    background-color: lightgrey;
 }
 
 .stufinite-searchbar-result-item .action-btn button:nth-child(2) {
-  background-color: lightblue;
+    background-color: lightblue;
 }
 
 .stufinite-searchbar-result-item .action-btn button:nth-child(3) {
-  background-color: lightgreen;
+    background-color: lightgreen;
 }
 
 @media screen and (min-width: 1324px) {
