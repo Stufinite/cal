@@ -30,10 +30,10 @@ class SearchOb(object):
 			self.result = self.TCsearch()
 
 	def KEMSearch(self, kw):
-		cursor = self.SrchCollect.find({'key':kw, "school":self.school}, {'value':1, '_id':False}).limit(1)
+		cursor = self.SrchCollect.find({'key':kw}, {self.school:1, '_id':False}).limit(1)
 		if cursor.count() > 0:
 			# Key Exist
-			return list(cursor)[0]['value']
+			return list(cursor)[0][self.school]
 		else:
 			try:
 				text = requests.get('http://api.udic.cs.nchu.edu.tw/api/kcm/?keyword={}&lang=cht&num=20'.format(urllib.parse.quote(kw)), timeout=5)
@@ -42,11 +42,10 @@ class SearchOb(object):
 
 				text = json.loads(text.text)
 				for i in text:
-					cursor = self.SrchCollect.find({'key':i[0], "school":self.school}, {'value':1, '_id':False}).limit(1)
+					cursor = self.SrchCollect.find({'key':i[0]}, {self.school:1, '_id':False}).limit(1)
 					if cursor.count() > 0:
 						# Key Exist
-						# print(list(cursor))
-						return list(cursor)[0]['value']
+						return list(cursor)[0][self.school]
 
 				return []
 			except requests.exceptions.Timeout as e:
