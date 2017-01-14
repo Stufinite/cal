@@ -14,24 +14,23 @@ class Course(object):
 			return {}
 		return list(cursor)[0]
 
-	def getByDept(self, dept, grade):
-		CourseDict = self.Cursor2Dict(self.db['CourseOfDept'].find({ "$and":[{"school":self.school}, {'dept':dept}] },{'course.obligatory.{}'.format(grade):1, 'course.optional.{}'.format(grade):1, '_id':False}).limit(1))
-		return CourseDict
+	def getByDept(self, dept):
+		CourseDict = self.Cursor2Dict(self.db['CourseOfDept'].find({ "$and":[{"school":self.school}, {'dept':dept}] },{'_id':False}).limit(1))
+		return CourseDict['course']
 
 	def getByTime(self, day, time):
 		CourseDict = self.Cursor2Dict(self.db['CourseOfTime'].find({'school':self.school, 'day':int(day), 'time':int(time)}, {'value':1, '_id':False}).limit(1))
 		return CourseDict.get('value', [])
 
-@queryString_required(['dept', 'grade', 'school'])
+@queryString_required(['dept', 'school'])
 def CourseOfDept(request):
 	"""
 		Generate list of obligatory and optional course of specific Dept.
 	"""
 	dept = request.GET['dept']
-	grade = request.GET['grade']
 	school = request.GET['school']
 	c = Course(school=school)
-	return JsonResponse(c.getByDept(dept=dept, grade=grade), safe=False)
+	return JsonResponse(c.getByDept(dept=dept), safe=False)
 
 @queryString_required(['day', 'time', 'school'])
 def TimeOfCourse(request):
