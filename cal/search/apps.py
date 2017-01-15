@@ -39,14 +39,16 @@ class SearchOb(object):
 		else:
 			try:
 				kcm = json.loads(requests.get('http://api.udic.cs.nchu.edu.tw/api/kcm/?keyword={}&lang=cht&num=200'.format(urllib.parse.quote(kw))).text)
-				kem = json.loads(requests.get('http://api.udic.cs.nchu.edu.tw/api/kem/?keyword={}&lang=cht&num=200'.format(urllib.parse.quote(kw)), timeout=0.07).text)
+				kem = json.loads(requests.get('http://api.udic.cs.nchu.edu.tw/api/kem/?keyword={}&lang=cht&num=200'.format(urllib.parse.quote(kw)), timeout=1.5).text)
 
 
 				for i in reduce(lambda x, y: x + y, zip(kcm, kem)):
 					cursor = self.SrchCollect.find({'key':i[0]}, {self.school:1, '_id':False}).limit(1)
 					if cursor.count() > 0:
 						# Key Exist
-						return list(cursor)[0][self.school]
+						value = list(cursor)[0][self.school]
+						self.SrchCollect.update({'key':kw}, {'$set': {self.school:value}}, upsert=True)
+						return value
 
 				return []
 			except requests.exceptions.Timeout as e:
