@@ -17,6 +17,10 @@ class import2Mongo(object):
 		self.CourseOfTime.remove({})
 
 		self.chgTable = dict(tuple((dept['name'], dept['value']) for degree in json.load(open('fallback/json/department.json', 'r')) for dept in degree['department']))
+		self.degreeTable = {}
+		for degree in json.load(open('fallback/json/department.json', 'r')):
+			for d in degree['department']:
+				self.degreeTable.setdefault(d['name'], []).append(degree['degree'])
 
 	def AddHeader(self, document, degree):
 		document['degree'] = degree
@@ -69,19 +73,22 @@ class import2Mongo(object):
 
 	def BuildByTime(self, jsonDict):
 		result = {
-			1:{1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[],9:[],10:[],11:[],12:[],13:[]},
-			2:{1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[],9:[],10:[],11:[],12:[],13:[]},
-			3:{1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[],9:[],10:[],11:[],12:[],13:[]},
-			4:{1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[],9:[],10:[],11:[],12:[],13:[]},
-			5:{1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[],9:[],10:[],11:[],12:[],13:[]},
-			6:{1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[],9:[],10:[],11:[],12:[],13:[]},
-			7:{1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[],9:[],10:[],11:[],12:[],13:[]}
+			1:{1:{},2:{},3:{},4:{},5:{},6:{},7:{},8:{},9:{},10:{},11:{},12:{},13:{}},
+			2:{1:{},2:{},3:{},4:{},5:{},6:{},7:{},8:{},9:{},10:{},11:{},12:{},13:{}},
+			3:{1:{},2:{},3:{},4:{},5:{},6:{},7:{},8:{},9:{},10:{},11:{},12:{},13:{}},
+			4:{1:{},2:{},3:{},4:{},5:{},6:{},7:{},8:{},9:{},10:{},11:{},12:{},13:{}},
+			5:{1:{},2:{},3:{},4:{},5:{},6:{},7:{},8:{},9:{},10:{},11:{},12:{},13:{}},
+			6:{1:{},2:{},3:{},4:{},5:{},6:{},7:{},8:{},9:{},10:{},11:{},12:{},13:{}},
+			7:{1:{},2:{},3:{},4:{},5:{},6:{},7:{},8:{},9:{},10:{},11:{},12:{},13:{}}
 		}
 		for course in jsonDict:
 			for time in course['time_parsed']:
 				day = time['day']
 				for t in time['time']:
-					result[day][t].append(course['code'])
+					if course['for_dept'] not in self.degreeTable:
+						print(course['for_dept'])
+					for degree in self.degreeTable.setdefault(course['for_dept'], []):
+						result[day][t].setdefault(degree, {}).setdefault(course['for_dept'], []).append(course['code'])
 
 		resultList = tuple(dict(school='NCHU', day=d, time=t, value=codeArr) for d in result for t, codeArr in result[d].items())
 		self.CourseOfTime.insert(resultList)
