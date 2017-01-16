@@ -86,7 +86,7 @@ class import2Mongo(object):
 				day = time['day']
 				for t in time['time']:
 					if course['for_dept'] not in self.degreeTable:
-						print(course['for_dept'])
+						print(course['for_dept'], course)
 					for degree in self.degreeTable.setdefault(course['for_dept'], []):
 						result[day][t].setdefault(degree, {}).setdefault(course['for_dept'], []).append(course['code'])
 

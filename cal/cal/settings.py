@@ -24,8 +24,8 @@ with open(BASE_DIR + '/' + 'secret_key.txt') as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-# DEBUG = True
+# DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['.campass.com.tw', 'localhost', '127.0.0.1', '0.0.0.0']
 
