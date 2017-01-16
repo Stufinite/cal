@@ -27,6 +27,11 @@ class import2Mongo(object):
 		document['school'] = NCHU
 		return document
 
+	def getDeptCode(self, deptName, grade):
+		if len(grade) > 1:
+			deptName = deptName + ' ' + grade[-1].upper()
+		return self.chgTable.get(deptName, False)
+
 	def BuildByDept(self, jsonDict):
 		def getClass(grade):
 			if len(grade) == 1:
@@ -40,14 +45,9 @@ class import2Mongo(object):
 				return 'obligatory'
 			return 'optional'
 
-		def getDeptCode(deptName, grade):
-			if len(grade) > 1:
-				deptName = deptName + ' ' + grade[-1].upper()
-			return self.chgTable.get(deptName, False)
-
 		result = {}
 		for i in jsonDict:
-			dept = getDeptCode(i['for_dept'], i['class'])
+			dept = self.getDeptCode(i['for_dept'], i['class'])
 			# dept == False means getDeptCode has error
 			if dept == False: 
 				print(i['for_dept'], i['class'])
@@ -88,7 +88,7 @@ class import2Mongo(object):
 					if course['for_dept'] not in self.degreeTable:
 						print(course['for_dept'], course)
 					for degree in self.degreeTable.setdefault(course['for_dept'], []):
-						result[day][t].setdefault(degree, {}).setdefault(course['for_dept'], []).append(course['code'])
+						result[day][t].setdefault(degree, {}).setdefault(self.getDeptCode(course['for_dept'], course['class']), []).append(course['code'])
 
 		resultList = tuple(dict(school='NCHU', day=d, time=t, value=codeArr) for d in result for t, codeArr in result[d].items())
 		self.CourseOfTime.insert(resultList)
