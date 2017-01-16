@@ -135,6 +135,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-SESSION_COOKIE_DOMAIN = '.campass.com.tw'
-with open(BASE_DIR + '/' + 'sessionid.txt') as f:
-    SESSION_COOKIE_NAME = f.read().strip()
+if not DEBUG:
+    SESSION_COOKIE_DOMAIN = '.campass.com.tw'
+    with open(BASE_DIR + '/' + 'sessionid.txt') as f:
+        SESSION_COOKIE_NAME = f.read().strip()
