@@ -18,9 +18,11 @@ class Course(object):
 		CourseDict = self.Cursor2Dict(self.db['CourseOfDept'].find({ "$and":[{"school":self.school}, {'dept':dept}] },{'_id':False}).limit(1))
 		return CourseDict['course']
 
-	def getByTime(self, day, time, degree, dept):
-		CourseDict = self.Cursor2Dict(self.db['CourseOfTime'].find({'school':self.school, 'day':int(day), 'time':int(time)}, {'value.'+degree+'.'+dept:1, '_id':False}).limit(1))
-		return CourseDict.get('value', [])
+	def getByTime(self, day, time, degreeArr, deptArr):
+		CourseDict = []
+		for degree, dept in zip(degreeArr, deptArr):
+			CourseDict += self.Cursor2Dict(self.db['CourseOfTime'].find({'school':self.school, 'day':int(day), 'time':int(time)}, {'value.'+degree+'.'+dept:1, '_id':False}).limit(1))['value'][degree][dept]
+		return CourseDict
 
 @queryString_required(['dept', 'school'])
 def CourseOfDept(request):
@@ -40,7 +42,7 @@ def TimeOfCourse(request):
 	day = request.GET['day']
 	time = request.GET['time']
 	school = request.GET['school']
-	degree = request.GET['degree']
-	dept = request.GET['dept']
+	degree = request.GET['degree'].split()
+	dept = request.GET['dept'].split()
 	c = Course(school=school)
-	return JsonResponse(c.getByTime(day=day, time=time, degree=degree, dept=dept), safe=False)
+	return JsonResponse(c.getByTime(day=day, time=time, degreeArr=degree, deptArr=dept), safe=False)
