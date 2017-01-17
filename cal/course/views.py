@@ -20,8 +20,10 @@ class Course(object):
 
 	def getByTime(self, day, time, degreeArr, deptArr):
 		CourseDict = []
+		tmp = self.Cursor2Dict(self.db['CourseOfTime'].find({'school':self.school, 'day':int(day), 'time':int(time)}, {'value':1, '_id':False}).limit(1))
 		for degree, dept in zip(degreeArr, deptArr):
-			CourseDict += self.Cursor2Dict(self.db['CourseOfTime'].find({'school':self.school, 'day':int(day), 'time':int(time)}, {'value.'+degree+'.'+dept:1, '_id':False}).limit(1))['value'][degree][dept]
+			if degree in tmp['value'] and dept in tmp['value'][degree]:
+				CourseDict += tmp['value'][degree][dept]
 		return CourseDict
 
 @queryString_required(['dept', 'school'])
