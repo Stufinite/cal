@@ -374,7 +374,7 @@ class StufiniteTimetable {
     let day = $(e.target).closest("td").attr("data-day");
     let hour = $(e.target).closest("tr").attr("data-hour");
 
-    $.getJSON('/course/TimeOfCourse/?school=' + this.school + '&degree=' + this.user.career + '&day=' + day + '&time=' + hour, (codes) => {
+    $.getJSON('/course/TimeOfCourse/?school=' + this.school + '&degree=O+' + this.user.career + '&day=' + day + '&time=' + hour + '&dept=C00+' + this.user.dept_id[0], (codes) => {
       window.searchbar.clear();
       for (let c of codes) {
         this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), c);
