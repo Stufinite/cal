@@ -39,7 +39,7 @@ class SearchOb(object):
 		else:
 			try:
 				kcm = json.loads(requests.get('http://api.udic.cs.nchu.edu.tw/api/kcm/?keyword={}&lang=cht&num=200'.format(urllib.parse.quote(kw))).text)
-				kem = json.loads(requests.get('http://api.udic.cs.nchu.edu.tw/api/kem/?keyword={}&lang=cht&num=200'.format(urllib.parse.quote(kw)), timeout=1.5).text)
+				kem = json.loads(requests.get('http://api.udic.cs.nchu.edu.tw/api/kem/?keyword={}&lang=cht&num=200'.format(urllib.parse.quote(kw))).text)
 
 
 				for i in reduce(lambda x, y: x + y, zip(kcm, kem)):
@@ -51,7 +51,7 @@ class SearchOb(object):
 						return value
 
 				return []
-			except requests.exceptions.Timeout as e:
+			except Exception as e:
 				print(e)
 				return []
 
