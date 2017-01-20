@@ -17,12 +17,6 @@ class StufiniteSearchbar {
   displayTab(e) {
     let className = $(e.target).attr('class');
     this.displayTabByName(className.split('-')[1]);
-    // for (let t of this.tabs) {
-    //   $('.tab-' + t).css("background-color", "white").css("color", "#403F3F")
-    //   $('.' + t + '-container').hide();
-    // }
-    // $('.tab-' + className.split('-')[1]).css("background-color", "#DEDEDE").css("color", "white")
-    // $('.' + className.split('-')[1] + '-container').show();
   }
 
   displayTabByName(tabName) {
@@ -58,7 +52,7 @@ class StufiniteSearchbar {
     if (placeholder != undefined) {
       $(".stufinite-searchbar-placeholder").text(placeholder).show()
     } else {
-      $('.stufinite-searchbar-placeholder').text("請點擊空堂時段或使用關鍵字搜尋").show();
+      $('.stufinite-searchbar-placeholder').text("此標籤頁無搜尋結果，請查看其他標籤頁，或點擊空堂時段或使用關鍵字搜尋").show();
     }
   }
 
@@ -71,10 +65,6 @@ class StufiniteSearchbar {
     }
     let target = $(targetName);
     let language = window.timetable.language
-
-    if ($('.stufinite-searchbar-placeholder').is(':visible')) {
-      $('.stufinite-searchbar-placeholder').hide();
-    }
 
     let result = $(
       `<div class="stufinite-searchbar-result-item">
@@ -100,8 +90,14 @@ class StufiniteSearchbar {
         window.timetable.addDetail(course)
       }).end()
 
-    target.parent().find('.stufinite-searchbar-result-title').show();
     target.append(target, result);
+
+    target.parent().find('.stufinite-searchbar-result-title').show();
+    target.parent().parent().find('.stufinite-searchbar-placeholder').hide();
+    if (targetName.startsWith('.obligatory') || targetName.startsWith('.optional')) {
+      target.parent().parent().find('.stufinite-searchbar-result-title').show();
+      target.parent().parent().parent().find('.stufinite-searchbar-placeholder').hide();
+    }
 
     if (search != undefined) {
       this.currentTab = 'search';
