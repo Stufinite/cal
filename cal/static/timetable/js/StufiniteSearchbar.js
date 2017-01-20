@@ -2,34 +2,37 @@ class StufiniteSearchbar {
   constructor() {
     this.isVisible = false;
     this.type = ['optional', 'human', 'society', 'nature', 'PE']
-    this.tabs = ['dept', 'general', 'PE', 'others', 'search'];
+    this.tabs = ['deptObl', 'deptOpt', 'general', 'PE', 'others', 'search'];
+    this.currentTab = 'deptObl';
 
     let tab = $('.stufinite-searchbar-tab');
     for (let t of this.tabs) {
       tab.find('span.tab-' + t).bind('click', this.displayTab.bind(this));
       $('.' + t + '-container').hide();
     }
-    $('.tab-dept').css("background-color", "#DEDEDE").css("color", "white")
-    $('.dept-container').show();
+    $('.tab-deptObl').css("background-color", "#DEDEDE").css("color", "white")
+    $('.deptObl-container').show();
   }
 
   displayTab(e) {
     let className = $(e.target).attr('class');
-    for (let t of this.tabs) {
-      $('.tab-' + t).css("background-color", "white").css("color", "#403F3F")
-      $('.' + t + '-container').hide();
-    }
-    $('.tab-' + className.split('-')[1]).css("background-color", "#DEDEDE").css("color", "white")
-    $('.' + className.split('-')[1] + '-container').show();
+    this.displayTabByName(className.split('-')[1]);
+    // for (let t of this.tabs) {
+    //   $('.tab-' + t).css("background-color", "white").css("color", "#403F3F")
+    //   $('.' + t + '-container').hide();
+    // }
+    // $('.tab-' + className.split('-')[1]).css("background-color", "#DEDEDE").css("color", "white")
+    // $('.' + className.split('-')[1] + '-container').show();
   }
 
-  displaySearchTab() {
+  displayTabByName(tabName) {
+    this.currentTab = tabName;
     for (let t of this.tabs) {
       $('.tab-' + t).css("background-color", "white").css("color", "#403F3F")
       $('.' + t + '-container').hide();
     }
-    $('.tab-search').css("background-color", "#DEDEDE").css("color", "white")
-    $('.search-container').show();
+    $('.tab-' + tabName).css("background-color", "#DEDEDE").css("color", "white")
+    $('.' + tabName + '-container').show();
   }
 
   show() {
@@ -90,7 +93,6 @@ class StufiniteSearchbar {
       .find('span.grade').text(grade != undefined ? grade + '年級' : '').end()
       .find('button.join').attr('code', course.code).bind('click', (e) => {
         let code = $(e.target).attr('code');
-        console.log(code)
         window.timetable.getCourseByCode(window.timetable.addCourse.bind(window.timetable), code);
         this.hide();
       }).end()
@@ -102,7 +104,11 @@ class StufiniteSearchbar {
     target.append(target, result);
 
     if (search != undefined) {
-      this.displaySearchTab()
+      this.currentTab = 'search';
+      this.displayTabByName(this.currentTab)
+    } else if (this.currentTab == 'search') {
+        this.currentTab = 'general';
+        this.displayTabByName(this.currentTab);
     }
   }
 }

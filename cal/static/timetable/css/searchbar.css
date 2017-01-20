@@ -22,6 +22,7 @@
 }
 
 .stufinite-searchbar-tab span {
+    cursor:pointer;
     border-right: 1px solid black;
     text-align: center;
     flex: 1;
