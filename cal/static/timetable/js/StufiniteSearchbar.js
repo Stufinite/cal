@@ -1,5 +1,8 @@
 class StufiniteSearchbar {
-  constructor() {
+  constructor(school, lang, user) {
+    this.school = school;
+    this.language = lang
+    this.user = user;
     this.isVisible = false;
     this.type = ['optional', 'human', 'society', 'nature', 'PE']
     this.tabs = ['deptObl', 'deptOpt', 'general', 'PE', 'others', 'search'];
@@ -12,6 +15,37 @@ class StufiniteSearchbar {
     }
     $('.tab-deptObl').css("background-color", "#DEDEDE").css("color", "white")
     $('.deptObl-container').show();
+
+    $.getJSON('/api/get/dept', (json) => {
+      for (let dept of json[this.user.career]) {
+        let opt = $('<option>');
+        opt.val(dept.code);
+        opt.text(dept.title[this.language])
+        $('.stufinite-searchbar-department-select').append(opt)
+      }
+    });
+    $('.stufinite-searchbar-department-button').bind("click", () => {
+      this.clear();
+      let dept = $('.stufinite-searchbar-department-select').val();
+      for (let g = 1; g <= 9; g++) {
+        $.getJSON('/course/CourseOfDept/?dept=' + dept + '&grade=' + g + '&school=' + this.school, (json) => {
+          for (let code of json['obligatory'][g]) {
+            window.timetable.getCourseByCode((course) => {
+              this.addResult(course, undefined, g, true);
+            }, code);
+          }
+
+          for (let code of json['optional'][g]) {
+            window.timetable.getCourseByCode((course) => {
+              this.addResult(course, undefined, g, false);
+            }, code);
+          }
+        });
+      }
+
+      this.currentTab = 'deptObl';
+      this.displayTabByName(this.currentTab);
+    });
   }
 
   displayTab(e) {
@@ -48,6 +82,7 @@ class StufiniteSearchbar {
   clear(placeholder) {
     $('.stufinite-searchbar-placeholder').show();
     $('.stufinite-searchbar-result-list').empty();
+    $('.stufinite-searchbar-dept-list').children().empty();
     $('.stufinite-searchbar-result-title').hide();
     if (placeholder != undefined) {
       $(".stufinite-searchbar-placeholder").text(placeholder).show()
@@ -56,15 +91,22 @@ class StufiniteSearchbar {
     }
   }
 
-  addResult(course, search=undefined, grade=undefined) {
+  addResult(course, search = undefined, grade = undefined, obligatory = undefined) {
     let targetName = window.timetable.getCourseType(course)
+    if (obligatory != undefined) {
+      if (obligatory) {
+        targetName = '.obligatory';
+      } else {
+        targetName = '.optional';
+      }
+    }
+
     if (search != undefined) {
       targetName += '-search';
     } else if (grade != undefined) {
       targetName += '-' + grade;
     }
     let target = $(targetName);
-    let language = window.timetable.language
 
     let result = $(
       `<div class="stufinite-searchbar-result-item">
@@ -78,7 +120,7 @@ class StufiniteSearchbar {
             </div>`);
 
     result
-      .find('h4.title').text(language == "zh_TW" ? course.title["zh_TW"] : course.title["en_US"]).end()
+      .find('h4.title').text(course.title[this.language]).end()
       .find('span.info').text(window.timetable.getCourseTime(course.time) + ' | ' + course.professor).end()
       .find('span.grade').text(grade != undefined ? grade + '年級' : '').end()
       .find('button.join').attr('code', course.code).bind('click', (e) => {
@@ -90,7 +132,7 @@ class StufiniteSearchbar {
         window.timetable.addDetail(course)
       }).end()
 
-    target.append(target, result);
+    target.append(result);
 
     target.parent().find('.stufinite-searchbar-result-title').show();
     target.parent().parent().find('.stufinite-searchbar-placeholder').hide();
@@ -103,8 +145,8 @@ class StufiniteSearchbar {
       this.currentTab = 'search';
       this.displayTabByName(this.currentTab)
     } else if (this.currentTab == 'search') {
-        this.currentTab = 'general';
-        this.displayTabByName(this.currentTab);
+      this.currentTab = 'general';
+      this.displayTabByName(this.currentTab);
     }
   }
 }
