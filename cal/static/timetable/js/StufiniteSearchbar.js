@@ -27,21 +27,24 @@ class StufiniteSearchbar {
     $('.stufinite-searchbar-department-button').bind("click", () => {
       this.clear();
       let dept = $('.stufinite-searchbar-department-select').val();
-      for (let g = 1; g <= 9; g++) {
-        $.getJSON('/course/CourseOfDept/?dept=' + dept + '&grade=' + g + '&school=' + this.school, (json) => {
-          for (let code of json['obligatory'][g]) {
-            window.timetable.getCourseByCode((course) => {
-              this.addResult(course, undefined, g, true);
-            }, code);
-          }
 
-          for (let code of json['optional'][g]) {
+      $.getJSON('/course/CourseOfDept/?dept=' + dept + '&school=' + this.school, (json) => {
+        for (let grade in json['obligatory']) {
+          for (let index in json['obligatory'][grade]){
             window.timetable.getCourseByCode((course) => {
-              this.addResult(course, undefined, g, false);
-            }, code);
+              this.addResult(course, undefined, grade, true);
+            }, json['obligatory'][grade][index]);
           }
-        });
-      }
+        }
+
+        for (let grade in json['optional']) {
+          for (let index in json['optional'][grade]){
+            window.timetable.getCourseByCode((course) => {
+              this.addResult(course, undefined, grade, false);
+            }, json['optional'][grade][index]);
+          }
+        }       
+      });
 
       this.currentTab = 'deptObl';
       this.displayTabByName(this.currentTab);
