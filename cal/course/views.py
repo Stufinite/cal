@@ -14,8 +14,11 @@ class Course(object):
 			return {}
 		return list(cursor)[0]
 
-	def getByDept(self, dept):
-		CourseDict = self.Cursor2Dict(self.db['CourseOfDept'].find({ "$and":[{"school":self.school}, {'dept':dept}] },{'_id':False}).limit(1))
+	def getByDept(self, dept, grade=None):
+		if grade == None:
+			CourseDict = self.Cursor2Dict(self.db['CourseOfDept'].find({ "$and":[{"school":self.school}, {'dept':dept}] },{'_id':False}).limit(1))
+		else:
+			CourseDict = self.Cursor2Dict(self.db['CourseOfDept'].find({ "$and":[{"school":self.school}, {'dept':dept}] },{'_id':False, 'course.optional.'+grade:1, 'course.obligatory.'+grade:1}).limit(1))
 		return CourseDict['course']
 
 	def getByTime(self, day, time, degreeArr, deptArr):
@@ -34,7 +37,7 @@ def CourseOfDept(request):
 	dept = request.GET['dept']
 	school = request.GET['school']
 	c = Course(school=school)
-	return JsonResponse(c.getByDept(dept=dept), safe=False)
+	return JsonResponse(c.getByDept(dept=dept, grade=request.GET['grade'] if 'grade' in request.GET else None), safe=False)
 
 @queryString_required(['day', 'time', 'school', 'degree', 'dept'])
 def TimeOfCourse(request):
