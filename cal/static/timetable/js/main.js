@@ -2,7 +2,7 @@
     addMask();
 
     $.getJSON("/api/get/user", (user) => {
-        window.searchbar = new StufiniteSearchbar()
+        window.searchbar = new StufiniteSearchbar("NCHU", "zh_TW", user)
         window.timetable = new StufiniteTimetable("NCHU", "zh_TW", user)
 
         document.querySelector(".stufinite-app-searchbar-toggle").addEventListener("click", (e) => {

@@ -1,35 +1,66 @@
 class StufiniteSearchbar {
-  constructor() {
+  constructor(school, lang, user) {
+    this.school = school;
+    this.language = lang
+    this.user = user;
     this.isVisible = false;
     this.type = ['optional', 'human', 'society', 'nature', 'PE']
-    this.tabs = ['dept', 'general', 'PE', 'others', 'search'];
+    this.tabs = ['deptObl', 'deptOpt', 'general', 'PE', 'others', 'search'];
+    this.currentTab = 'deptObl';
 
     let tab = $('.stufinite-searchbar-tab');
     for (let t of this.tabs) {
       tab.find('span.tab-' + t).bind('click', this.displayTab.bind(this));
       $('.' + t + '-container').hide();
     }
-    $('.tab-dept').css("background-color", "#DEDEDE").css("color", "white")
-    $('.dept-container').show();
+    $('.tab-deptObl').css("background-color", "#DEDEDE").css("color", "white")
+    $('.deptObl-container').show();
+
+    $.getJSON('/api/get/dept', (json) => {
+      for (let dept of json[this.user.career]) {
+        let opt = $('<option>');
+        opt.val(dept.code);
+        opt.text(dept.title[this.language])
+        $('.stufinite-searchbar-department-select').append(opt)
+      }
+    });
+    $('.stufinite-searchbar-department-button').bind("click", () => {
+      this.clear();
+      let dept = $('.stufinite-searchbar-department-select').val();
+      for (let g = 1; g <= 9; g++) {
+        $.getJSON('/course/CourseOfDept/?dept=' + dept + '&grade=' + g + '&school=' + this.school, (json) => {
+          for (let code of json['obligatory'][g]) {
+            window.timetable.getCourseByCode((course) => {
+              this.addResult(course, undefined, g, true);
+            }, code);
+          }
+
+          for (let code of json['optional'][g]) {
+            window.timetable.getCourseByCode((course) => {
+              this.addResult(course, undefined, g, false);
+            }, code);
+          }
+        });
+      }
+
+      this.currentTab = 'deptObl';
+      this.displayTabByName(this.currentTab);
+    });
   }
 
   displayTab(e) {
     let className = $(e.target).attr('class');
-    for (let t of this.tabs) {
-      $('.tab-' + t).css("background-color", "white").css("color", "#403F3F")
-      $('.' + t + '-container').hide();
-    }
-    $('.tab-' + className.split('-')[1]).css("background-color", "#DEDEDE").css("color", "white")
-    $('.' + className.split('-')[1] + '-container').show();
+    this.displayTabByName(className.split('-')[1]);
   }
 
-  displaySearchTab() {
+  displayTabByName(tabName) {
+    this.currentTab = tabName;
     for (let t of this.tabs) {
       $('.tab-' + t).css("background-color", "white").css("color", "#403F3F")
       $('.' + t + '-container').hide();
     }
-    $('.tab-search').css("background-color", "#DEDEDE").css("color", "white")
-    $('.search-container').show();
+    $('.tab-' + tabName).css("background-color", "#DEDEDE").css("color", "white")
+    $('.' + tabName + '-container').show();
   }
 
   show() {
@@ -51,27 +82,31 @@ class StufiniteSearchbar {
   clear(placeholder) {
     $('.stufinite-searchbar-placeholder').show();
     $('.stufinite-searchbar-result-list').empty();
+    $('.stufinite-searchbar-dept-list').children().empty();
     $('.stufinite-searchbar-result-title').hide();
     if (placeholder != undefined) {
       $(".stufinite-searchbar-placeholder").text(placeholder).show()
     } else {
-      $('.stufinite-searchbar-placeholder').text("請點擊空堂時段或使用關鍵字搜尋").show();
+      $('.stufinite-searchbar-placeholder').text("此標籤頁無搜尋結果，請查看其他標籤頁，或點擊空堂時段或使用關鍵字搜尋").show();
     }
   }
 
-  addResult(course, search=undefined, grade=undefined) {
+  addResult(course, search = undefined, grade = undefined, obligatory = undefined) {
     let targetName = window.timetable.getCourseType(course)
+    if (obligatory != undefined) {
+      if (obligatory) {
+        targetName = '.obligatory';
+      } else {
+        targetName = '.optional';
+      }
+    }
+
     if (search != undefined) {
       targetName += '-search';
     } else if (grade != undefined) {
       targetName += '-' + grade;
     }
     let target = $(targetName);
-    let language = window.timetable.language
-
-    if ($('.stufinite-searchbar-placeholder').is(':visible')) {
-      $('.stufinite-searchbar-placeholder').hide();
-    }
 
     let result = $(
       `<div class="stufinite-searchbar-result-item">
@@ -85,12 +120,11 @@ class StufiniteSearchbar {
             </div>`);
 
     result
-      .find('h4.title').text(language == "zh_TW" ? course.title["zh_TW"] : course.title["en_US"]).end()
+      .find('h4.title').text(course.title[this.language]).end()
       .find('span.info').text(window.timetable.getCourseTime(course.time) + ' | ' + course.professor).end()
       .find('span.grade').text(grade != undefined ? grade + '年級' : '').end()
       .find('button.join').attr('code', course.code).bind('click', (e) => {
         let code = $(e.target).attr('code');
-        console.log(code)
         window.timetable.getCourseByCode(window.timetable.addCourse.bind(window.timetable), code);
         this.hide();
       }).end()
@@ -98,11 +132,21 @@ class StufiniteSearchbar {
         window.timetable.addDetail(course)
       }).end()
 
+    target.append(result);
+
     target.parent().find('.stufinite-searchbar-result-title').show();
-    target.append(target, result);
+    target.parent().parent().find('.stufinite-searchbar-placeholder').hide();
+    if (targetName.startsWith('.obligatory') || targetName.startsWith('.optional')) {
+      target.parent().parent().find('.stufinite-searchbar-result-title').show();
+      target.parent().parent().parent().find('.stufinite-searchbar-placeholder').hide();
+    }
 
     if (search != undefined) {
-      this.displaySearchTab()
+      this.currentTab = 'search';
+      this.displayTabByName(this.currentTab)
+    } else if (this.currentTab == 'search') {
+      this.currentTab = 'general';
+      this.displayTabByName(this.currentTab);
     }
   }
 }
