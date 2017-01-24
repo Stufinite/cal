@@ -20,6 +20,10 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('timetable.urls')),
     url(r'^tiagenda/', include('tiagenda.urls')),
-    url(r'^search/', include('search.urls')),
     url(r'^course/', include('course.urls')),
+]
+
+import curso.urls
+urlpatterns += [
+    url(r'^search/', include(curso.urls))
 ]
