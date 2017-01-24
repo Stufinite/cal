@@ -2,9 +2,9 @@
 
 智慧行事曆，前身是選課小幫手。  
 
-1. [爬蟲readme](crawler/Crawler-NCHU-course/README.md)
-2. [搜尋引擎readme](cal/search/README.md)
-3. [課程代碼查詢api](cal/course/README.md)
+1. [爬蟲](https://github.com/stufinite/campasscrawler)
+2. [搜尋引擎](https://github.com/Stufinite/curso)
+3. [課程代碼查詢api](https://github.com/Stufinite/cphelper)
 
 ## Getting Started
 

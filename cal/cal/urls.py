@@ -20,10 +20,21 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('timetable.urls')),
     url(r'^tiagenda/', include('tiagenda.urls')),
-    url(r'^course/', include('course.urls')),
 ]
+
+# 課搜（curso）
+# https://github.com/Stufinite/curso
 
 import curso.urls
 urlpatterns += [
     url(r'^search/', include(curso.urls))
+]
+
+
+# 課程資料查詢API
+# https://github.com/Stufinite/cphelper
+
+import cphelper.urls
+urlpatterns += [
+    url(r'^course/', include(cphelper.urls))
 ]

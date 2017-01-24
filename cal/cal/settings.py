@@ -44,7 +44,7 @@ REQUIRED_APPS = [
 PROJECT_APPS = [
     'timetable.apps.TimetableConfig',
     'tiagenda',
-    'course',
+    'cphelper',
     'curso'
 ]
 
