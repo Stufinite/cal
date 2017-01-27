@@ -37,4 +37,4 @@ class SelectedCourse(models.Model):
     code = models.CharField(max_length=100, default='')
 
     def __str__(self):
-        return '{}: {}'.format(self.user, self.course.title)
+        return '{}: {}'.format(self.user, self.code)
