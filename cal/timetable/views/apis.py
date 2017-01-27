@@ -2,7 +2,7 @@ from django.http import JsonResponse, HttpResponseRedirect, Http404, HttpRespons
 
 from timetable.views.views import init_user
 from timetable.models import Department, Course, SelectedCourse
-
+from djangoApiDec.djangoApiDec import queryString_required
 
 def get_session_key(request):
     return HttpResponse(request.session.session_key)
@@ -18,6 +18,10 @@ def get_user(request):
 
     return JsonResponse(user)
 
+@queryString_required(['user'])
+def get_friend_selected_course(request):
+    user = request.GET['user']
+    return JsonResponse(get_selected_course({'username':user}), safe=False)
 
 def get_department_id(user):
     dept_id = []
