@@ -15,7 +15,15 @@ class StufiniteTimetable {
     this.classroom = {};
 
     // Initialize timetable with square plus buttons
-    $("#time-table td").html($('<i class="fa fa-plus-square fa-5x"></i>').on("click", this.addCourseToSearchbar.bind(this)));
+    $("#time-table td")
+      .html($('<i class="fa fa-plus-square fa-5x"></i>')
+      .on("mousedown", (e) => {
+        $(e.target).css("color", "black")
+      })
+      .on("mouseup", (e) => {
+        $(e.target).removeAttr("style")
+      })
+      .on("click", this.addCourseToSearchbar.bind(this)));
 
     $.getJSON('/static/timetable/json/NCHU/Classroom.json', (json) => {
       this.classroom = json;
