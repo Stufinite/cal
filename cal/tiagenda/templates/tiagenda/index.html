@@ -1,454 +1,345 @@
-{% load staticfiles %}
-<!DOCTYPE html>
-<html lang="zh-tw" class="han-la">
-<!--
-//                                  _oo8oo_
-//                                 o8888888o
-//                                 88" . "88
-//                                 (| -_- |)
-//                                 0\  =  /0
-//                               ___/'==='\___
-//                             .' \\|     |// '.
-//                            / \\|||  :  |||// \
-//                           / _||||| -:- |||||_ \
-//                          |   | \\\  -  /// |   |
-//                          | \_|  ''\---/''  |_/ |
-//                          \  .-\__  '-'  __/-.  /
-//                        ___'. .'  /--.--\  '. .'___
-//                     ."" '<  '.___\_<|>_/___.'  >' "".
-//                    | | :  `- \`.:`\ _ /`:.`/ -`  : | |
-//                    \  \ `-.   \_ __\ /__ _/   .-` /  /
-//                =====`-.____`.___ \_____/ ___.`____.-`=====
-//                                  `=---=`
-//
-//
-//                       佛祖保佑  　　　　　永無bug
--->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Tiagenda</title>
-        <link href="{% static 'tiagenda/toastr/toastr.css' %}" rel="stylesheet"/><!--這是toast message的css-->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/Han/2.3.0/han.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.6/semantic.min.css">
-        <link rel="stylesheet" href="{% static 'tiagenda/bootstrap/css/bootstrap.min.css' %}">
-        <link href="{% static 'tiagenda/font-awesome-4.3.0/css/font-awesome.min.css' %}" rel="stylesheet">
-        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Han/2.3.0/han.js"></script>-->
+{% extends "base.html" %} {% block title %}Tiagenda{% endblock %} {% block app_name %}Tiagenda{% endblock %} {% load static %} {% block stylesheet %}
+<link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' rel='stylesheet' integrity='sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1' crossorigin='anonymous'>
+<link rel='stylesheet' href='{% static "timetable/toastr/toastr.css" %}'>
+<link rel='stylesheet' href='{% static "timetable/css/timetable.css" %}'>
+<link rel='stylesheet' href='{% static "timetable/css/searchbar.css" %}'>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">
+ary = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0]
+];
 
-        <style>
-        body
-        {
-            background-image: url("{% static 'tiagenda/images/image2.jpg' %}");
-            /*background-color:#3074B5;*/
-            background-attachment: fixed;
-            font-family: "Microsoft JhengHei";
-        }
-        /*最後改的p是相簿的英文字*/
-        #elective-post
-        {
-            margin-bottom: 10px;
-        }
-        #btn-tools
-        {
-            padding: 0;
-        }
-        #classification
-        {
-            padding: 0px;
-        }
-        /*修改table的border*/
-        .table>thead>tr>th{
-            border-bottom: 1px solid black;
-        }
-        table, th, tr, td, tbody, thead{
-            border: 1px solid black;
-        }
-        #time-table tbody th
-        {
-            white-space: nowrap;
-            font-size: 100%;
-            height:55px;
-        }
-        #time-table th
-        {
-            text-align: center;
-            vertical-align:middle;
-        }
-        #time-table td
-         {
-             text-align: center;
-             vertical-align:middle;
-         }
-         #time-table td span
-         {
-             color: #DDD;
-         }
-         #time-table td span:hover,
-         #time-table td span:focus
-         {
-             background-color: transparent;
-             color: #666;
-        }
-        #time-table button.btn-link
-        {
-            text-align: center;
-            color:black;
-        }
-        #time-table div.title
-        {
-            text-align: center;
-            font-size: 120%;
-            padding-bottom: 3px;
-        }
-        #time-table div.location
-        {
-            text-align: left;
-            font-size: 80%;
-        }
-        #time-table div.professor
-        {
-            text-align: right;
-            font-size: 80%;
-        }
-        /*table的屬性結束*/
-        .search-class .panel-body
-        {
-            padding-top: 0;
-            padding-bottom  : 0;
-        }
-        .add
-        {
-            color: red;
-        }
-        #curriculum-title small
-        {
-            text-align:left;
-            color:#333;
-        }
-        #toggleTable
-        {
-            color: #333; /* IE8 proofing */
-        }
-        #toggleTable:hover,
-        #toggleTable:focus
-        {
-            background-color: transparent;
-            color: #ADBDC5;
-        }
-        #non-display{
-            visibility:hidden;
-        }
-        .hide { position:absolute; top:-1px; left:-1px; width:1px; height:1px; }
-        /*input button和uoload button的css*/
-        .fileUpload {
-            position: relative;
-            overflow: hidden;
-            margin: 10px;
-        }
-        .fileUpload input.upload {
-            position: absolute;
-            top: 0;
-            right: 0;
-            margin: 0;
-            padding: 0;
-            font-size: 20px;
-            cursor: pointer;
-            opacity: 0;
-            filter: alpha(opacity=0);
-        }
-        #tab
-        {
-            background-color: white;
-        }
-        #tab ul
-        {
-            padding-left:0;
-        }
-        .tab-content{
-            padding-top: 1px
-        }
-        #name_box
-        {
-            padding: 0;
-        }
-        #name_box_header
-        {
-            text-align: center;
-            padding-top: 5px;
-            padding-bottom: 5px;
-            background-color:#CCE2FF;
-        }
-        #name_box_content
-        {
-            background-color: white;
-        }
-        td{
-            cursor: pointer;
-        }
-        .img{
-            text-align: center;
-        }
-        .tab-content{
-            background-color: #E2A9F3
-        }
-        .demo_model{
-            float: right;
-        }
-        </style>
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
-    </head>
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+/*$.getJSON('fuck.json' )
+    .done(function( data ) {
+      
+      $.each( data.time_table, function( i1, item1 ) {
+        
+        $.each(item1.time_parsed , function( i2, item2 ) {
+        
+          $.each(item2.time , function( i3, item3 ) {
+          
+          ary[item2['day']-1][item3]=1;
+          
+          });
+        });
+      });
+    });
+*/
+</script>
+<style>
+html,
+body {
+    background-color: #D9EDF7;
+}
 
-      ga('create', 'UA-66684913-1', 'auto');
-      ga('send', 'pageview');
+.tiagenda-app-container {
+    min-width: 768px;
+    width: 100%;
+    padding: 0 5% 0 5%;
+}
 
-    </script>
-    <body>
-        <p>{{  request.user.grade}}</p>
-        <div class="col-md-16">
-            <div class="row" id="curriculum-title">
-                <div class="col-xs-12" style="text-align:center;">
-                    <img src="{% static 'tiagenda/images/title1.png' %}" alt"Tiagenda title" >
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid">
-            <div class="col-md-2" id="classification">
-                <br>
-                <div class="container-fluid">
-                    <form id="target" action="/tiagenda/" method="post">
-                        {% csrf_token %}
-                        <!-- <input type="submit" value="傳送"> -->
-                        <div class="ui icon input">
-                          <input type="text" name="search_name" id="search_name" placeholder="Search user" required>
-                          <i id="submit_form" class="inverted circular search link icon"></i>
-                        </div>
-                    </form>
-                    <br><br>
-                    <div class="col-xs-12" id="btn-tools">
-                        <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#focus">
-                            <span class="fa fa-heart fa-1x fa-fw"></span>輸入
-                        </button>
-                        <br><br>
-                    </div>
-                    <!-- <div class="col-xs-12" id="btn-tools">
-                        <button type="button" class="btn btn-sample2 btn-block demo2">
-                            <span class="fa fa-file-o  fa-1x fa-fw "></span>新增
-                        </button>
-                        <br><br>
-                    </div>
-                    <br>
-                    <div class="col-xs-12" id="btn-tools">
-                        <button type="button" class="btn btn-info btn-block" id="modify"  data-toggle="modal" data-target="#focus2">
-                            <span class="fa fa-pencil-square-o fa-1x fa-fw"></span>修改
-                        </button>
-                        <br><br>
-                    </div>
-                    <br>
-                    <div class="col-xs-12" id="btn-tools">        
-                        <button type="button" class="btn btn-sample btn-block" data-toggle="modal" data-target="#exampleModal">
-                            <span class="fa fa-floppy-o fa-1x fa-fw"></span>儲存與輸出
-                        </button>  
-                        <br><br>                
-                    </div>
-                    <br> -->
-                    <div class="col-xs-12" id="btn-tools">
-                        <button type="button" class="btn btn-warning btn-block clear-button">
-                            <span class="fa fa-trash fa-1x fa-fw"></span>清除
-                        </button>
-                        <br><br>
-                    </div>
-                    <br>
-                    <!-- <div class="col-xs-12" id="btn-tools">
-                        <button input type="button" style="background-color:#FFD4D4" class="btn btn-block" id="save-button">
-                            <span class="fa fa-floppy-o fa-1x fa-fw"></span>儲存
-                        </button>
-                    </div> -->
-                    
-                    <!-- 顯示目前時段可到的姓名 -->
-                    <div id="name_box" class="col-xs-12">
-                        <div id="name_box_header" class="panel-heading">結果</div>
-                        <div id="name_box_content"></div>
-                    </div>
-                    
-                </div>
-                <br>
-                <div class="modal fade modal fade bs-example-modal-lg" id="focus" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h3 class="modal-title" id="myModalLabel"><span class="fa fa-heart fa-1x fa-fw"></span>選擇檔案：</h3>
-                                <!-- iframe是用來運作upload.php的隱藏頁面 -->
-                                <iframe name="hiddenFrame" class="hide"></iframe>
-                                <!-- 上傳檔案的form,target="hiddenFrame"是為了讓upload.php運作在iframe中,否則會載入upload.php來取代目前的html頁面 -->
-                                <form>
-                                    <div class="fileUpload btn btn-primary">
-                                        <span>選擇檔案</span>
-                                        <input id="file" name="file" type="file" accept=".json" class="upload" multiple="multiple" />
-                                    </div>
-                                    <input class="file file_name submit1" value="尚未選擇檔案" disabled="disabled" />
-                                    <button type="reset" id="submit1" class="btn btn-default ">開始上傳</button>
-                                    <button input type="button" class="btn btn-success demo_model" id="demo">
-                                        <span class="fa fa-check-circle fa-1x fa-fw "></span>分析
-                                    </button>
-                                </form>
-                                <div class="file not_upload_file_name"></div>
-                                <div class="upload_file_name submit1"></div>
-                            </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade modal fade bs-example-modal-lg" id="focus2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h3 class="modal-title" id="myModalLabel"><span class="fa fa-pencil-square-o fa-1x fa-fw"></span>選擇檔案：</h3>
-                                <!-- iframe是用來運作upload.php的隱藏頁面 -->
-                                <iframe name="hiddenFrame" class="hide"></iframe>
-                                <!-- 上傳檔案的form,target="hiddenFrame"是為了讓upload.php運作在iframe中,否則會載入upload.php來取代目前的html頁面 -->
-                                <form >
-                                    <div class="fileUpload btn btn-primary">
-                                        <span>選擇檔案</span>
-                                        <input id="modify_file" name="file" type="file" accept=".json" class="upload"/>
-                                    </div>
-                                    <input class="modify_file file_name submit2" value="尚未選擇檔案" disabled="disabled" />
-                                    <button type="reset" id="submit2" class="btn btn-default ">開始上傳</button>
-                                    <button type="button" class="btn btn-success demo2 demo_model" id="demo2">
-                                        <span class="fa fa-check-circle fa-1x fa-fw "></span>分析
-                                    </button>                                
-                                </form>
-                                <div class="modify_file not_upload_file_name"></div>
-                                <div class="upload_file_name submit2"></div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="exampleModalLabel"><span class="fa fa-floppy-o fa-1x fa-fw"></span>儲存與輸出</h4>
-                      </div>
-                      <div class="modal-body">
-                        <form action="" method="post">
-                          <div class="form-group">
-                            <label for="recipient-name" class="control-label">您的姓名:</label>
-                            <input type="text" class="form-control" id="user_name">
-                          </div>
-                          <div class="form-group">
-                            <label for="message-text" class="control-label">部門名稱:</label>
-                            <textarea class="form-control" id="user_dept"></textarea>
-                          </div>
-                        </form>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="download_json">儲存課程資料</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            </div>
-            <div id="non-display">
-                <row>just a invisible line for modifying tab's position</row>
-            </div>
-            <div class="col-md-10">
-                <div id="tab">
-                  <!-- Nav tabs -->
-                  <ul class="nav nav-pills" role="tablist">
-                    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">使用方法</a></li>
-                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">分析結果</a></li>
-                  </ul>
-                  <!-- Tab panes -->
-                  <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane fade in active" id="home">
-                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-                          <!-- Wrapper for slides -->
-                          <div class="carousel-inner" role="listbox">
-                            <div class="item active">
-                                <div class="img">
-                                  <img src="{% static 'tiagenda/images/edit/1.png' %}">
-                                </div>
-                            </div>
-                            {% for i in range_img %}
-                                <div class="item">
-                                    <div class="img">
-                                      <img src="/static/tiagenda/images/edit/{{i}}.png">
-                                    </div>
-                                </div>
-                            {% endfor %}
-                            <div class="item">
-                                <div class="img">
-                                  <img src="{% static 'tiagenda/images/edit/7.jpg' %}">
-                                </div>
-                            </div>
-                          </div>
+.tiagenda-app-lsidebar-container {
+    display: inline-block;
+    padding: 20px 0 16px 20px;
+    width: 200px;
+    height: 558px;
+    background-color: #D9EDF7;
+    vertical-align: top;
+}
 
-                          <!-- Controls -->
-                          <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
-                          </a>
-                          <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                          </a>
-                        </div>
-                    </div>
-                    <div role="tabpanel" class="tab-pane fade" id="profile">
-                        <div id="time-table">
-                            <table class="table table-striped table-hover table-condensed">
-                                <thead>
-                                    <tr class="info">
-                                        <th style="width: 10%">時間</th>
-                                        <th style="width: 18%">一</th>
-                                        <th style="width: 18%">二</th>
-                                        <th style="width: 18%">三</th>
-                                        <th style="width: 18%">四</th>
-                                        <th style="width: 18%">五</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for i in range_td %}
-                                        <tr data-hour="{{i}}" class="active">
-                                            <th>
-                                                <h3>{{i}}</h3>
-                                            </th>
-                                            <td data-day="1"><div><span></span></div></td>
-                                            <td data-day="2"><div><span></span></div></td>
-                                            <td data-day="3"><div><span></span></div></td>
-                                            <td data-day="4"><div><span></span></div></td>
-                                            <td data-day="5"><div><span></span></div></td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                  </div>
-                </div>
-                
+.tiagenda-app-rsidebar-container {
+    display: inline-block;
+    padding: 20px 20px 16px 0;
+    width: 250px;
+    height: 558px;
+    background-color: #D9EDF7;
+    vertical-align: top;
+}
+
+.tiagenda-app-toolbar-container {
+    box-shadow: 0px 0px 3px grey;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    border-radius: 4px;
+    background-color: white;
+}
+
+.tiagenda-toolbar-head {
+    position: relative;
+    display: flex;
+    padding: 0px 32px 0px 32px;
+    width: 100%;
+    background-color: #4180B2;
+    border-radius: 4px 4px 0px 0px;
+}
+
+.tiagenda-toolbar-head li {
+    padding-left: 8px;
+    height: 28px;
+    color: #403F3F;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    line-height: 28px;
+}
+
+.tiagenda-toolbar-head li i {
+    margin-right: 8px;
+    width: 28px;
+    text-align: center;
+    font-size: 24px;
+}
+
+.tiagenda-toolbar-body {
+    padding: 16px 32px 16px 32px;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    list-style: none;
+}
+
+.tiagenda-toolbar-body li {
+    height: 30px;
+}
+
+.tool_button {
+    display: block;
+    margin: 10px 0 0 0;
+    background-color: #d9534f;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 18px;
+    width: 100%;
+    height: 30px;
+    cursor: pointer;
+}
+
+.tool_button i {
+    margin-right: 4px;
+    font-size: 18px;
+}
+
+#input_id {
+    display: block;
+    width: 100%;
+    height: 30px;
+}
+
+.timetable {
+    width: calc(99% - 450px);
+}
+</style>
+{% endblock %} {% block content %}
+<div class='tiagenda-app-container'>
+    <div class='stufinite-app-content'>
+        <section class='tiagenda-app-lsidebar-container'>
+            <ul class='tiagenda-app-toolbar-container'>
+                <ui class='tiagenda-toolbar-head'>
+                    <li><i class="fa fa-wrench"></i>Tool</li>
+                </ui>
+                <ul class='tiagenda-toolbar-body'>
+                    <li>
+                        <input type="text" id="input_id">
+                    </li>
+                    <li>
+                        <button class="tool_button" type="button" id="button_add"><i class="fa fa-plus-circle"></i>新增好友</button>
+                    </li>
+                    <li>
+                        <button class="tool_button" type="button" id="button_clear"><i class="fa fa-trash-o"></i>清除全部</button>
+                    </li>
+                    <li>
+                        <button class="tool_button" type="button" id="button_compare"><i class="fa fa-play"></i>開始比對</button>
+                    </li>
+                    <li>
+                        <p></p>
+                    </li>
+                </ul>
+            </ul>
+        </section>
+        <section class='timetable'>
+            <div id='time-table'>
+                <table class='table'>
+                    <thead>
+                        <tr>
+                            <th style='width: 4%;'></th>
+                            <th style='width: 19%;'>一</th>
+                            <th style='width: 19%;'>二</th>
+                            <th style='width: 19%;'>三</th>
+                            <th style='width: 19%;'>四</th>
+                            <th style='width: 19%;'>五</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-hour='1'>
+                            <th>
+                                <h5 class='time'>08:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='2'>
+                            <th>
+                                <h5 class='time'>09:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='3'>
+                            <th>
+                                <h5 class='time'>10:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='4'>
+                            <th>
+                                <h5 class='time'>11:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='5'>
+                            <th>
+                                <h5 class='time'>13:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='6'>
+                            <th>
+                                <h5 class='time'>14:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='7'>
+                            <th>
+                                <h5 class='time'>15:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                        <tr data-hour='8'>
+                            <th>
+                                <h5 class='time'>16:10</h5>
+                            </th>
+                            <td data-day='1'></td>
+                            <td data-day='2'></td>
+                            <td data-day='3'></td>
+                            <td data-day='4'></td>
+                            <td data-day='5'></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-            {% include 'tiagenda/js_script_tag.html' %}
-        </body> 
-    </html>
+        </section>
+        <section class='tiagenda-app-rsidebar-container'>
+            <ul class='tiagenda-app-toolbar-container'>
+                <ui class='tiagenda-toolbar-head'>
+                    <li><i class="fa fa-wrench"></i>Tool</li>
+                </ui>
+                <ul class='tiagenda-toolbar-body'>
+                </ul>
+            </ul>
+        </section>
+    </div>
+</div>
+<script>
+$.getJSON('http://127.0.0.1:8000/api/get/frienduser?user=root').done(function(courseid) {
+    $.each(courseid, function(i1, course_id) {
+        $.getJSON('http://127.0.0.1:8000/api/get/course/code/' + course_id).done(function(coursetime) {
+            $.each(coursetime[0].time.split(","), function(i2, course_time) {
+                for (i = 1; i < course_time.split("-").length; i++) {
+                    ary[course_time.split("-")[0] - 1][course_time.split("-")[i] - 1] = 1;
+                }
+            });
+        }).done(function() {
+            for (var i = 1; i < 6; i++) {
+                for (var j = 1; j < 9; j++) {
+                    $('tr[data-hour=' + j + '] td[data-day=' + i + ']').text(ary[i - 1][j - 1]);
+                }
+            }
+        })
+    });
+});
+$("#button_clear").click(function() {
+    $("p").text("");
+    $.getJSON('http://127.0.0.1:8000/api/get/frienduser?user=root').done(function(courseid) {
+        $.each(courseid, function(i1, course_id) {
+            $.getJSON('http://127.0.0.1:8000/api/get/course/code/' + course_id).done(function(coursetime) {
+                $.each(coursetime[0].time.split(","), function(i2, course_time) {
+                    for (i = 1; i < course_time.split("-").length; i++) {
+                        ary[course_time.split("-")[0] - 1][course_time.split("-")[i] - 1] = 1;
+                    }
+                });
+            }).done(function() {
+                for (var i = 1; i < 6; i++) {
+                    for (var j = 1; j < 9; j++) {
+                        $('tr[data-hour=' + j + '] td[data-day=' + i + ']').text(ary[i - 1][j - 1]);
+                    }
+                }
+            })
+        });
+    });
+});
+
+$("#button_add").click(function() {
+    var user_id = $("#input_id").val()
+    $("p").append(user_id);
+
+    $.getJSON('http://127.0.0.1:8000/api/get/frienduser?user=' + user_id).done(function(courseid) {
+        $.each(courseid, function(i1, course_id) {
+            $.getJSON('http://127.0.0.1:8000/api/get/course/code/' + course_id).done(function(coursetime) {
+                $.each(coursetime[0].time.split(","), function(i2, course_time) {
+                    for (i = 1; i < course_time.split("-").length; i++) {
+                        ary[course_time.split("-")[0] - 1][course_time.split("-")[i] - 1] += 1;
+                    }
+                });
+            }).done(function() {
+                for (var i = 1; i < 6; i++) {
+                    for (var j = 1; j < 9; j++) {
+                        $('tr[data-hour=' + j + '] td[data-day=' + i + ']').text(ary[i - 1][j - 1]);
+                    }
+                }
+            })
+        });
+    });
+});
+
+
+function fill_timetable(){
+    for (var i = 1; i < 6; i++) {
+        for (var j = 1; j < 9; j++) {
+                    $('tr[data-hour=' + j + '] td[data-day=' + i + ']').text(ary[i - 1][j - 1]);
+        }
+    }
+}
+</script>
+{% endblock %} {% block javascript %} {% endblock %}

@@ -8,6 +8,7 @@ urlpatterns = [
 
 urlpatterns += [
     url(r'^api/get/user$', apis.get_user),
+    url(r'^api/get/frienduser$', apis.get_friend_selected_course),
     url(r'^api/get/course/code/(?P<course_code>\d+)$', apis.get_course_by_code),
     url(r'^api/put/selected$', apis.save_selected),
     url(r'^api/del/selected$', apis.del_selected),
