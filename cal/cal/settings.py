@@ -46,7 +46,6 @@ PROJECT_APPS = [
     'tiagenda',
     'cphelper',
     'curso',
-    'corsheaders',
 ]
 
 INSTALLED_APPS = REQUIRED_APPS + PROJECT_APPS
@@ -54,7 +53,6 @@ INSTALLED_APPS = REQUIRED_APPS + PROJECT_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -141,5 +139,3 @@ if not DEBUG:
     SESSION_COOKIE_DOMAIN = '.campass.com.tw'
     with open(BASE_DIR + '/' + 'sessionid.txt') as f:
         SESSION_COOKIE_NAME = f.read().strip()
-
-CORS_ORIGIN_ALLOW_ALL=True
