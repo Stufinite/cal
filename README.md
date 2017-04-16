@@ -13,7 +13,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisities
 
 1. OS：Ubuntu / OSX would be nice
-2. environment：need python3
+2. environment：need python3 `mongoDB`
   * Linux：`sudo apt-get update; sudo apt-get install; python3 python3-dev`
   * OSX：`brew install python3`
 
@@ -32,7 +32,9 @@ These instructions will get you a copy of the project up and running on your loc
 ## Run
 
 1. 第一次的時候，需要先初始化資料庫：`python migrate`
-2. Execute : `python manage.py runserver`. If it work fine on [here](127.0.0.1:8000) , then it's done. Congratulations~~
+2. 把學校的系所資料匯入資料庫中：`python manage.py buildDept NCHU`
+3. 切換到 [scrapy](http://github.com/stufinite/scrawler) ，執行 `scrapy crawl NCHU` (詳細操作請看scrapy的README)
+4. Execute：`python manage.py runserver`. If it work fine on [here](127.0.0.1:8000) , then it's done. Congratulations~~
 
 ### Break down into end to end tests
 
