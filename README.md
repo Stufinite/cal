@@ -13,9 +13,12 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisities
 
 1. OS：Ubuntu / OSX would be nice
-2. environment：need python3 `mongoDB`
+2. environment：need python3
   * Linux：`sudo apt-get update; sudo apt-get install; python3 python3-dev`
   * OSX：`brew install python3`
+3. 需要`mongoDB`:
+  * Ubuntu:請看這篇[安裝教學](https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-16-04)
+  * mac：請看這篇[安裝教學](https://blog.gtwang.org/mac-os-x/mac-os-x-install-mongodb-database/)
 
 ### Installing
 
@@ -33,7 +36,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 1. 第一次的時候，需要先初始化資料庫：`python migrate`
 2. 把學校的系所資料匯入資料庫中：`python manage.py buildDept NCHU`
-3. 切換到 [scrapy](http://github.com/stufinite/scrawler) ，執行 `scrapy crawl NCHU` (詳細操作請看scrapy的README)
+3. 切換到 [scrawler](http://github.com/stufinite/scrawler) ，執行 `scrapy crawl NCHU` (詳細操作請看scrawler的README)
 4. Execute：`python manage.py runserver`. If it work fine on [here](127.0.0.1:8000) , then it's done. Congratulations~~
 
 ### Break down into end to end tests
