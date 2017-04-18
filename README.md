@@ -34,7 +34,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## Run
 
-1. 第一次的時候，需要先初始化資料庫：`python migrate`
+1. 第一次的時候，需要先初始化資料庫：`python manage.py migrate`
 2. 把學校的系所資料匯入資料庫中：`python manage.py buildDept NCHU`
 3. 切換到 [scrawler](http://github.com/stufinite/scrawler) ，執行 `scrapy crawl NCHU` (詳細操作請看scrawler的README)
 4. Execute：`python manage.py runserver`. If it work fine on [here](127.0.0.1:8000) , then it's done. Congratulations~~
