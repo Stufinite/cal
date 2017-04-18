@@ -22,7 +22,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Installing
 
-1. `git clone https://github.com/Stufinite/time2eat.git`
+1. `git clone 本專案`
 2. 使用虛擬環境：
   1. 創建一個虛擬環境：`virtualenv venv`
   2. 啟動方法
