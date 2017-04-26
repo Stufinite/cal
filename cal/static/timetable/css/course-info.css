@@ -1,0 +1,45 @@
+.stufinite-course-info-container {
+    position: absolute;
+    top: 135px;
+    left: 64px;
+    z-index: 200;
+    display: none;
+    width: 600px;
+    background-color: white;
+    box-shadow: 0px 0px 3px grey;
+}
+
+.stufinite-course-info-close {
+    float: right;
+    width: 32px;
+    height: 32px;
+    color: red;
+}
+
+.stufinite-course-info {
+    margin: 0;
+    padding: 24px 16px 24px 16px;
+    list-style: none;
+}
+
+.stufinite-course-info li {
+    padding-left: 8px;
+    height: 48px;
+    color: #403F3F;
+    letter-spacing: 2px;
+    font-weight: lighter;
+    font-size: 15px;
+    line-height: 48px;
+}
+
+.stufinite-course-info li i {
+    margin-right: 8px;
+    width: 28px;
+    text-align: center;
+    font-size: 24px;
+}
+
+.stufinite-course-info li a {
+    color: #403F3F;
+    text-decoration: none;
+}

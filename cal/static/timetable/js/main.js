@@ -13,6 +13,10 @@
       }
     });
 
+    document.querySelector(".stufinite-course-info-close").addEventListener("click", (e) => {
+      $('.stufinite-course-info-container').hide();
+    });
+
     InitializeSearchForm();
   });
 })()

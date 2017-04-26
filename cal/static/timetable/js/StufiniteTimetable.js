@@ -376,6 +376,7 @@ class StufiniteTimetable {
       .find(".detail-note")
       .text(course.note == undefined || course.note == "" ? "無" : course.note).end()
     $("#course-detail").append($detail)
+    $(".stufinite-course-info-container").show();
   }
 
   addCourseToSearchbar(e) {
