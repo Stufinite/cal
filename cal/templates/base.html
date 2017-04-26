@@ -7,26 +7,30 @@
     <meta charset='utf-8' />
     <title>{% block title %}{% endblock %}</title>
     <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' rel='stylesheet' integrity='sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1' crossorigin='anonymous'>
-    <link rel='stylesheet' href='{% static "stufinite/css/stufinite.css" %}'> {% block stylesheet %} {% endblock %}
+    <link rel='stylesheet' href='{% static "stufinite/css/stufinite.css" %}'>
+    {% block stylesheet %}
+    {% endblock %}
 </head>
 
 <body>
     <header class='stufinite-header'>
         <div class='stufinite-header-title'>
-            <span>{% block app_name %}{% endblock %}</span>
+            <!-- <span>{% block app_name %}{% endblock %}</span> -->
+            <img src='/static/stufinite/img/logo.jpg' height="64px"></img>
         </div>
 
         <div class='stufinite-header-search'>
             <input id='search-form' type='text' placeholder='輸入課程名稱、代碼、教師名稱或進行關鍵字搜尋'>
         </div>
 
-        <div class='stufinite-header-item'>
+        <!-- <div class='stufinite-header-item'>
             <span class='stufinite-header-user-info'><a href="https://login.campass.com.tw/accounts/profile">{{ user.username }} 使用者設定</a></span>
             <a href="http://login.campass.com.tw/accounts/logout"><button class='stufinite-btn'>Logout</button></a>
-        </div>
+        </div> -->
     </header>
 
-    {% block content %} {% endblock %}
+    {% block content %}
+    {% endblock %}
 
     <footer>
         <span>Copyright © 2016 All rights reserved.</span>
@@ -34,8 +38,10 @@
     </footer>
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <script src='{% static "stufinite/js/stufinite.js" %}'></script>
-    {% block javascript %} {% endblock %}
+    {% block javascript %}
+    {% endblock %}
 </body>
 
 </html>

@@ -1,520 +1,146 @@
-{% extends "base.html" %}
-
-{% block title %}Campass 選課小幫手2.0{% endblock %}
-{% block app_name %}Campass 選課小幫手2.0{% endblock %}
-
-{% load static %}
-{% block stylesheet %}
-<link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' rel='stylesheet' integrity='sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1' crossorigin='anonymous'>
-<link href='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css' rel='stylesheet'>
-
-<link rel='stylesheet' href='{% static "timetable/css/index.css" %}'>
-<link rel='stylesheet' href='{% static "timetable/css/timetable.css" %}'>
-<link rel='stylesheet' href='{% static "timetable/css/searchbar.css" %}'>
-<link rel='stylesheet' href='{% static "login/css/login.css" %}'>
-{% endblock %}
-
-{% block content %}
-<div id='stufinite-create-user-profile'>
-    <section class="stufinite-form-container">
-        <h1>輸入學籍資料</h1>
-        <div class='form'>
-            <p>
-                <label for="">就讀學校</label>
-                <select id="user-profile-school" name="school">
-                  <option value="NCHU">國立中興大學</option>
-                </select>
-            </p>
-            <p>
-                <label for="">學制</label>
-                <select id="user-profile-career" name="career">
-                </select>
-            </p>
-            <p>
-                <label for="">科系</label>
-                <select id="user-profile-department" name="department">
-                </select>
-            </p>
-            <p>
-              <label for="">年級</label>
-              <input id="user-profile-grade" max="7" min="1" name="grade" type="number" value="1" required="">
-            </p>
-            <button id="user-profile-btn" name="button">繼續</button>
-        </div>
-    </section>
-</div>
-<div class='stufinite-app-container'>
-    <div class='stufinite-app-content'>
-        <section class='stufinite-app-sidebar-container'>
-            <ul class='stufinite-app-sidebar'>
-                <li><i class="fa fa-user"></i>已選修學分 <span id="credits">0</span></li>
-            </ul>
-
-            <ul class='stufinite-app-sidebar' id="course-detail" style="height:700px;">
-                <li>點擊圖示顯示課程詳細資訊</li>
-            </ul>
-        </section>
-
-        <section class='timetable' id='time-table'>
-            <table class='table'>
-                <thead>
-                    <tr>
-                        <th style='width: 4%;'></th>
-                        <th style='width: 19%;'>一</th>
-                        <th style='width: 19%;'>二</th>
-                        <th style='width: 19%;'>三</th>
-                        <th style='width: 19%;'>四</th>
-                        <th style='width: 19%;'>五</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr data-hour='1'>
-                        <th>
-                            <h5 class='time'>08:10</h5>
-                        </th>
-                        <td data-day='1'></td>
-                        <td data-day='2'></td>
-                        <td data-day='3'></td>
-                        <td data-day='4'></td>
-                        <td data-day='5'></td>
-                    </tr>
-                    <tr data-hour='2'>
-                        <th>
-                            <h5 class='time'>09:10</h5>
-                        </th>
-                        <td data-day='1'></td>
-                        <td data-day='2'></td>
-                        <td data-day='3'></td>
-                        <td data-day='4'></td>
-                        <td data-day='5'></td>
-                    </tr>
-                    <tr data-hour='3'>
-                        <th>
-                            <h5 class='time'>10:10</h5>
-                        </th>
-                        <td data-day='1'></td>
-                        <td data-day='2'></td>
-                        <td data-day='3'></td>
-                        <td data-day='4'></td>
-                        <td data-day='5'></td>
-                    </tr>
-                    <tr data-hour='4'>
-                        <th>
-                            <h5 class='time'>11:10</h5>
-                        </th>
-                        <td data-day='1'></td>
-                        <td data-day='2'></td>
-                        <td data-day='3'></td>
-                        <td data-day='4'></td>
-                        <td data-day='5'></td>
-                    </tr>
-                    <tr data-hour='5'>
-                        <th>
-                            <h5 class='time'>13:10</h5>
-                        </th>
-                        <td data-day='1'></td>
-                        <td data-day='2'></td>
-                        <td data-day='3'></td>
-                        <td data-day='4'></td>
-                        <td data-day='5'></td>
-                    </tr>
-                    <tr data-hour='6'>
-                        <th>
-                            <h5 class='time'>14:10</h5>
-                        </th>
-                        <td data-day='1'></td>
-                        <td data-day='2'></td>
-                        <td data-day='3'></td>
-                        <td data-day='4'></td>
-                        <td data-day='5'></td>
-                    </tr>
-                    <tr data-hour='7'>
-                        <th>
-                            <h5 class='time'>15:10</h5>
-                        </th>
-                        <td data-day='1'></td>
-                        <td data-day='2'></td>
-                        <td data-day='3'></td>
-                        <td data-day='4'></td>
-                        <td data-day='5'></td>
-                    </tr>
-                    <tr data-hour='8'>
-                        <th>
-                            <h5 class='time'>16:10</h5>
-                        </th>
-                        <td data-day='1'></td>
-                        <td data-day='2'></td>
-                        <td data-day='3'></td>
-                        <td data-day='4'></td>
-                        <td data-day='5'></td>
-                    </tr>
-                    <tr data-hour='9'>
-                        <th>
-                            <h5 class='time'>17:10</h5>
-                        </th>
-                        <td data-day='1'></td>
-                        <td data-day='2'></td>
-                        <td data-day='3'></td>
-                        <td data-day='4'></td>
-                        <td data-day='5'></td>
-                    </tr>
-                    <tr data-hour='10'>
-                        <th>
-                            <h5 class='time'>18:20</h5>
-                        </th>
-                        <td data-day='1'></td>
-                        <td data-day='2'></td>
-                        <td data-day='3'></td>
-                        <td data-day='4'></td>
-                        <td data-day='5'></td>
-                    </tr>
-                    <tr data-hour='11'>
-                        <th>
-                            <h5 class='time'>19:15</h5>
-                        </th>
-                        <td data-day='1'></td>
-                        <td data-day='2'></td>
-                        <td data-day='3'></td>
-                        <td data-day='4'></td>
-                        <td data-day='5'></td>
-                    </tr>
-                    <tr data-hour='12'>
-                        <th>
-                            <h5 class='time'>20:10</h5>
-                        </th>
-                        <td data-day='1'></td>
-                        <td data-day='2'></td>
-                        <td data-day='3'></td>
-                        <td data-day='4'></td>
-                        <td data-day='5'></td>
-                    </tr>
-                    <tr data-hour='13'>
-                        <th>
-                            <h5 class='time'>21:05</h5>
-                        </th>
-                        <td data-day='1'></td>
-                        <td data-day='2'></td>
-                        <td data-day='3'></td>
-                        <td data-day='4'></td>
-                        <td data-day='5'></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <section class="stufinite-app-searchbar-container">
-            <div class="stufinite-app-searchbar-toggle">
-                <i class="fa fa-bars" aria-hidden="true"></i>
-            </div>
-
-            <div class='stufinite-searchbar-title'>
-                <span>搜尋結果</span>
-            </div>
-
-            <dic class="stufinite-searchbar-tab">
-                <span class='tab-deptObl'>必修</span>
-                <span class='tab-deptOpt'>選修</span>
-                <span class='tab-general'>通識</span>
-                <span class='tab-PE'>體育</span>
-                <span class='tab-others'>其他</span>
-                <span class='tab-search'>搜尋</span>
-            </dic>
-
-            <div class="stufinite-searchbar-department-select-container">
-                <select class="stufinite-searchbar-department-select"></select>
-                <button class='stufinite-searchbar-department-button'>顯示</button>
-            </div>
-
-            <div class="stufinite-searchbar-result-container">
-                <div class="deptObl-container">
-                    <div class="stufinite-searchbar-placeholder">
-                        <span>此標籤頁無搜尋結果，請查看其他標籤頁，或點擊空堂時段或使用關鍵字搜尋</span>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>必修課程</span>
-                        </div>
-                        <div class="stufinite-searchbar-dept-list">
-                            <div class="obligatory"></div>
-                            <div class="obligatory-1"></div>
-                            <div class="obligatory-2"></div>
-                            <div class="obligatory-3"></div>
-                            <div class="obligatory-4"></div>
-                            <div class="obligatory-5"></div>
-                            <div class="obligatory-6"></div>
-                            <div class="obligatory-7"></div>
-                            <div class="obligatory-8"></div>
-                            <div class="obligatory-9"></div>
-                        </div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>雙主修必修課程</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list second-obligatory"></div>
-                    </div>
-                </div>
-
-                <div class="deptOpt-container">
-                    <div class="stufinite-searchbar-placeholder">
-                        <span>此標籤頁無搜尋結果，請查看其他標籤頁，或點擊空堂時段或使用關鍵字搜尋</span>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>本系選修課程</span>
-                        </div>
-                        <div class="stufinite-searchbar-dept-list">
-                            <div class="optional"></div>
-                            <div class="optional-1"></div>
-                            <div class="optional-2"></div>
-                            <div class="optional-3"></div>
-                            <div class="optional-4"></div>
-                            <div class="optional-5"></div>
-                            <div class="optional-6"></div>
-                            <div class="optional-7"></div>
-                            <div class="optional-8"></div>
-                            <div class="optional-9"></div>
-                        </div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>雙主修選修課程</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list second-optional"></div>
-                    </div>
-                </div>
-
-                <div class="general-container">
-                    <div class="stufinite-searchbar-placeholder">
-                        <span>此標籤頁無搜尋結果，請查看其他標籤頁，或點擊空堂時段或使用關鍵字搜尋</span>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>人文</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list human"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>社會</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list society"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>自然</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list nature"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>大學國文</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list chinese"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>大一英文</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list english foreign-post"></div>
-                    </div>
-                </div>
-
-                <div class="PE-container">
-                    <div class="stufinite-searchbar-placeholder">
-                        <span>此標籤頁無搜尋結果，請查看其他標籤頁，或點擊空堂時段或使用關鍵字搜尋</span>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>體育</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list PE"></div>
-                    </div>
-                </div>
-
-                <div class="others-container">
-                    <div class="stufinite-searchbar-placeholder">
-                        <span>此標籤頁無搜尋結果，請查看其他標籤頁，或點擊空堂時段或使用關鍵字搜尋</span>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>師資培育中心</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list teacher-post"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>教官室</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list military-post"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>語言中心</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list foreign-post"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>全年級選修課程</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list non-graded-optional-post"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>其他課程</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list others"></div>
-                    </div>
-                </div>
-
-                <div class="search-container">
-                    <div class="stufinite-searchbar-placeholder">
-                        <span>此標籤頁無搜尋結果，請查看其他標籤頁，或點擊空堂時段或使用關鍵字搜尋</span>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>必修課程</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list obligatory-search"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>本系選修課程</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list optional-search"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>雙主修必修課程</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list second-obligatory-search"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>雙主修選修課程</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list second-optional-search"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>人文</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list human-search"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>社會</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list society-search"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>自然</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list nature-search"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>大學國文</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list chinese-search"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>大一英文</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list english-search"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>體育</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list PE-search"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>師資培育中心</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list teacher-post-search"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>教官室</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list military-post-search"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>語言中心</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list foreign-post-search"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>全年級選修課程</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list non-graded-optional-post-search"></div>
-                    </div>
-
-                    <div class="stufinite-searchbar-result">
-                        <div class="stufinite-searchbar-result-title">
-                            <span>其他課程</span>
-                        </div>
-                        <div class="stufinite-searchbar-result-list others-search"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-</div>
-{% endblock %}
-
-
-{% block javascript %}
-<!--Google analytics-->
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-78099072-2', 'auto');
-  ga('send', 'pageview');
-</script>
-<!--Toast Notification-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<!--功能主函式-->
-<script src="{% static 'timetable/js/StufiniteSearchbar.js' %}"></script>
-<script src="{% static 'timetable/js/StufiniteTimetable.js' %}"></script>
-<script src="{% static 'timetable/js/main.js' %}"></script>
-{% endblock %}
+<section class='timetable' id='time-table'>
+    <table class='table'>
+        <thead>
+            <tr>
+                <th style='width: 4%;'></th>
+                <th style='width: 19%;'>一</th>
+                <th style='width: 19%;'>二</th>
+                <th style='width: 19%;'>三</th>
+                <th style='width: 19%;'>四</th>
+                <th style='width: 19%;'>五</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-hour='1'>
+                <th>
+                    <h5 class='time'>08:10</h5>
+                </th>
+                <td data-day='1'></td>
+                <td data-day='2'></td>
+                <td data-day='3'></td>
+                <td data-day='4'></td>
+                <td data-day='5'></td>
+            </tr>
+            <tr data-hour='2'>
+                <th>
+                    <h5 class='time'>09:10</h5>
+                </th>
+                <td data-day='1'></td>
+                <td data-day='2'></td>
+                <td data-day='3'></td>
+                <td data-day='4'></td>
+                <td data-day='5'></td>
+            </tr>
+            <tr data-hour='3'>
+                <th>
+                    <h5 class='time'>10:10</h5>
+                </th>
+                <td data-day='1'></td>
+                <td data-day='2'></td>
+                <td data-day='3'></td>
+                <td data-day='4'></td>
+                <td data-day='5'></td>
+            </tr>
+            <tr data-hour='4'>
+                <th>
+                    <h5 class='time'>11:10</h5>
+                </th>
+                <td data-day='1'></td>
+                <td data-day='2'></td>
+                <td data-day='3'></td>
+                <td data-day='4'></td>
+                <td data-day='5'></td>
+            </tr>
+            <tr data-hour='5'>
+                <th>
+                    <h5 class='time'>13:10</h5>
+                </th>
+                <td data-day='1'></td>
+                <td data-day='2'></td>
+                <td data-day='3'></td>
+                <td data-day='4'></td>
+                <td data-day='5'></td>
+            </tr>
+            <tr data-hour='6'>
+                <th>
+                    <h5 class='time'>14:10</h5>
+                </th>
+                <td data-day='1'></td>
+                <td data-day='2'></td>
+                <td data-day='3'></td>
+                <td data-day='4'></td>
+                <td data-day='5'></td>
+            </tr>
+            <tr data-hour='7'>
+                <th>
+                    <h5 class='time'>15:10</h5>
+                </th>
+                <td data-day='1'></td>
+                <td data-day='2'></td>
+                <td data-day='3'></td>
+                <td data-day='4'></td>
+                <td data-day='5'></td>
+            </tr>
+            <tr data-hour='8'>
+                <th>
+                    <h5 class='time'>16:10</h5>
+                </th>
+                <td data-day='1'></td>
+                <td data-day='2'></td>
+                <td data-day='3'></td>
+                <td data-day='4'></td>
+                <td data-day='5'></td>
+            </tr>
+            <tr data-hour='9'>
+                <th>
+                    <h5 class='time'>17:10</h5>
+                </th>
+                <td data-day='1'></td>
+                <td data-day='2'></td>
+                <td data-day='3'></td>
+                <td data-day='4'></td>
+                <td data-day='5'></td>
+            </tr>
+            <tr data-hour='10'>
+                <th>
+                    <h5 class='time'>18:20</h5>
+                </th>
+                <td data-day='1'></td>
+                <td data-day='2'></td>
+                <td data-day='3'></td>
+                <td data-day='4'></td>
+                <td data-day='5'></td>
+            </tr>
+            <tr data-hour='11'>
+                <th>
+                    <h5 class='time'>19:15</h5>
+                </th>
+                <td data-day='1'></td>
+                <td data-day='2'></td>
+                <td data-day='3'></td>
+                <td data-day='4'></td>
+                <td data-day='5'></td>
+            </tr>
+            <tr data-hour='12'>
+                <th>
+                    <h5 class='time'>20:10</h5>
+                </th>
+                <td data-day='1'></td>
+                <td data-day='2'></td>
+                <td data-day='3'></td>
+                <td data-day='4'></td>
+                <td data-day='5'></td>
+            </tr>
+            <tr data-hour='13'>
+                <th>
+                    <h5 class='time'>21:05</h5>
+                </th>
+                <td data-day='1'></td>
+                <td data-day='2'></td>
+                <td data-day='3'></td>
+                <td data-day='4'></td>
+                <td data-day='5'></td>
+            </tr>
+        </tbody>
+    </table>
+</section>

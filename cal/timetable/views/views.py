@@ -34,8 +34,9 @@ def init_user(request):
 
 @ensure_csrf_cookie
 def timetable(request):
-    user = init_user(request)
-    if isinstance(user, HttpResponseRedirect):
-        return user
-
-    return render(request, 'timetable.html', {'user': user})
+    # user = init_user(request)
+    # if isinstance(user, HttpResponseRedirect):
+    #     return user
+    #
+    # return render(request, 'timetable.html', {'user': user})
+    return render(request, 'index.html', {})

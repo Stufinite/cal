@@ -43,7 +43,7 @@ class StufiniteSearchbar {
               this.addResult(course, undefined, grade, false);
             }, json['optional'][grade][index]);
           }
-        }       
+        }
       });
 
       this.currentTab = 'deptObl';
@@ -68,17 +68,13 @@ class StufiniteSearchbar {
 
   show() {
     $(".stufinite-app-searchbar-toggle").attr("data-toggle", "true")
-    $(".stufinite-app-searchbar-container").animate({
-      right: 0
-    }, 200);
+    $(".stufinite-app-searchbar-container").show("slide", { direction: "right" }, 300);
     this.isVisible = true;
   }
 
   hide() {
     $(".stufinite-app-searchbar-toggle").attr("data-toggle", "false")
-    $(".stufinite-app-searchbar-container").animate({
-      right: "-300px"
-    }, 200);
+    $(".stufinite-app-searchbar-container").hide("slide", { direction: "right" }, 300);
     this.isVisible = false;
   }
 

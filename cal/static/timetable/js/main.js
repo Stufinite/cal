@@ -15,10 +15,6 @@
 
     InitializeSearchForm();
   });
-
-  // $.getJSON("/api/get/user", (user) => {
-  //
-  // });
 })()
 
 function createUserProfile(func) {

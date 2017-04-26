@@ -1,7 +1,7 @@
 .timetable {
     display: inline-block;
     padding: 16px;
-    width: calc(99% - 200px);
+    width: 99%;
     color: #403F3F;
     vertical-align: top;
 }
