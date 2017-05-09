@@ -1,11 +1,11 @@
 class StufiniteTimetable {
-  constructor(school, lang, user) {
+  constructor() {
     this.target = $("#time-table");
-    this.school = school
-    this.language = lang;
+    this.school = window.cpUser.school
+    this.language = "zh_TW";
     this.credits = 0;
 
-    this.user = user;
+    this.user = window.cpUser;
 
     this.obligatory = {};
     this.optional = {};
@@ -14,6 +14,10 @@ class StufiniteTimetable {
 
     this.classroom = {};
 
+    // Initialize course info close button
+    document.querySelector(".stufinite-course-info-close").addEventListener("click", (e) => {
+      $('.stufinite-course-info-container').hide();
+    });
     // Initialize timetable with square plus buttons
     $("#time-table td")
       .html($('<i class="fa fa-plus-square fa-5x"></i>')
@@ -31,7 +35,6 @@ class StufiniteTimetable {
 
     this.getCourseByMajor((jsonOfCode) => {
       this.InitializeByMajor(jsonOfCode);
-      delMask();
     });
   }
 

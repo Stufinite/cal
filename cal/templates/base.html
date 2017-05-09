@@ -13,10 +13,40 @@
 </head>
 
 <body>
+      <!-- Facebook -->
+      <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '199021993947051',
+          xfbml      : true,
+          version    : 'v2.9'
+        });
+        FB.AppEvents.logPageView();
+      };
+
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v2.9&appId=199021993947051";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+    <!-- End of facebook -->
+
     <header class='stufinite-header'>
         <div class='stufinite-header-title'>
             <!-- <span>{% block app_name %}{% endblock %}</span> -->
-            <img src='/static/stufinite/img/logo.jpg' height="64px"></img>
+            <img src='/static/stufinite/img/logo.svg' height="64px"></img>
         </div>
 
         <div class='stufinite-header-search'>

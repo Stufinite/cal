@@ -1,12 +1,14 @@
 class StufiniteSearchbar {
-  constructor(school, lang, user) {
-    this.school = school;
-    this.language = lang
-    this.user = user;
+  constructor() {
+    this.school = window.cpUser.school;
+    this.language = "zh_TW"
+    this.user = window.cpUser;
     this.isVisible = false;
     this.type = ['optional', 'human', 'society', 'nature', 'PE']
     this.tabs = ['deptObl', 'deptOpt', 'general', 'PE', 'others', 'search'];
     this.currentTab = 'deptObl';
+
+    this.InitializeSearchForm();
 
     let tab = $('.stufinite-searchbar-tab');
     for (let t of this.tabs) {
@@ -50,6 +52,49 @@ class StufiniteSearchbar {
       this.displayTabByName(this.currentTab);
     });
   }
+
+
+  InitializeSearchForm() {
+    // Initialize search-form behavior
+    document.querySelector(".stufinite-app-searchbar-toggle").addEventListener("click", (e) => {
+      if (window.searchbar.isVisible) {
+        window.searchbar.hide();
+      } else {
+        window.searchbar.show();
+      }
+    });
+    document.querySelector("#search-form").addEventListener("focus", () => {
+      searchbar.show();
+    });
+    document.querySelector("#search-form").addEventListener("change", (e) => {
+      let raw_key = $(e.target).val();
+      if (raw_key.length < 2) {
+        window.searchbar.clear();
+        return;
+      }
+      window.searchbar.clear("搜尋中...")
+
+      let key = '';
+      for (let char of raw_key.split(' ')) {
+        key += char + '+';
+      }
+      key = key.slice(0, -1);
+
+      $.getJSON("/search/?keyword=" + key + "&school=NCHU", (c_by_key) => {
+        if (c_by_key.length == 0) {
+          window.searchbar.clear("找不到與\"" + key + "\"相關的課程")
+          return;
+        }
+        window.searchbar.clear()
+        for (let i of c_by_key) {
+          window.timetable.getCourseByCode((course) => {
+            window.searchbar.addResult(course, true);
+          }, i)
+        }
+      });
+    });
+  }
+
 
   displayTab(e) {
     let className = $(e.target).attr('class');

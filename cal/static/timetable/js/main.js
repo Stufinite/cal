@@ -1,27 +1,24 @@
 (function main() {
-  addMask();
-
-  createUserProfile((user) => {
-    window.searchbar = new StufiniteSearchbar("NCHU", "zh_TW", user)
-    window.timetable = new StufiniteTimetable("NCHU", "zh_TW", user)
-
-    document.querySelector(".stufinite-app-searchbar-toggle").addEventListener("click", (e) => {
-      if (window.searchbar.isVisible) {
-        window.searchbar.hide();
-      } else {
-        window.searchbar.show();
-      }
-    });
-
-    document.querySelector(".stufinite-course-info-close").addEventListener("click", (e) => {
-      $('.stufinite-course-info-container').hide();
-    });
-
-    InitializeSearchForm();
+  FB.getLoginStatus(function(response) {
+    if (response.status === 'connected') {
+      //已登入-可取得UserId和accessToken
+      var uid = response.authResponse.userID;
+      var accessToken = response.authResponse.accessToken;
+    } else if (response.status === 'not_authorized') {
+      //尚未通過第一階段授權
+    } else {
+      createUserProfile(() => {
+        window.timetable = new StufiniteTimetable()
+        window.searchbar = new StufiniteSearchbar()
+      });
+    }
   });
-})()
+})();
 
 function createUserProfile(func) {
+  addMask();
+  $('#stufinite-create-user-profile').show();
+
   let careerMap = {
     'U': '學士學位',
     'G': '碩士學位',
@@ -55,7 +52,8 @@ function createUserProfile(func) {
   });
 
   $('#user-profile-btn').bind('click', () => {
-    let user = {
+    window.cpUser = {
+      "school": $("#user-profile-school").val(),
       "second_major": "",
       "career": $('#user-profile-career').val(),
       "grade": $('#user-profile-department').val(),
@@ -64,7 +62,9 @@ function createUserProfile(func) {
       "username": "Guest",
       "dept_id": [$('#user-profile-department').val()]
     }
-    func(user);
+
+    func();
+    delMask();
     $('#stufinite-create-user-profile').hide();
   });
 }
@@ -75,40 +75,6 @@ function addMask() {
 
 function delMask() {
   $("body").find("#page-mask").remove();
-}
-
-function InitializeSearchForm() {
-  // Initialize search-form behavior
-  document.querySelector("#search-form").addEventListener("focus", () => {
-    searchbar.show();
-  });
-  document.querySelector("#search-form").addEventListener("change", (e) => {
-    let raw_key = $(e.target).val();
-    if (raw_key.length < 2) {
-      window.searchbar.clear();
-      return;
-    }
-    window.searchbar.clear("搜尋中...")
-
-    let key = '';
-    for (let char of raw_key.split(' ')) {
-      key += char + '+';
-    }
-    key = key.slice(0, -1);
-
-    $.getJSON("/search/?keyword=" + key + "&school=NCHU", (c_by_key) => {
-      if (c_by_key.length == 0) {
-        window.searchbar.clear("找不到與\"" + key + "\"相關的課程")
-        return;
-      }
-      window.searchbar.clear()
-      for (let i of c_by_key) {
-        window.timetable.getCourseByCode((course) => {
-          window.searchbar.addResult(course, true);
-        }, i)
-      }
-    });
-  });
 }
 
 function getCookie(name) {
