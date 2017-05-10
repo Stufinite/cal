@@ -4,10 +4,6 @@ from timetable.views.views import init_user
 from timetable.models import Department, Course, SelectedCourse
 from djangoApiDec.djangoApiDec import queryString_required
 
-def get_session_key(request):
-    return HttpResponse(request.session.session_key)
-
-
 def get_user(request):
     user = init_user(request)
     if isinstance(user, HttpResponseRedirect):

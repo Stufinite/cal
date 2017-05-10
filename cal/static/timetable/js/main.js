@@ -1,12 +1,15 @@
 (function main() {
-  FB.getLoginStatus(function(response) {
-    if (response.status === 'connected') {
-      //已登入-可取得UserId和accessToken
-      var uid = response.authResponse.userID;
-      var accessToken = response.authResponse.accessToken;
-    } else if (response.status === 'not_authorized') {
-      //尚未通過第一階段授權
-    } else {
+  $.ajax({
+    url: 'http://test.localhost.login.campass.com.tw:8080/fb/user',
+    dataType: 'json',
+    xhrFields: {
+      withCredentials: true
+    },
+    success: (res) => {
+      console.log(res)
+      $('#fb-login-btn').text('Logout').attr('href', 'http://test.localhost.login.campass.com.tw:8080/fb/logout?redirect_service=www')
+    },
+    error: (res) => {
       createUserProfile(() => {
         window.timetable = new StufiniteTimetable()
         window.searchbar = new StufiniteSearchbar()

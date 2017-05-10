@@ -13,50 +13,14 @@
 </head>
 
 <body>
-      <!-- Facebook -->
-      <script>
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId      : '199021993947051',
-          xfbml      : true,
-          version    : 'v2.9'
-        });
-        FB.AppEvents.logPageView();
-      };
-
-      (function(d, s, id){
-         var js, fjs = d.getElementsByTagName(s)[0];
-         if (d.getElementById(id)) {return;}
-         js = d.createElement(s); js.id = id;
-         js.src = "//connect.facebook.net/en_US/sdk.js";
-         fjs.parentNode.insertBefore(js, fjs);
-       }(document, 'script', 'facebook-jssdk'));
-    </script>
-
-    <div id="fb-root"></div>
-    <script>(function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v2.9&appId=199021993947051";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
-    <!-- End of facebook -->
-
     <header class='stufinite-header'>
         <div class='stufinite-header-title'>
-            <!-- <span>{% block app_name %}{% endblock %}</span> -->
             <img src='/static/stufinite/img/logo.svg' height="64px"></img>
         </div>
 
         <div class='stufinite-header-search'>
             <input id='search-form' type='text' placeholder='輸入課程名稱、代碼、教師名稱或進行關鍵字搜尋'>
         </div>
-
-        <!-- <div class='stufinite-header-item'>
-            <span class='stufinite-header-user-info'><a href="https://login.campass.com.tw/accounts/profile">{{ user.username }} 使用者設定</a></span>
-            <a href="http://login.campass.com.tw/accounts/logout"><button class='stufinite-btn'>Logout</button></a>
-        </div> -->
     </header>
 
     {% block content %}
