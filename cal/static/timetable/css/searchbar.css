@@ -5,7 +5,19 @@
     display: none;
     width: 300px;
     height: calc(100% - 107px);
-    background-color: rgba(230, 230, 230, 0.9);
+    background-color: rgba(230, 230, 230, 1);
+}
+
+.stufinite-searchbar-close {
+  float: right;
+  width: 48px;
+  height: 24px;
+  border-radius: 2px 2px 2px 6px;
+  background-color: red;
+  color: white;
+  text-align: center;
+  font-weight: bolder;
+  line-height: 24px;
 }
 
 .stufinite-searchbar-department-select-container select {
@@ -148,4 +160,10 @@
 
 .stufinite-searchbar-result-item .action-btn button:nth-child(3) {
     background-color: lightgreen;
+}
+
+@media screen and (max-width: 480px) {
+  .stufinite-app-searchbar-container {
+      width: 100%;
+  }
 }

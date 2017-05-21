@@ -6,7 +6,32 @@
       withCredentials: true
     },
     success: (res) => {
-      console.log(res)
+      if (res.profile == null) {
+        createUserProfile(() => {
+          window.timetable = new StufiniteTimetable()
+          window.searchbar = new StufiniteSearchbar()
+          $.ajax({
+            url: 'http://test.localhost.login.campass.com.tw:8080/fb/user/edit/' + cpUser.school + '/' + cpUser.career + '/' + cpUser.dept_id[0] + '/' + cpUser.grade,
+            dataType: 'json',
+            xhrFields: {
+              withCredentials: true
+            }
+          });
+        });
+      } else {
+        window.cpUser = {
+          "school": res.profile.school,
+          "second_major": "",
+          "career": res.profile.career,
+          "grade": res.profile.grade,
+          "major": res.profile.major,
+          "selected": [],
+          "username": "Guest",
+          "dept_id": [res.profile.major]
+        }
+        window.timetable = new StufiniteTimetable()
+        window.searchbar = new StufiniteSearchbar()
+      }
       $('#fb-login-btn').text('Logout').attr('href', 'http://test.localhost.login.campass.com.tw:8080/fb/logout?redirect_service=www')
     },
     error: (res) => {
@@ -59,7 +84,7 @@ function createUserProfile(func) {
       "school": $("#user-profile-school").val(),
       "second_major": "",
       "career": $('#user-profile-career').val(),
-      "grade": $('#user-profile-department').val(),
+      "grade": $('#user-profile-grade').val(),
       "major": $('#user-profile-department:selected').text(),
       "selected": [],
       "username": "Guest",
