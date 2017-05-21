@@ -1,20 +1,7 @@
 @import url('searchbar.css');
 @import url('timetable.css');
 @import url('course-info.css');
-#stufinite-create-user-profile {
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 200;
-  display: none;
-  width: 100%;
-  height: 100%;
-  height: 0;
-  background: rgba(0, 0, 0, 0.3);
-  /* center all inline content */
-  text-align: center;
-}
+
 
 #stufinite-create-user-profile>div {
   /* make the block inline */

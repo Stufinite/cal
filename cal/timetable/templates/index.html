@@ -9,16 +9,16 @@
 <link href='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css' rel='stylesheet'>
 
 <link rel='stylesheet' href='{% static "timetable/css/index.css" %}'>
-<link rel='stylesheet' href='{% static "login/css/login.css" %}'>
+<link rel='stylesheet' href='{% static "timetable/css/form.css" %}'>
 {% endblock %}
 
 {% block content %}
 {% include "userprofile.html" %}
-<div class='stufinite-app-container'>
-    <div class='stufinite-app-header'>
+<div class='app-container'>
+    <div class='app-header'>
       {% include "app-header.html" %}
     </div>
-    <div class='stufinite-app-content'>
+    <div class='app-content'>
       {% include "course-info.html" %}
       {% include "timetable.html" %}
       {% include "searchbar.html" %}

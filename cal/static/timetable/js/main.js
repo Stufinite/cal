@@ -1,6 +1,7 @@
 (function main() {
+  var loginUrl = 'http://test.localhost.login.campass.com.tw:8080';
   $.ajax({
-    url: 'http://test.localhost.login.campass.com.tw:8080/fb/user',
+    url: loginUrl + '/fb/user',
     dataType: 'json',
     xhrFields: {
       withCredentials: true
@@ -11,7 +12,7 @@
           window.timetable = new StufiniteTimetable()
           window.searchbar = new StufiniteSearchbar()
           $.ajax({
-            url: 'http://test.localhost.login.campass.com.tw:8080/fb/user/edit/' + cpUser.school + '/' + cpUser.career + '/' + cpUser.dept_id[0] + '/' + cpUser.grade,
+            url: loginUrl + '/fb/user/edit/' + cpUser.school + '/' + cpUser.career + '/' + cpUser.dept_id[0] + '/' + cpUser.grade,
             dataType: 'json',
             xhrFields: {
               withCredentials: true
@@ -32,7 +33,7 @@
         window.timetable = new StufiniteTimetable()
         window.searchbar = new StufiniteSearchbar()
       }
-      $('#fb-login-btn').text('Logout').attr('href', 'http://test.localhost.login.campass.com.tw:8080/fb/logout?redirect_service=www')
+      $('#fb-login-btn').html('<i class="fa fa-facebook-square" aria-hidden="true"></i> Logout').attr('href', loginUrl + '/fb/logout?redirect_service=www')
     },
     error: (res) => {
       createUserProfile(() => {

@@ -1,9 +1,8 @@
 .stufinite-course-info-container {
   position: absolute;
-  top: 135px;
+  top: 102px;
   z-index: 200;
   display: none;
-  overflow: auto;
   width: calc(100% - 300px);
   height: calc(100% - 107px);
   background-color: white;
@@ -19,9 +18,11 @@
   text-align: center;
   font-weight: bolder;
   line-height: 24px;
+  cursor: pointer;
 }
 
 .stufinite-course-info {
+  overflow: auto;
   margin: 0;
   padding: 24px 16px 24px 16px;
   list-style: none;
@@ -51,6 +52,7 @@
 
 @media screen and (max-width: 480px) {
   .stufinite-course-info-container {
+    top: 136px;
     width: 100%;
   }
 }

@@ -1,7 +1,6 @@
 * {
     box-sizing: border-box;
     font-family: Helvetica, sans-serif;
-    user-select: none;
 }
 
 html {
@@ -17,7 +16,6 @@ body {
 
 html, body {
     overflow-x: hidden;
-    /*min-width: 768px;*/
     background-color: #FAFAFA;
 }
 
@@ -32,25 +30,4 @@ footer {
 
 footer a {
     color: #F7F7F7;
-}
-
-.stufinite-app-container {
-    /*min-width: 768px;*/
-    width: 100%;
-}
-
-.stufinite-app-content {
-    min-height: 100%;
-    width: 100%;
-}
-
-.stufinite-btn {
-    margin-left: 8px;
-    height: 24px;
-    border: 1px solid white;
-    background-color: transparent;
-    color: #FFFFFF;
-    vertical-align: middle;
-    font-size: 14px;
-    line-height: 18px;
 }

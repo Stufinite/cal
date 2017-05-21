@@ -47,20 +47,3 @@
 .timetable .course .teacher, .timetable .course .location {
     font-size: 12px;
 }
-
-@media screen and (min-width: 1324px) {
-    .timetable {
-        width: calc(99% - 500px);
-    }
-}
-
-#course-detail li {
-    height: auto;
-    font-weight: bold;
-}
-
-#course-detail li span {
-    display: block;
-    padding-left: 8px;
-    font-weight: normal;
-}
