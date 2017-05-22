@@ -1,13 +1,12 @@
 class StufiniteSearchbar {
   constructor() {
-    this.school = window.cpUser.school;
-    this.language = "zh_TW"
     this.user = window.cpUser;
-    this.isVisible = false;
+    this.language = "zh_TW"
     this.type = ['optional', 'human', 'society', 'nature', 'PE']
     this.tabs = ['deptObl', 'deptOpt', 'general', 'PE', 'others', 'search'];
     this.currentTab = 'deptObl';
 
+    this.clear();
     this.InitializeSearchForm();
 
     let tab = $('.stufinite-searchbar-tab');
@@ -25,14 +24,15 @@ class StufiniteSearchbar {
         opt.text(dept.title[this.language])
         $('.stufinite-searchbar-department-select').append(opt)
       }
+      $('.stufinite-searchbar-department-select').val(this.user.major);
     });
     $('.stufinite-searchbar-department-button').bind("click", () => {
       this.clear();
       let dept = $('.stufinite-searchbar-department-select').val();
 
-      $.getJSON('/course/CourseOfDept/?dept=' + dept + '&school=' + this.school, (json) => {
+      $.getJSON('/course/CourseOfDept/?dept=' + dept + '&school=' + this.user.school, (json) => {
         for (let grade in json['obligatory']) {
-          for (let index in json['obligatory'][grade]){
+          for (let index in json['obligatory'][grade]) {
             window.timetable.getCourseByCode((course) => {
               this.addResult(course, undefined, grade, true);
             }, json['obligatory'][grade][index]);
@@ -40,7 +40,7 @@ class StufiniteSearchbar {
         }
 
         for (let grade in json['optional']) {
-          for (let index in json['optional'][grade]){
+          for (let index in json['optional'][grade]) {
             window.timetable.getCourseByCode((course) => {
               this.addResult(course, undefined, grade, false);
             }, json['optional'][grade][index]);
@@ -57,11 +57,7 @@ class StufiniteSearchbar {
   InitializeSearchForm() {
     // Initialize search-form behavior
     document.querySelector(".stufinite-app-searchbar-toggle").addEventListener("click", (e) => {
-      if (window.searchbar.isVisible) {
         window.searchbar.hide();
-      } else {
-        window.searchbar.show();
-      }
     });
     document.querySelector("#search-form").addEventListener("focus", () => {
       searchbar.show();
@@ -113,14 +109,16 @@ class StufiniteSearchbar {
 
   show() {
     $(".stufinite-app-searchbar-toggle").attr("data-toggle", "true")
-    $(".stufinite-app-searchbar-container").show("slide", { direction: "right" }, 300);
-    this.isVisible = true;
+    $(".stufinite-app-searchbar-container").show("slide", {
+      direction: "right"
+    }, 300);
   }
 
   hide() {
     $(".stufinite-app-searchbar-toggle").attr("data-toggle", "false")
-    $(".stufinite-app-searchbar-container").hide("slide", { direction: "right" }, 300);
-    this.isVisible = false;
+    $(".stufinite-app-searchbar-container").hide("slide", {
+      direction: "right"
+    }, 300);
   }
 
   clear(placeholder) {
@@ -165,7 +163,7 @@ class StufiniteSearchbar {
 
     result
       .find('h4.title').text(course.title[this.language]).end()
-      .find('span.info').text(window.timetable.getCourseTime(course.time) + ' | ' + course.professor).end()
+      .find('span.info').text(window.timetable.getCourseTimeString(course) + ' | ' + course.professor).end()
       .find('span.grade').text(grade != undefined ? grade + '年級' : '').end()
       .find('button.join').attr('code', course.code).bind('click', (e) => {
         let code = $(e.target).attr('code');
@@ -173,7 +171,7 @@ class StufiniteSearchbar {
         this.hide();
       }).end()
       .find('button.detail').bind('click', () => {
-        window.timetable.addDetail(course)
+        window.timetable.addCourseToDetail(course)
       }).end()
 
     target.append(result);

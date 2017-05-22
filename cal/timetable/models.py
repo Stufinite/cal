@@ -33,8 +33,9 @@ class Course(models.Model):
 
 
 class SelectedCourse(models.Model):
-    user = models.CharField(max_length=20, default='')
-    code = models.CharField(max_length=100, default='')
+    user_id = models.CharField(max_length=128, default='')
+    code = models.CharField(max_length=64, default='')
+    semester = models.CharField(max_length=100, default='')
 
     def __str__(self):
-        return '{}: {}'.format(self.user, self.code)
+        return '{}: {} ({})'.format(self.user_id, self.code, self.semester)

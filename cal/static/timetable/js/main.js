@@ -1,5 +1,6 @@
+var loginUrl = 'http://test.localhost.login.campass.com.tw:8080';
+
 (function main() {
-  var loginUrl = 'http://test.localhost.login.campass.com.tw:8080';
   $.ajax({
     url: loginUrl + '/fb/user',
     dataType: 'json',
@@ -7,39 +8,21 @@
       withCredentials: true
     },
     success: (res) => {
+      window.userId = res.id
+      window.userName = res.username
       if (res.profile == null) {
-        createUserProfile(() => {
-          window.timetable = new StufiniteTimetable()
-          window.searchbar = new StufiniteSearchbar()
-          $.ajax({
-            url: loginUrl + '/fb/user/edit/' + cpUser.school + '/' + cpUser.career + '/' + cpUser.dept_id[0] + '/' + cpUser.grade,
-            dataType: 'json',
-            xhrFields: {
-              withCredentials: true
-            }
-          });
-        });
+        // User is registered but never used cal
+        editUser();
       } else {
-        window.cpUser = {
-          "school": res.profile.school,
-          "second_major": "",
-          "career": res.profile.career,
-          "grade": res.profile.grade,
-          "major": res.profile.major,
-          "selected": [],
-          "username": "Guest",
-          "dept_id": [res.profile.major]
-        }
-        window.timetable = new StufiniteTimetable()
-        window.searchbar = new StufiniteSearchbar()
+        // Load user data normally
+        loadUser(res);
       }
+      // Change status of Facebook button
       $('#fb-login-btn').html('<i class="fa fa-facebook-square" aria-hidden="true"></i> Logout').attr('href', loginUrl + '/fb/logout?redirect_service=www')
     },
     error: (res) => {
-      createUserProfile(() => {
-        window.timetable = new StufiniteTimetable()
-        window.searchbar = new StufiniteSearchbar()
-      });
+      // User is not logged in
+      guest();
     }
   });
 })();
@@ -82,20 +65,55 @@ function createUserProfile(func) {
 
   $('#user-profile-btn').bind('click', () => {
     window.cpUser = {
+      "id": "",
+      "username": "Guest",
+      "selected": [],
       "school": $("#user-profile-school").val(),
-      "second_major": "",
       "career": $('#user-profile-career').val(),
       "grade": $('#user-profile-grade').val(),
-      "major": $('#user-profile-department:selected').text(),
-      "selected": [],
-      "username": "Guest",
-      "dept_id": [$('#user-profile-department').val()]
+      "major": $('#user-profile-department').val()
     }
 
     func();
     delMask();
     $('#stufinite-create-user-profile').hide();
   });
+}
+
+function guest() {
+  createUserProfile(() => {
+    window.timetable = new StufiniteTimetable()
+    window.searchbar = new StufiniteSearchbar()
+  });
+}
+
+function editUser() {
+  createUserProfile(() => {
+    window.timetable = new StufiniteTimetable()
+    window.searchbar = new StufiniteSearchbar()
+    window.cpUser.id = window.userId;
+    $.ajax({
+      url: loginUrl + '/fb/user/edit/' + cpUser.school + '/' + cpUser.career + '/' + cpUser.major + '/' + cpUser.grade,
+      dataType: 'json',
+      xhrFields: {
+        withCredentials: true
+      }
+    });
+  });
+}
+
+function loadUser(user) {
+  window.cpUser = {
+    "id": user.id,
+    "username": "Guest",
+    "selected": [],
+    "school": user.profile.school,
+    "career": user.profile.career,
+    "grade": user.profile.grade,
+    "major": user.profile.major
+  }
+  window.timetable = new StufiniteTimetable()
+  window.searchbar = new StufiniteSearchbar()
 }
 
 function addMask() {

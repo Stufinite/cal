@@ -15,6 +15,8 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Domain name
+DOMAIN = 'campass.com.tw'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -27,7 +29,7 @@ with open(BASE_DIR + '/' + 'secret_key.txt') as f:
 DEBUG = False
 # DEBUG = True
 
-ALLOWED_HOSTS = ['.campass.com.tw', 'localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['.' + DOMAIN, 'localhost', '127.0.0.1', '0.0.0.0']
 
 
 # Application definition
@@ -114,7 +116,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-
 # Settings for our specific uses
 
 # Database
@@ -135,7 +136,13 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-if not DEBUG:
-    SESSION_COOKIE_DOMAIN = '.campass.com.tw'
-    with open(BASE_DIR + '/' + 'sessionid.txt') as f:
-        SESSION_COOKIE_NAME = f.read().strip()
+# Shared session
+
+SESSION_COOKIE_DOMAIN = '.' + DOMAIN
+with open(BASE_DIR + '/' + 'sessionid.txt') as f:
+    SESSION_COOKIE_NAME = f.read().strip()
+
+# Dev
+
+if DEBUG:
+    del SESSION_COOKIE_DOMAIN

@@ -1,8 +1,35 @@
 from django.http import JsonResponse, HttpResponseRedirect, Http404, HttpResponse
 
-from timetable.views.views import init_user
 from timetable.models import Department, Course, SelectedCourse
 from djangoApiDec.djangoApiDec import queryString_required
+
+import cal.settings as SETTINGS
+
+
+def init_user(request):
+    from userper import Userper
+    User = Userper('login.campass.com.tw')
+
+    from urllib.error import HTTPError
+    if not request.session.session_key:
+        request.session.save()
+    try:
+        if SETTINGS.DEBUG:
+            User.get_test()
+        else:
+            User.get(request.session.session_key)
+    except HTTPError:
+        return HttpResponseRedirect('https://login.campass.com.tw')
+    u = {
+        'is_authenticated': True,
+        'username': User.username,
+        'grade': User.grade,
+        'major': User.major,
+        'second_major': User.second_major,
+        'career': User.career,
+    }
+    return u
+
 
 def get_user(request):
     user = init_user(request)
@@ -14,10 +41,12 @@ def get_user(request):
 
     return JsonResponse(user)
 
+
 @queryString_required(['user'])
 def get_friend_selected_course(request):
     user = request.GET['user']
-    return JsonResponse(get_selected_course({'username':user}), safe=False)
+    return JsonResponse(get_selected_course({'username': user}), safe=False)
+
 
 def get_department_id(user):
     dept_id = []
@@ -136,5 +165,26 @@ def save_selected(request):
             return JsonResponse({"state": "ok"})
         except:
             raise Http404("Page does not exist")
+    else:
+        raise Http404("Page does not exist")
+
+
+def save_course(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('id')
+        selected = request.POST.get('selected').split(',')
+        semester = request.POST.get('semester')
+        try:
+            SelectedCourse.objects.filter(user_id=user_id).delete()
+            for code in selected:
+                if not code.isdigit():
+                    raise Http404("Page does not exist")
+                sc, created = SelectedCourse.objects.get_or_create(
+                    code=code, user_id=user_id, semester=semester)
+                if not created:
+                    sc.save()
+        except:
+            raise Http404("Page does not exist")
+        return JsonResponse({"state": "ok"})
     else:
         raise Http404("Page does not exist")
