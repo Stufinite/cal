@@ -20,7 +20,7 @@ class StufiniteTimetable {
 
     // Initialize user profile setting buttons
     $("#save-course-btn").unbind().bind("click", (e) => {
-      this.saveCourse();
+      this.storeCourse();
     });
 
     // Initialize course info close button
@@ -82,8 +82,10 @@ class StufiniteTimetable {
         }
       } else {
         // Add selected courses to timetable
-        for (let i in this.user.selected) {
-          this.getCourseByCode(this.addCourse.bind(this), this.user.selected[i]);
+        let s_list = this.user.selected;
+        this.user.selected = [];
+        for (let i in s_list) {
+          this.getCourseByCode(this.addCourse.bind(this), s_list[i]);
         }
       }
     });
@@ -393,9 +395,9 @@ class StufiniteTimetable {
     }
   }
 
-  saveCourse() {
+  storeCourse() {
     $.ajax({
-      url: "/api/save_course",
+      url: "/api/store/selected_course",
       method: "POST",
       data: {
         id: this.user.id,

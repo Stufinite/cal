@@ -18,6 +18,7 @@ class StufiniteSearchbar {
     $('.deptObl-container').show();
 
     $.getJSON('/api/get/dept', (json) => {
+      $('.stufinite-searchbar-department-select').children().remove();
       for (let dept of json[this.user.career]) {
         let opt = $('<option>');
         opt.val(dept.code);

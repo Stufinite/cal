@@ -1,87 +1,29 @@
 from django.http import JsonResponse, HttpResponseRedirect, Http404, HttpResponse
 
 from timetable.models import Department, Course, SelectedCourse
-from djangoApiDec.djangoApiDec import queryString_required
-
-import cal.settings as SETTINGS
 
 
-def init_user(request):
-    from userper import Userper
-    User = Userper('login.campass.com.tw')
-
-    from urllib.error import HTTPError
-    if not request.session.session_key:
-        request.session.save()
-    try:
-        if SETTINGS.DEBUG:
-            User.get_test()
-        else:
-            User.get(request.session.session_key)
-    except HTTPError:
-        return HttpResponseRedirect('https://login.campass.com.tw')
-    u = {
-        'is_authenticated': True,
-        'username': User.username,
-        'grade': User.grade,
-        'major': User.major,
-        'second_major': User.second_major,
-        'career': User.career,
-    }
-    return u
-
-
-def get_user(request):
-    user = init_user(request)
-    if isinstance(user, HttpResponseRedirect):
-        return user
-
-    user['selected'] = get_selected_course(user)
-    user['dept_id'] = get_department_id(user)
-
-    return JsonResponse(user)
-
-
-@queryString_required(['user'])
 def get_friend_selected_course(request):
-    user = request.GET['user']
-    return JsonResponse(get_selected_course({'username': user}), safe=False)
+    user_id = request.POST.get('id')
+    semester = request.POST.get('semester')
+    return JsonResponse(get_selected_course(user_id, semester), safe=False)
 
 
-def get_department_id(user):
-    dept_id = []
-
-    for d in Department.objects.filter(degree=user['career']):
-        if (d.title.split(',')[0] == user['major']):
-            dept_id.append(d.code)
-
-    if user['second_major'] != '':
-        for d in Department.objects.filter(degree=user['career']):
-            if (d.title.split(',')[0] == user['second_major']):
-                dept_id.append(d.code)
-
-    return dept_id
-
-
-def get_selected_course(user):
+def get_selected_course(user_id, semester):
     try:
         result = list(map(
             lambda c: c.code,
-            SelectedCourse.objects.filter(user=user['username'])
+            SelectedCourse.objects.filter(user_id=user_id, semester=semester)
         ))
         return result
     except:
-        return []
+        raise Http404("Page does not exist")
 
 
 def get_department(request):
-    user = init_user(request)
-    if isinstance(user, HttpResponseRedirect):
-        return user
-
     try:
         result = {}
-        for d in Department.objects.filter(degree=user['career']).order_by('code'):
+        for d in Department.objects.all().order_by('code'):
             try:
                 result[d.degree].append({
                     'code': d.code,
@@ -132,44 +74,7 @@ def get_course_by_code(request, course_code):
         raise Http404("Page does not exist")
 
 
-def del_selected(request):
-    user = init_user(request)
-    if isinstance(user, HttpResponseRedirect):
-        return user
-
-    if request.method == 'POST':
-        try:
-            code = request.POST.get('code')
-            SelectedCourse.objects.filter(
-                code=code, user=user['username']).delete()
-            return JsonResponse({"state": "ok"})
-        except:
-            raise Http404("Page does not exist")
-    else:
-        raise Http404("Page does not exist")
-
-
-def save_selected(request):
-    user = init_user(request)
-    if isinstance(user, HttpResponseRedirect):
-        return user
-
-    if request.method == 'POST':
-        try:
-            text = request.POST.get('text')
-            for code in text.split(','):
-                sc, created = SelectedCourse.objects.get_or_create(
-                    code=code, user=user['username'])
-                if not created:
-                    sc.save()
-            return JsonResponse({"state": "ok"})
-        except:
-            raise Http404("Page does not exist")
-    else:
-        raise Http404("Page does not exist")
-
-
-def save_course(request):
+def store_selected_course(request):
     if request.method == 'POST':
         user_id = request.POST.get('id')
         selected = request.POST.get('selected').split(',')

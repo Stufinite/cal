@@ -82,38 +82,70 @@ function createUserProfile(func) {
 
 function guest() {
   createUserProfile(() => {
-    window.timetable = new StufiniteTimetable()
-    window.searchbar = new StufiniteSearchbar()
+    window.timetable = new StufiniteTimetable();
+    window.searchbar = new StufiniteSearchbar();
   });
 }
 
 function editUser() {
   createUserProfile(() => {
-    window.timetable = new StufiniteTimetable()
-    window.searchbar = new StufiniteSearchbar()
-    window.cpUser.id = window.userId;
     $.ajax({
-      url: loginUrl + '/fb/user/edit/' + cpUser.school + '/' + cpUser.career + '/' + cpUser.major + '/' + cpUser.grade,
-      dataType: 'json',
-      xhrFields: {
-        withCredentials: true
+      url: "/api/get/selected_course",
+      method: "POST",
+      data: {
+        id: window.userId,
+        semester: '2017',
+        csrfmiddlewaretoken: getCookie('csrftoken')
+      },
+      dataType: "text",
+      success: (res) => {
+        window.cpUser.id = window.userId;
+        window.cpUser.selected = JSON.parse(res)
+        $.ajax({
+          url: loginUrl + '/fb/user/edit/' + cpUser.school + '/' + cpUser.career + '/' + cpUser.major + '/' + cpUser.grade,
+          dataType: 'json',
+          xhrFields: {
+            withCredentials: true
+          }
+        });
+        window.timetable = new StufiniteTimetable();
+        window.searchbar = new StufiniteSearchbar();
+      },
+      error: (res) => {
+        console.log(res);
       }
     });
+
   });
 }
 
 function loadUser(user) {
-  window.cpUser = {
-    "id": user.id,
-    "username": "Guest",
-    "selected": [],
-    "school": user.profile.school,
-    "career": user.profile.career,
-    "grade": user.profile.grade,
-    "major": user.profile.major
-  }
-  window.timetable = new StufiniteTimetable()
-  window.searchbar = new StufiniteSearchbar()
+  $.ajax({
+    url: "/api/get/selected_course",
+    method: "POST",
+    data: {
+      id: user.id,
+      semester: '2017',
+      csrfmiddlewaretoken: getCookie('csrftoken')
+    },
+    dataType: "text",
+    success: (res) => {
+      window.cpUser = {
+        "id": user.id,
+        "username": "Guest",
+        "selected": JSON.parse(res),
+        "school": user.profile.school,
+        "career": user.profile.career,
+        "grade": user.profile.grade,
+        "major": user.profile.major
+      }
+      window.timetable = new StufiniteTimetable();
+      window.searchbar = new StufiniteSearchbar();
+    },
+    error: (res) => {
+      console.log(res);
+    }
+  });
 }
 
 function addMask() {
