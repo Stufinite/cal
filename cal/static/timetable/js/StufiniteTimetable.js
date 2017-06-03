@@ -20,7 +20,12 @@ class StufiniteTimetable {
 
     // Initialize user profile setting buttons
     $("#save-course-btn").unbind().bind("click", (e) => {
-      this.storeCourse();
+      if (this.user.name === 'Guest') {
+        addMask();
+        $('#prompt-login').show();
+      } else {
+        this.storeCourse();
+      }
     });
 
     // Initialize course info close button

@@ -9,7 +9,7 @@ var loginUrl = 'http://test.localhost.login.campass.com.tw:8080';
     },
     success: (res) => {
       window.userId = res.id
-      window.userName = res.username
+      window.userName = res.name
       if (res.profile == null) {
         // User is registered but never used cal
         editUser();
@@ -18,7 +18,7 @@ var loginUrl = 'http://test.localhost.login.campass.com.tw:8080';
         loadUser(res);
       }
       // Change status of Facebook button
-      $('#fb-login-btn').html('<i class="fa fa-facebook-square" aria-hidden="true"></i> Logout').attr('href', loginUrl + '/fb/logout?redirect_service=www')
+      $('#fb-login-btn').html('<i class="fa fa-facebook-square" aria-hidden="true"></i> 登出').attr('href', loginUrl + '/fb/logout?redirect_service=www')
     },
     error: (res) => {
       // User is not logged in
@@ -27,7 +27,11 @@ var loginUrl = 'http://test.localhost.login.campass.com.tw:8080';
   });
 })();
 
-function createUserProfile(func) {
+function promptLogin() {
+
+}
+
+function promptUserprofile(func) {
   addMask();
   $('#stufinite-create-user-profile').show();
 
@@ -66,7 +70,7 @@ function createUserProfile(func) {
   $('#user-profile-btn').bind('click', () => {
     window.cpUser = {
       "id": "",
-      "username": "Guest",
+      "name": "Guest",
       "selected": [],
       "school": $("#user-profile-school").val(),
       "career": $('#user-profile-career').val(),
@@ -88,7 +92,7 @@ function createUserProfile(func) {
 }
 
 function guest() {
-  createUserProfile(() => {
+  promptUserprofile(() => {
     window.timetable = new StufiniteTimetable();
     window.searchbar = new StufiniteSearchbar();
   });
@@ -96,7 +100,7 @@ function guest() {
 
 function editUser() {
   $("#user-profile-cancel-btn").show()
-  createUserProfile(() => {
+  promptUserprofile(() => {
     $.ajax({
       url: "/api/get/selected_course",
       method: "POST",
@@ -139,7 +143,7 @@ function loadUser(user) {
     success: (res) => {
       window.cpUser = {
         "id": user.id,
-        "username": "Guest",
+        "username": user.name,
         "selected": JSON.parse(res),
         "school": user.profile.school,
         "career": user.profile.career,
