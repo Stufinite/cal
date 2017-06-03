@@ -77,9 +77,9 @@ class StufiniteTimetable {
 
       if (this.user.selected.length == 0) {
         // Add major courses to timetable
-        for (let code in this['obligatory'][this.user.grade]) {
-          this.getCourseByCode(this.addCourse.bind(this), this['obligatory'][this.user.grade][code]);
-        }
+        // for (let code in this['obligatory'][this.user.grade]) {
+        //   this.getCourseByCode(this.addCourse.bind(this), this['obligatory'][this.user.grade][code]);
+        // }
       } else {
         // Add selected courses to timetable
         let s_list = this.user.selected;
