@@ -1,7 +1,9 @@
 .header {
+  position: fixed;
   display: flex;
   -ms-flex-align: center;
   width: 100%;
+  z-index: 50;
   background-color: #4180B2;
   -webkit-align-items: center;
   -webkit-box-align: center;
@@ -38,7 +40,10 @@
 }
 
 .app-header {
+  position: fixed;
+  top: 70px;
   height: 32px;
+  width: 100%;
   background-color: white;
 }
 
@@ -93,5 +98,9 @@
   .header > .search > input {
     margin-bottom: 4px;
     border-radius: 0;
+  }
+
+  .app-header {
+    top: 102px;
   }
 }

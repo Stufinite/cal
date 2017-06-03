@@ -31,3 +31,13 @@ footer {
 footer a {
     color: #F7F7F7;
 }
+
+.app-container {
+  padding-top: 102px;
+}
+
+@media screen and (max-width: 480px) {
+  .app-container {
+    padding-top: 138px;
+  }
+}

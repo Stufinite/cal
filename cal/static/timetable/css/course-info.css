@@ -1,10 +1,10 @@
 .stufinite-course-info-container {
-  position: absolute;
+  position: fixed;
   top: 102px;
   z-index: 200;
   display: none;
   width: calc(100% - 300px);
-  height: calc(100% - 107px);
+  height: calc(100% - 102px);
   background-color: white;
 }
 

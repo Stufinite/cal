@@ -1,6 +1,6 @@
 #stufinite-create-user-profile {
   position: absolute;
-  top: 0;
+  top: 102px;
   right: 0;
   left: 0;
   z-index: 200;
@@ -77,4 +77,9 @@
     background-color: green;
     color: #FFFFFF;
     font-size: 13px;
+}
+
+#user-profile-cancel-btn {
+  display: none;
+  background-color: red;
 }

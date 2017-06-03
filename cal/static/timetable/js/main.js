@@ -77,6 +77,13 @@ function createUserProfile(func) {
     func();
     delMask();
     $('#stufinite-create-user-profile').hide();
+    $("#user-profile-cancel-btn").hide()
+  });
+
+  $('#user-profile-cancel-btn').bind('click', () => {
+    delMask();
+    $('#stufinite-create-user-profile').hide();
+    $("#user-profile-cancel-btn").hide()
   });
 }
 
@@ -88,6 +95,7 @@ function guest() {
 }
 
 function editUser() {
+  $("#user-profile-cancel-btn").show()
   createUserProfile(() => {
     $.ajax({
       url: "/api/get/selected_course",
@@ -115,7 +123,6 @@ function editUser() {
         console.log(res);
       }
     });
-
   });
 }
 
