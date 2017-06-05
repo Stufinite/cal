@@ -8,6 +8,7 @@ var loginUrl = 'http://test.localhost.login.campass.com.tw:8080';
       withCredentials: true
     },
     success: (res) => {
+      window.userVerify = res.verify
       window.userId = res.id
       window.userName = res.name
       if (res.profile == null) {
@@ -35,6 +36,7 @@ function promptUserprofile(func) {
   addMask();
   $('#stufinite-create-user-profile').show();
 
+  // Retrieve department list
   let careerMap = {
     'U': '學士學位',
     'G': '碩士學位',
@@ -58,6 +60,7 @@ function promptUserprofile(func) {
     }
   });
 
+  // Update deaprtment list after career change
   $('#user-profile-career').bind('change', () => {
     $('#user-profile-department').empty();
     for (let department of departmentList[$('#user-profile-career').val()]) {
@@ -67,6 +70,7 @@ function promptUserprofile(func) {
     }
   });
 
+  // Close prompt and update global user info
   $('#user-profile-btn').bind('click', () => {
     window.cpUser = {
       "id": "",
@@ -84,6 +88,7 @@ function promptUserprofile(func) {
     $("#user-profile-cancel-btn").hide()
   });
 
+  // Close prompt
   $('#user-profile-cancel-btn').bind('click', () => {
     delMask();
     $('#stufinite-create-user-profile').hide();
@@ -114,14 +119,25 @@ function editUser() {
         window.cpUser.id = window.userId;
         window.cpUser.selected = JSON.parse(res)
         $.ajax({
-          url: loginUrl + '/fb/user/edit/' + cpUser.school + '/' + cpUser.career + '/' + cpUser.major + '/' + cpUser.grade,
-          dataType: 'json',
-          xhrFields: {
-            withCredentials: true
+          url: '/api/user/edit',
+          method: 'POST',
+          data: {
+            key: window.userVerify,
+            id: cpUser.id,
+            school: cpUser.school,
+            career: cpUser.career,
+            major: cpUser.major,
+            grade: cpUser.grade,
+            csrfmiddlewaretoken: getCookie('csrftoken')
+          },
+          success: (res) => {
+            window.timetable = new StufiniteTimetable();
+            window.searchbar = new StufiniteSearchbar();
+          },
+          error: (res) => {
+            console.log(res)
           }
         });
-        window.timetable = new StufiniteTimetable();
-        window.searchbar = new StufiniteSearchbar();
       },
       error: (res) => {
         console.log(res);
@@ -142,13 +158,13 @@ function loadUser(user) {
     dataType: "text",
     success: (res) => {
       window.cpUser = {
-        "id": user.id,
-        "username": user.name,
-        "selected": JSON.parse(res),
-        "school": user.profile.school,
-        "career": user.profile.career,
-        "grade": user.profile.grade,
-        "major": user.profile.major
+        id: user.id,
+        username: user.name,
+        selected: JSON.parse(res),
+        school: user.profile.school,
+        career: user.profile.career,
+        grade: user.profile.grade,
+        major: user.profile.major
       }
       window.timetable = new StufiniteTimetable();
       window.searchbar = new StufiniteSearchbar();

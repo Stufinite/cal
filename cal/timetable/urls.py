@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from .views import views, apis
+from .views import views, apis, user_apis
 
 urlpatterns = [
     url(r'^$', views.timetable),
@@ -13,4 +13,6 @@ urlpatterns += [
 
     url(r'^api/get/selected_course$', apis.get_friend_selected_course),
     url(r'^api/store/selected_course$', apis.store_selected_course),
+
+    url(r'^api/user/edit$', user_apis.user_edit),
 ]
