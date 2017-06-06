@@ -1,3 +1,4 @@
+// var loginUrl = 'https://login.campass.com.tw';
 var loginUrl = 'http://test.localhost.login.campass.com.tw:8080';
 
 (function main() {
@@ -28,8 +29,9 @@ var loginUrl = 'http://test.localhost.login.campass.com.tw:8080';
   });
 })();
 
-function promptLogin() {
-
+function promptUserLogin() {
+  addMask();
+  $('#prompt-login').show();
 }
 
 function promptUserprofile(func) {

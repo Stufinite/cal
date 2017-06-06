@@ -21,8 +21,11 @@ class StufiniteTimetable {
     // Initialize user profile setting buttons
     $("#save-course-btn").unbind().bind("click", (e) => {
       if (this.user.name === 'Guest') {
-        addMask();
-        $('#prompt-login').show();
+        if (this.user.selected.length > 0) {
+          document.cookie = "selected_course=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          document.cookie = 'selected_course=' + this.user.selected.toString();
+        }
+        promptUserLogin();
       } else {
         this.storeCourse();
       }
@@ -80,19 +83,27 @@ class StufiniteTimetable {
         }
       }
 
+      // Check if there are courses selected
+      let s_list = [];
       if (this.user.selected.length == 0) {
         // Add major courses to timetable
         // for (let code in this['obligatory'][this.user.grade]) {
         //   this.getCourseByCode(this.addCourse.bind(this), this['obligatory'][this.user.grade][code]);
         // }
+        try {
+          s_list = getCookie('selected_course').split(',');
+        } catch(err) {
+          // pass
+        }
       } else {
         // Add selected courses to timetable
-        let s_list = this.user.selected;
-        this.user.selected = [];
-        for (let i in s_list) {
-          this.getCourseByCode(this.addCourse.bind(this), s_list[i]);
-        }
+        s_list = this.user.selected;
       }
+      this.user.selected = [];
+      for (let i in s_list) {
+        this.getCourseByCode(this.addCourse.bind(this), s_list[i]);
+      }
+      document.cookie = "selected_course=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     });
   }
 
