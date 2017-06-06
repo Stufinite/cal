@@ -17,12 +17,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Domain name
 DOMAIN = 'campass.com.tw'
+USERPOOL_URL = 'http://login.campass.com.tw'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open(BASE_DIR + '/' + 'secret_key.txt') as f:
+with open(BASE_DIR + '/config/' + 'secret_key.txt') as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -139,10 +140,11 @@ STATICFILES_DIRS = [
 # Shared session
 
 SESSION_COOKIE_DOMAIN = '.' + DOMAIN
-with open(BASE_DIR + '/' + 'sessionid.txt') as f:
+with open(BASE_DIR + '/config/' + 'sessionid.txt') as f:
     SESSION_COOKIE_NAME = f.read().strip()
 
 # Dev
 
 if DEBUG:
+    USERPOOL_URL = 'http://test.localhost.login.campass.com.tw'
     del SESSION_COOKIE_DOMAIN

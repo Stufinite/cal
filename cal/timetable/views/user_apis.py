@@ -2,11 +2,16 @@ from django.http import JsonResponse, HttpResponseRedirect, Http404, HttpRespons
 
 import requests
 
+from cal.settings import USERPOOL_URL as USERPOOL_URL
+
+
 def user_verify(v_id, v_key):
-    r = requests.get('http://' + 'test.localhost.' + 'login.campass.com.tw' + '/fb/user/verify/' + v_id + '/' + v_key)
+    r = requests.get(
+        USERPOOL_URL + '/fb/user/verify/{}/{}'.format(v_id, v_key))
     if r.text == 'Ok':
         return True
     return False
+
 
 def user_edit(request):
     if request.method == 'POST':
@@ -18,6 +23,7 @@ def user_edit(request):
             career = request.POST.get('career')
             major = request.POST.get('major')
             grade = request.POST.get('grade')
-            r = requests.get('http://test.localhost.login.campass.com.tw/fb/user/edit/{}/{}/{}/{}/{}'.format(v_id, school, career, major, grade))
+            r = requests.get(
+                USERPOOL_URL + '/fb/user/edit/{}/{}/{}/{}/{}'.format(v_id, school, career, major, grade))
             return HttpResponse(r.text)
     raise Http404("Page does not exist")
