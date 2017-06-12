@@ -54,11 +54,10 @@ class StufiniteSearchbar {
     });
   }
 
-
   InitializeSearchForm() {
     // Initialize search-form behavior
     document.querySelector(".stufinite-app-searchbar-toggle").addEventListener("click", (e) => {
-        window.searchbar.hide();
+      window.searchbar.hide();
     });
     document.querySelector("#search-form").addEventListener("focus", () => {
       searchbar.show();
@@ -91,7 +90,6 @@ class StufiniteSearchbar {
       });
     });
   }
-
 
   displayTab(e) {
     let className = $(e.target).attr('class');

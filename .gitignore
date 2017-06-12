@@ -1,5 +1,6 @@
 # Project stuff
-cal/cal/settings_database.py
+*/*/settings_database.py
+*/db.sqlite3
 db.sqlite3
 
 # virtualenv
