@@ -2,6 +2,9 @@
 var loginUrl = 'http://test.localhost.login.campass.com.tw:8080';
 
 (function main() {
+  window.unsaved = false;
+  window.onbeforeunload = unloadPage;
+
   $.ajax({
     url: loginUrl + '/fb/user',
     dataType: 'json',
@@ -28,6 +31,18 @@ var loginUrl = 'http://test.localhost.login.campass.com.tw:8080';
     }
   });
 })();
+
+function unloadPage(){
+    if(window.unsaved){
+        return "You have unsaved changes on this page. Do you want to leave this page and discard your changes or stay on this page?";
+    }
+}
+
+function closePrompt() {
+  $('#prompt-login').hide();
+  $('#stufinite-create-user-profile').hide();
+  delMask();
+}
 
 function promptUserLogin() {
   addMask();

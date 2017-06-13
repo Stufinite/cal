@@ -13,13 +13,22 @@ class StufiniteTimetable {
 
     this.classroom = {};
 
+    // Attempt to login every 3 minutes
+    setInterval(this.storeCourse.bind(this), 120000);
+
     // Initialize user profile setting buttons
     $("#user-profile-setting-btn").unbind().bind("click", (e) => {
       editUser();
     });
 
+    $("#user-login-cancel-btn").unbind().bind("click", (e) => {
+      closePrompt();
+    });
+
     // Initialize user profile setting buttons
     $("#save-course-btn").unbind().bind("click", (e) => {
+      window.unsaved = false;
+
       if (this.user.name === 'Guest') {
         if (this.user.selected.length > 0) {
           document.cookie = "selected_course=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -92,7 +101,7 @@ class StufiniteTimetable {
         // }
         try {
           s_list = getCookie('selected_course').split(',');
-        } catch(err) {
+        } catch (err) {
           // pass
         }
       } else {
@@ -382,6 +391,8 @@ class StufiniteTimetable {
 
     this.addCredit(course.credits);
     this.user.selected.push(course.code);
+
+    window.unsaved = true;
   }
 
   delCourse(course) {
@@ -409,6 +420,8 @@ class StufiniteTimetable {
     if (index > -1) {
       this.user.selected.splice(index, 1);
     }
+
+    window.unsaved = true;
   }
 
   storeCourse() {

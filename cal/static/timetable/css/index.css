@@ -40,3 +40,16 @@
   background-color: grey;
   opacity: 0.7;
 }
+
+#user-login-cancel-btn {
+  float: right;
+  width: 48px;
+  height: 24px;
+  border-radius: 2px 2px 2px 6px;
+  background-color: red;
+  color: white;
+  text-align: center;
+  font-weight: bolder;
+  line-height: 24px;
+  cursor: pointer;
+}
