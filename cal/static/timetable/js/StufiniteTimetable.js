@@ -302,6 +302,13 @@ class StufiniteTimetable {
   }
 
   addCourseToDetail(course) {
+    $(".chart-container").children().remove();
+    var infernoURL = "http://test.localhost.course.campass.com.tw:8080";
+    $.getJSON(infernoURL + "/sloth/get/search?school=nchu&keyword=" + course.title[this.language], () => {})
+    .done(res => {
+        drawChart(res[0].pk);
+    });
+
     let $detail = $(`
           <li>開設系所： <span class='detail-department'></span></li>
           <li>指導教授： <span class='detail-professor'></span></li>
