@@ -61,7 +61,7 @@ class StufiniteSearchbar {
       window.searchbar.hide();
       $('.stufinite-course-info-container').hide();
     });
-    
+
     $("#search-form").bind("focus", () => {
       window.searchbar.show();
     });
@@ -154,12 +154,13 @@ class StufiniteSearchbar {
     let result = $(
       `<div class="stufinite-searchbar-result-item">
               <h4 class='title'></h4>
-              <span class='info'></span>
-              <span class='grade'></span>
-              <div class="action-btn">
-                <button class='join'>加入</button>
-                <button class='detail'>詳細資料</button>
+              <div>
+                <div class="action-btn">
+                  <button class='detail'>＋</button>
+                </div>
+                <span class='info'></span>
               </div>
+              <span class='grade'></span>
             </div>`);
 
     result

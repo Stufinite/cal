@@ -69,15 +69,21 @@
   line-height: 48px;
 }
 
+.radar-chart-container {
+  margin: 0;
+  width: 49%;
+  display: inline-block;
+}
+
 .stufinite-course-info {
   margin: 0;
-  /*padding: 24px 16px 24px 16px;*/
+  width: 50%;
+  display: inline-block;
   padding-left: 0;
   list-style: none;
 }
 
 .stufinite-course-info li {
-  /*padding-left: 8px;*/
   height: 48px;
   color: #403F3F;
   letter-spacing: 2px;

@@ -300,6 +300,11 @@ class StufiniteTimetable {
 
     $('.stufinite-course-info-container > .title-container > .title').text(course.title[this.language]);
     $('.stufinite-course-info-container > .title-container > .professor').text('指導教授：' + course.professor);
+    $('#add-to-timetable').unbind().bind('click', () => {
+      this.getCourseByCode(this.addCourse.bind(this), course.code);
+      window.searchbar.hide();
+      $('.stufinite-course-info-container').hide();
+    });
 
     let $detail = $(`
           <li>開設系所： <span class='detail-department'></span></li>
