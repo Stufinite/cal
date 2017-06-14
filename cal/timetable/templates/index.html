@@ -9,6 +9,7 @@
 <link href='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css' rel='stylesheet'>
 
 <link rel='stylesheet' href='{% static "lib/css/radar-chart.min.css" %}'>
+
 <link rel='stylesheet' href='{% static "timetable/css/index.css" %}'>
 <link rel='stylesheet' href='{% static "timetable/css/form.css" %}'>
 {% endblock %}
@@ -30,6 +31,9 @@
 
 
 {% block javascript %}
+<!--jQuery-->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 <!--Google analytics-->
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -42,12 +46,14 @@
 </script>
 <!--Toast Notification-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<!--Libraries-->
+<!--D3.js-->
 <script src="{% static 'lib/js/d3.v3.min.js' %}" ></script>
 <script src="{% static 'lib/js/radar-chart.min.js' %}" ></script>
 <script src="{% static 'lib/js/drawChart.js' %}" ></script>
 <!--功能主函式-->
-<script src="{% static 'timetable/js/StufiniteSearchbar.js' %}"></script>
-<script src="{% static 'timetable/js/StufiniteTimetable.js' %}"></script>
+<script src="{% static 'timetable/js/config.js' %}"></script>
+<script src="{% static 'timetable/js/Searchbar.js' %}"></script>
+<script src="{% static 'timetable/js/Timetable.js' %}"></script>
+<script src="{% static 'timetable/js/page.js' %}"></script>
 <script src="{% static 'timetable/js/main.js' %}"></script>
 {% endblock %}

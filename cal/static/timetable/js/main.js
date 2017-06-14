@@ -1,119 +1,31 @@
-var loginURL = 'https://login.campass.com.tw';
-var infernoURL = 'http://course.campass.com.tw';
-// var loginURL = 'http://test.localhost.login.campass.com.tw:8080';
-// var infernoURL = "http://test.localhost.course.campass.com.tw:8080";
-
 (function main() {
-  window.unsaved = false;
-  window.onbeforeunload = unloadPage;
-
-  $.ajax({
+  $.ajax({ // Get user from userpool
     url: loginURL + '/fb/user',
     dataType: 'json',
     xhrFields: {
       withCredentials: true
     },
     success: (res) => {
-      window.userVerify = res.verify
       window.userId = res.id
       window.userName = res.name
-      if (res.profile == null) {
-        // User is registered but never used cal
+      window.userVerify = res.verify
+
+      if (res.profile == null) { // User is registered but never used cal
         editUser();
-      } else {
-        // Load user data normally
+      } else { // Load user data normally
         loadUser(res);
       }
       // Change status of Facebook button
       $('#fb-login-btn').html('<i class="fa fa-facebook-square" aria-hidden="true"></i> 登出').attr('href', loginURL + '/fb/logout?redirect_service=www')
     },
-    error: (res) => {
-      // User is not logged in
+    error: (res) => { // User is not logged in
       guest();
     }
   });
+
+  addEventListenerToDOM();
 })();
 
-function unloadPage(){
-    if(window.unsaved){
-        return "You have unsaved changes on this page. Do you want to leave this page and discard your changes or stay on this page?";
-    }
-}
-
-function closePrompt() {
-  $('#prompt-login').hide();
-  $('#stufinite-create-user-profile').hide();
-  delMask();
-}
-
-function promptUserLogin() {
-  addMask();
-  $('#prompt-login').show();
-}
-
-function promptUserprofile(func) {
-  addMask();
-  $('#stufinite-create-user-profile').show();
-
-  // Retrieve department list
-  let careerMap = {
-    'U': '學士學位',
-    'G': '碩士學位',
-    'D': '博士學位',
-    'R': '在職專班',
-    'W': '在職專班',
-    'N': '進修學士學位'
-  };
-  let departmentList = {};
-  $.getJSON('/static/timetable/json/NCHU/Department.json', (response) => {
-    for (let career of response) {
-      departmentList[career.degree] = career.department;
-      $('#user-profile-career').append(
-        $('<option>').val(career.degree).text(careerMap[career.degree])
-      );
-    }
-    for (let department of departmentList[$('#user-profile-career').val()]) {
-      $('#user-profile-department').append(
-        $('<option>').val(department.value).text(department.zh_TW)
-      );
-    }
-  });
-
-  // Update deaprtment list after career change
-  $('#user-profile-career').bind('change', () => {
-    $('#user-profile-department').empty();
-    for (let department of departmentList[$('#user-profile-career').val()]) {
-      $('#user-profile-department').append(
-        $('<option>').val(department.value).text(department.zh_TW)
-      );
-    }
-  });
-
-  // Close prompt and update global user info
-  $('#user-profile-btn').bind('click', () => {
-    window.cpUser = {
-      "id": "",
-      "name": "Guest",
-      "selected": [],
-      "school": $("#user-profile-school").val(),
-      "career": $('#user-profile-career').val(),
-      "grade": $('#user-profile-grade').val(),
-      "major": $('#user-profile-department').val()
-    }
-
-    func();
-    delMask();
-    $('#stufinite-create-user-profile').hide();
-    $("#user-profile-cancel-btn").hide()
-  });
-
-  // Close prompt
-  $('#user-profile-cancel-btn').bind('click', () => {
-    delMask();
-    $('#stufinite-create-user-profile').hide();
-    $("#user-profile-cancel-btn").hide()
-  });
-}
 
 function guest() {
   promptUserprofile(() => {
@@ -124,39 +36,40 @@ function guest() {
 
 function editUser() {
   $("#user-profile-cancel-btn").show()
+
   promptUserprofile(() => {
-    window.cpUser.id = window.userId;
     $.ajax({
       url: '/api/user/edit',
       method: 'POST',
       data: {
+        csrfmiddlewaretoken: getCookie('csrftoken'),
         key: window.userVerify,
-        id: cpUser.id,
+        id: window.userId,
         school: cpUser.school,
         career: cpUser.career,
         major: cpUser.major,
-        grade: cpUser.grade,
-        csrfmiddlewaretoken: getCookie('csrftoken')
+        grade: cpUser.grade
       },
       success: (res) => {
+        window.cpUser.id = window.userId;
+        window.cpUser.name = window.userName;
+
         $.ajax({
           url: "/api/get/selected_course",
           method: "POST",
           data: {
+            csrfmiddlewaretoken: getCookie('csrftoken'),
             id: window.userId,
-            semester: '2017',
-            csrfmiddlewaretoken: getCookie('csrftoken')
+            semester: '1061'
           },
           dataType: "text",
-          done: (res) => {
+          success: (res) => {
             window.cpUser.selected = JSON.parse(res)
             window.timetable = new StufiniteTimetable();
             window.searchbar = new StufiniteSearchbar();
           },
           error: (res) => {
-            window.timetable = new StufiniteTimetable();
-            window.searchbar = new StufiniteSearchbar();
-            // console.log(res);
+            console.log(res);
           }
         });
       },
@@ -172,9 +85,9 @@ function loadUser(user) {
     url: "/api/get/selected_course",
     method: "POST",
     data: {
+      csrfmiddlewaretoken: getCookie('csrftoken'),
       id: user.id,
-      semester: '2017',
-      csrfmiddlewaretoken: getCookie('csrftoken')
+      semester: '1061'
     },
     dataType: "text",
     success: (res) => {
@@ -205,29 +118,4 @@ function loadUser(user) {
       // console.log(res);
     }
   });
-}
-
-function addMask() {
-  $("body").append($("<div id='page-mask'>"));
-}
-
-function delMask() {
-  $("body").find("#page-mask").remove();
-}
-
-function getCookie(name) {
-  //name should be 'csrftoken', as an argument to be sent into getCookie()
-  var cookieValue = null;
-  if (document.cookie && document.cookie != '') {
-    var cookies = document.cookie.split(';');
-    for (var i = 0; i < cookies.length; i++) {
-      var cookie = jQuery.trim(cookies[i]);
-      // Does this cookie string begin with the name we want?
-      if (cookie.substring(0, name.length + 1) == (name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
 }
