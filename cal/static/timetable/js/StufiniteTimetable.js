@@ -305,24 +305,26 @@ class StufiniteTimetable {
     $(".chart-container").children().remove();
     var infernoURL = "http://test.localhost.course.campass.com.tw:8080";
     $.getJSON(infernoURL + "/sloth/get/search?school=nchu&keyword=" + course.title[this.language], () => {})
-    .done(res => {
+      .done(res => {
         drawChart(res[0].pk);
-    });
+        $('#course-review').attr('target', "_blank").attr('href', infernoURL + '/infernoWeb/sloth/inside?id=' + res[0].pk);
+      });
+
+    $('.stufinite-course-info-container > .title-container > .title').text(course.title[this.language]);
+    $('.stufinite-course-info-container > .title-container > .professor').text('指導教授：' + course.professor);
 
     let $detail = $(`
           <li>開設系所： <span class='detail-department'></span></li>
-          <li>指導教授： <span class='detail-professor'></span></li>
           <li>課程代碼： <span class='detail-code'></span></li>
           <li>選修學分： <span class='detail-credits'></span></li>
-          <li>上課地點： <a href='#' title=''><span class='detail-location'></span></a></li>
+          <li>上課地點： <span class='detail-location'></span></li>
           <li>先修科目： <span class='detail-prerequisite'></span></li>
           <li>課程備註： <span class='detail-note'></span></li>
           `)
       .find(".detail-department").text(course.department).end()
-      .find(".detail-professor").text(course.professor).end()
       .find(".detail-code").text(course.code).end()
       .find(".detail-credits").text(course.credits).end()
-      .find(".detail-location").text(this.getCourseLocationString(course.location)).end()
+      .find(".detail-location").text(this.getCourseLocationString(course.location) == '' ? '無上課地點' : this.getCourseLocationString(course.location)).end()
       .find(".detail-prerequisite")
       .text(course.prerequisite == undefined || course.prerequisite == "" ? "無" : course.prerequisite).end()
       .find(".detail-note")

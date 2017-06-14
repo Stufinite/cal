@@ -58,6 +58,7 @@ class StufiniteSearchbar {
     // Initialize search-form behavior
     document.querySelector(".stufinite-app-searchbar-toggle").addEventListener("click", (e) => {
       window.searchbar.hide();
+      $('.stufinite-course-info-container').hide();
     });
     document.querySelector("#search-form").addEventListener("focus", () => {
       searchbar.show();

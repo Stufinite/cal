@@ -1,8 +1,12 @@
 .stufinite-course-info-container {
   position: fixed;
   top: 102px;
-  z-index: 200;
+  z-index: 110;
   display: none;
+  overflow: auto;
+  padding-left: 16px;
+  padding-top: 0;
+  padding-right: 0;
   width: calc(100% - 300px);
   height: calc(100% - 102px);
   background-color: white;
@@ -21,15 +25,43 @@
   cursor: pointer;
 }
 
+.stufinite-course-info-container .title {
+  display: inline-block;
+}
+
+.stufinite-course-info-container .professor {
+  padding-left: 8px;
+  color: #403F3F;
+  letter-spacing: 2px;
+  font-weight: lighter;
+  font-size: 15px;
+}
+
+.stufinite-course-info-container .review-container {
+  color: #403F3F;
+  letter-spacing: 2px;
+  font-weight: lighter;
+  font-size: 15px;
+  line-height: 48px;
+}
+
+.stufinite-course-info-container .radar-chart-container label {
+  color: #403F3F;
+  letter-spacing: 2px;
+  font-weight: lighter;
+  font-size: 15px;
+  line-height: 48px;
+}
+
 .stufinite-course-info {
-  overflow: auto;
   margin: 0;
-  padding: 24px 16px 24px 16px;
+  /*padding: 24px 16px 24px 16px;*/
+  padding-left: 0;
   list-style: none;
 }
 
 .stufinite-course-info li {
-  padding-left: 8px;
+  /*padding-left: 8px;*/
   height: 48px;
   color: #403F3F;
   letter-spacing: 2px;
