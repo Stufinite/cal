@@ -134,7 +134,7 @@ function editUser() {
         csrfmiddlewaretoken: getCookie('csrftoken')
       },
       dataType: "text",
-      success: (res) => {
+      done: (res) => {
         window.cpUser.id = window.userId;
         window.cpUser.selected = JSON.parse(res)
         $.ajax({
