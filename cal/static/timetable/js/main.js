@@ -73,6 +73,8 @@ function editUser() {
             init();
           },
           error: (res) => {
+            window.cpUser.selected = [];
+            init();
             console.log(res);
           }
         });
