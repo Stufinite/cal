@@ -1,7 +1,7 @@
 class StufiniteTimetable {
   constructor() {
     this.target = $("#time-table");
-    this.semester = '2017';
+    this.semester = '1061';
     this.school = window.cpUser.school
     this.language = "zh_TW";
     this.credits = 0;
