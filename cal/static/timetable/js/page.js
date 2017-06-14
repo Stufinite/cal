@@ -10,10 +10,25 @@ function addEventListenerToDOM() {
   window.unsaved = false;
   window.onbeforeunload = unloadPage;
 
+  // Login button
   var redirectURL = loginURL + "/fb?redirect_service=www";
   var fbURL = "https://www.facebook.com/v2.9/dialog/oauth?client_id=199021993947051&redirect_uri=" + redirectURL
   $('#fb-login-btn').attr('href', fbURL);
   $('#user-login-btn').attr('href', fbURL);
+
+
+  // Initialize user profile setting buttons
+  $("#user-profile-setting-btn").bind("click", (e) => {
+    editUser();
+  });
+  $("#user-login-cancel-btn").bind("click", (e) => {
+    closePrompt();
+  });
+
+  // Initialize course info close button
+  $(".stufinite-course-info-close").unbind().bind("click", (e) => {
+    $('.stufinite-course-info-container').hide();
+  });
 }
 
 

@@ -17,27 +17,6 @@ class StufiniteSearchbar {
     $('.tab-deptObl').css("background-color", "#DEDEDE").css("color", "white")
     $('.deptObl-container').show();
 
-    $("#search-form").bind("focus", function() {
-      $(".stufinite-app-searchbar-toggle").attr("data-toggle", "true")
-      $(".stufinite-app-searchbar-container").animate({
-        right: 0
-      }, 200);
-    });
-
-    $(".stufinite-app-searchbar-toggle").bind("click", function(e) {
-      if ($(".stufinite-app-searchbar-toggle").attr("data-toggle") !== "true") {
-        $(".stufinite-app-searchbar-toggle").attr("data-toggle", "true")
-        $(".stufinite-app-searchbar-container").animate({
-          right: 0
-        }, 200);
-      } else {
-        $(".stufinite-app-searchbar-toggle").attr("data-toggle", "false")
-        $(".stufinite-app-searchbar-container").animate({
-          right: "-300px"
-        }, 200);
-      }
-    });
-
 
     $.getJSON('/api/get/dept', (json) => {
       $('.stufinite-searchbar-department-select').children().remove();
@@ -78,14 +57,16 @@ class StufiniteSearchbar {
 
   InitializeSearchForm() {
     // Initialize search-form behavior
-    document.querySelector(".stufinite-app-searchbar-toggle").addEventListener("click", (e) => {
+    $(".stufinite-app-searchbar-toggle").bind("click", () => {
       window.searchbar.hide();
       $('.stufinite-course-info-container').hide();
     });
-    document.querySelector("#search-form").addEventListener("focus", () => {
-      searchbar.show();
+    
+    $("#search-form").bind("focus", () => {
+      window.searchbar.show();
     });
-    document.querySelector("#search-form").addEventListener("change", (e) => {
+
+    $("#search-form").bind("change", (e) => {
       let raw_key = $(e.target).val();
       if (raw_key.length < 2) {
         window.searchbar.clear();
@@ -130,14 +111,12 @@ class StufiniteSearchbar {
   }
 
   show() {
-    $(".stufinite-app-searchbar-toggle").attr("data-toggle", "true")
     $(".stufinite-app-searchbar-container").show("slide", {
       direction: "right"
     }, 300);
   }
 
   hide() {
-    $(".stufinite-app-searchbar-toggle").attr("data-toggle", "false")
     $(".stufinite-app-searchbar-container").hide("slide", {
       direction: "right"
     }, 300);

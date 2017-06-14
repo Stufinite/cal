@@ -13,20 +13,21 @@ class StufiniteTimetable {
 
     this.classroom = {};
 
+    // Initialize classroom map
+    $.getJSON('/static/timetable/json/NCHU/Classroom.json', (json) => {
+      this.classroom = json;
+    });
+
+    this.initializeTimetableComponents();
+    this.initializeMajorStuff();
+  }
+
+  initializeTimetableComponents() {
     // Attempt to login every 3 minutes
     setInterval(this.storeCourse.bind(this), 120000);
 
     // Initialize user profile setting buttons
-    $("#user-profile-setting-btn").unbind().bind("click", (e) => {
-      editUser();
-    });
-
-    $("#user-login-cancel-btn").unbind().bind("click", (e) => {
-      closePrompt();
-    });
-
-    // Initialize user profile setting buttons
-    $("#save-course-btn").unbind().bind("click", (e) => {
+    $("#save-course-btn").bind("click", (e) => {
       window.unsaved = false;
 
       if (this.user.name === 'Guest') {
@@ -40,11 +41,6 @@ class StufiniteTimetable {
       }
     });
 
-    // Initialize course info close button
-    $(".stufinite-course-info-close").unbind().bind("click", (e) => {
-      $('.stufinite-course-info-container').hide();
-    });
-
     // Initialize timetable with square plus buttons
     $("#time-table td")
       .html($('<i class="fa fa-plus-square fa-5x"></i>')
@@ -55,13 +51,6 @@ class StufiniteTimetable {
           $(e.target).removeAttr("style")
         })
         .on("click", this.addCourseToSearchbar.bind(this)));
-
-    // Initialize classroom map
-    $.getJSON('/static/timetable/json/NCHU/Classroom.json', (json) => {
-      this.classroom = json;
-    });
-
-    this.initializeMajorStuff();
   }
 
   initializeMajorStuff() {

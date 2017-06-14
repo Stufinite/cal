@@ -26,11 +26,15 @@
   addEventListenerToDOM();
 })();
 
+function init() {
+  window.timetable = new StufiniteTimetable();
+  window.searchbar = new StufiniteSearchbar();
+  window.searchbar.show();
+}
 
 function guest() {
   promptUserprofile(() => {
-    window.timetable = new StufiniteTimetable();
-    window.searchbar = new StufiniteSearchbar();
+    init();
   });
 }
 
@@ -65,8 +69,7 @@ function editUser() {
           dataType: "text",
           success: (res) => {
             window.cpUser.selected = JSON.parse(res)
-            window.timetable = new StufiniteTimetable();
-            window.searchbar = new StufiniteSearchbar();
+            init();
           },
           error: (res) => {
             console.log(res);
@@ -100,8 +103,7 @@ function loadUser(user) {
         grade: user.profile.grade,
         major: user.profile.major
       }
-      window.timetable = new StufiniteTimetable();
-      window.searchbar = new StufiniteSearchbar();
+      init();
     },
     error: (res) => {
       window.cpUser = {
@@ -113,8 +115,7 @@ function loadUser(user) {
         grade: user.profile.grade,
         major: user.profile.major
       }
-      window.timetable = new StufiniteTimetable();
-      window.searchbar = new StufiniteSearchbar();
+      init();
       // console.log(res);
     }
   });

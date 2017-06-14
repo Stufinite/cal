@@ -91,16 +91,13 @@
 }
 
 .stufinite-searchbar-result {
-  margin-bottom: 31px;
+  margin-bottom: 10px;
   width: 100%;
 }
 
 .stufinite-searchbar-result-title, .stufinite-searchbar-dept-title {
-  margin-left: 8px;
-  padding: 8px 16px 8px 16px;
-  width: 90%;
+  padding: 4px 16px 4px 16px;
   background-color: white;
-  box-shadow: 1px 1px 1px grey;
 }
 
 .stufinite-searchbar-result-title {
@@ -113,10 +110,7 @@
 }
 
 .stufinite-searchbar-result-item {
-  margin: 8px 8px 8px 8px;
-  padding: 8px;
-  width: 100% border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
+  padding-top: 4px;
   background-color: #FFFFFF;
   box-shadow: 0px 0px 1px grey;
 }
@@ -133,13 +127,11 @@
 }
 
 .stufinite-searchbar-result-item .action-btn {
-  padding: 8px;
+  padding-left: 8px;
 }
 
 .stufinite-searchbar-result-item .action-btn button {
-  margin-top: 8px;
-  margin-bottom: 8px;
-  height: 30px;
+  margin-bottom: 4px;
   border: 0;
   border-radius: 4px;
   background-color: green;
