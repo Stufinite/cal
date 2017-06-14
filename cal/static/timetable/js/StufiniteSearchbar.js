@@ -1,12 +1,13 @@
 class StufiniteSearchbar {
-  constructor(school, lang, user) {
-    this.school = school;
-    this.language = lang
-    this.user = user;
-    this.isVisible = false;
+  constructor() {
+    this.user = window.cpUser;
+    this.language = "zh_TW"
     this.type = ['optional', 'human', 'society', 'nature', 'PE']
     this.tabs = ['deptObl', 'deptOpt', 'general', 'PE', 'others', 'search'];
     this.currentTab = 'deptObl';
+
+    this.clear();
+    this.InitializeSearchForm();
 
     let tab = $('.stufinite-searchbar-tab');
     for (let t of this.tabs) {
@@ -17,20 +18,22 @@ class StufiniteSearchbar {
     $('.deptObl-container').show();
 
     $.getJSON('/api/get/dept', (json) => {
+      $('.stufinite-searchbar-department-select').children().remove();
       for (let dept of json[this.user.career]) {
         let opt = $('<option>');
         opt.val(dept.code);
         opt.text(dept.title[this.language])
         $('.stufinite-searchbar-department-select').append(opt)
       }
+      $('.stufinite-searchbar-department-select').val(this.user.major);
     });
     $('.stufinite-searchbar-department-button').bind("click", () => {
       this.clear();
       let dept = $('.stufinite-searchbar-department-select').val();
 
-      $.getJSON('/course/CourseOfDept/?dept=' + dept + '&school=' + this.school, (json) => {
+      $.getJSON('/course/CourseOfDept/?dept=' + dept + '&school=' + this.user.school, (json) => {
         for (let grade in json['obligatory']) {
-          for (let index in json['obligatory'][grade]){
+          for (let index in json['obligatory'][grade]) {
             window.timetable.getCourseByCode((course) => {
               this.addResult(course, undefined, grade, true);
             }, json['obligatory'][grade][index]);
@@ -38,16 +41,54 @@ class StufiniteSearchbar {
         }
 
         for (let grade in json['optional']) {
-          for (let index in json['optional'][grade]){
+          for (let index in json['optional'][grade]) {
             window.timetable.getCourseByCode((course) => {
               this.addResult(course, undefined, grade, false);
             }, json['optional'][grade][index]);
           }
-        }       
+        }
       });
 
       this.currentTab = 'deptObl';
       this.displayTabByName(this.currentTab);
+    });
+  }
+
+  InitializeSearchForm() {
+    // Initialize search-form behavior
+    document.querySelector(".stufinite-app-searchbar-toggle").addEventListener("click", (e) => {
+      window.searchbar.hide();
+      $('.stufinite-course-info-container').hide();
+    });
+    document.querySelector("#search-form").addEventListener("focus", () => {
+      searchbar.show();
+    });
+    document.querySelector("#search-form").addEventListener("change", (e) => {
+      let raw_key = $(e.target).val();
+      if (raw_key.length < 2) {
+        window.searchbar.clear();
+        return;
+      }
+      window.searchbar.clear("搜尋中...")
+
+      let key = '';
+      for (let char of raw_key.split(' ')) {
+        key += char + '+';
+      }
+      key = key.slice(0, -1);
+
+      $.getJSON("/search/?keyword=" + key + "&school=NCHU", (c_by_key) => {
+        if (c_by_key.length == 0) {
+          window.searchbar.clear("找不到與\"" + key + "\"相關的課程")
+          return;
+        }
+        window.searchbar.clear()
+        for (let i of c_by_key) {
+          window.timetable.getCourseByCode((course) => {
+            window.searchbar.addResult(course, true);
+          }, i)
+        }
+      });
     });
   }
 
@@ -68,18 +109,16 @@ class StufiniteSearchbar {
 
   show() {
     $(".stufinite-app-searchbar-toggle").attr("data-toggle", "true")
-    $(".stufinite-app-searchbar-container").animate({
-      right: 0
-    }, 200);
-    this.isVisible = true;
+    $(".stufinite-app-searchbar-container").show("slide", {
+      direction: "right"
+    }, 300);
   }
 
   hide() {
     $(".stufinite-app-searchbar-toggle").attr("data-toggle", "false")
-    $(".stufinite-app-searchbar-container").animate({
-      right: "-300px"
-    }, 200);
-    this.isVisible = false;
+    $(".stufinite-app-searchbar-container").hide("slide", {
+      direction: "right"
+    }, 300);
   }
 
   clear(placeholder) {
@@ -124,7 +163,7 @@ class StufiniteSearchbar {
 
     result
       .find('h4.title').text(course.title[this.language]).end()
-      .find('span.info').text(window.timetable.getCourseTime(course.time) + ' | ' + course.professor).end()
+      .find('span.info').text(window.timetable.getCourseTimeString(course) + ' | ' + course.professor).end()
       .find('span.grade').text(grade != undefined ? grade + '年級' : '').end()
       .find('button.join').attr('code', course.code).bind('click', (e) => {
         let code = $(e.target).attr('code');
@@ -132,7 +171,7 @@ class StufiniteSearchbar {
         this.hide();
       }).end()
       .find('button.detail').bind('click', () => {
-        window.timetable.addDetail(course)
+        window.timetable.addCourseToDetail(course)
       }).end()
 
     target.append(result);

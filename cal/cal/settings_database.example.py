@@ -12,7 +12,7 @@ DATABASE_SETTINGS = {
     'mysql': {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'userpool',
+            'NAME': 'cal',
             'USER': 'mydatabaseuser',
             'PASSWORD': 'mypassword',
             'HOST': '127.0.0.1',

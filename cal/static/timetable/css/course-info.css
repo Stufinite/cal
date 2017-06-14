@@ -1,0 +1,106 @@
+.stufinite-course-info-container {
+  position: fixed;
+  top: 102px;
+  z-index: 110;
+  display: none;
+  overflow: auto;
+  padding-left: 16px;
+  padding-top: 0;
+  padding-right: 0;
+  width: calc(100% - 300px);
+  height: calc(100% - 102px);
+  background-color: white;
+}
+
+.stufinite-course-info-close {
+  float: right;
+  width: 48px;
+  height: 24px;
+  border-radius: 2px 2px 2px 6px;
+  background-color: red;
+  color: white;
+  text-align: center;
+  font-weight: bolder;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.stufinite-course-info-container .title {
+  display: inline-block;
+}
+
+.stufinite-course-info-container .professor {
+  padding-left: 8px;
+  color: #403F3F;
+  letter-spacing: 2px;
+  font-weight: lighter;
+  font-size: 15px;
+}
+
+.stufinite-course-info-container .review-container {
+  color: #403F3F;
+  letter-spacing: 2px;
+  font-weight: lighter;
+  font-size: 15px;
+  line-height: 48px;
+}
+
+.stufinite-course-info-container .review-btn {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  height: 30px;
+  border: 0;
+  border-radius: 4px;
+  background-color: #4180B2;
+  color: #FFFFFF;
+  font-size: 13px;
+}
+
+.stufinite-course-info-container .review-btn a {
+  text-decoration: none;
+  color: white;
+}
+
+.stufinite-course-info-container .radar-chart-container label {
+  color: #403F3F;
+  letter-spacing: 2px;
+  font-weight: lighter;
+  font-size: 15px;
+  line-height: 48px;
+}
+
+.stufinite-course-info {
+  margin: 0;
+  /*padding: 24px 16px 24px 16px;*/
+  padding-left: 0;
+  list-style: none;
+}
+
+.stufinite-course-info li {
+  /*padding-left: 8px;*/
+  height: 48px;
+  color: #403F3F;
+  letter-spacing: 2px;
+  font-weight: lighter;
+  font-size: 15px;
+  line-height: 48px;
+}
+
+.stufinite-course-info li i {
+  margin-right: 8px;
+  width: 28px;
+  text-align: center;
+  font-size: 24px;
+}
+
+.stufinite-course-info li a {
+  color: #403F3F;
+  text-decoration: none;
+}
+
+@media screen and (max-width: 480px) {
+  .stufinite-course-info-container {
+    top: 136px;
+    width: 100%;
+  }
+}

@@ -1,58 +1,106 @@
-.stufinite-header {
-    position: relative;
-    z-index: 50;
-    display: flex;
-    -ms-flex-align: center;
-    padding: 16px 32px 16px 32px;
+.header {
+  position: fixed;
+  display: flex;
+  -ms-flex-align: center;
+  width: 100%;
+  z-index: 50;
+  background-color: #4180B2;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  align-items: center;
+}
+
+.header > .title {
+  padding-top: 2px;
+  padding-right: 64px;
+  padding-left: 64px;
+}
+
+.header > .title > .logo {
+  height: 64px;
+}
+
+.header > .search {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+  flex: 1;
+  align-items: center;
+}
+
+.header > .search > input {
+  margin: 0;
+  padding-left: 8px;
+  width: 100%;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0px 0px 1px black;
+  color: #403F3F;
+}
+
+.app-header {
+  position: fixed;
+  top: 70px;
+  height: 32px;
+  width: 100%;
+  background-color: white;
+}
+
+.app-header ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.app-header li {
+  display: inline;
+  margin-left: 8px;
+}
+
+.app-header label {
+  height: 32px;
+  text-align: left;
+  font-weight: lighter;
+  line-height: 32px;
+}
+
+.app-header a {
+  height: 32px;
+  text-align: left;
+  font-weight: lighter;
+  line-height: 32px;
+  cursor: pointer;
+}
+
+.app-header #fb-login-btn {
+  background-color: #3b5998;
+  color: white;
+  border-radius: 3px;
+  padding: 4px;
+  text-decoration: none;
+}
+
+@media screen and (max-width: 480px) {
+  .header {
+    display: block;
+  }
+  .header > .title {
+    display: block;
+    padding-right: 0;
     width: 100%;
-    background-color: #4180B2;
-    -webkit-align-items: center;
-    -webkit-box-align: center;
-    align-items: center;
-}
-
-.stufinite-header div {
-    height: 100%;
-}
-
-.stufinite-header-item {
-    display: inline-block;
-    padding-left: 8px:
-}
-
-.stufinite-header-item a {
-    color: #FFFFFF;
-    text-decoration: none;
-}
-
-.stufinite-header-item span {
-    color: #FFFFFF;
-}
-
-.stufinite-header-title {
-    display: inline-block;
-    width: 365px;
-    color: #F7F7F7;
-    font-size: 32px;
-}
-
-.stufinite-header-search {
-    display: inline-block;
-    margin-right: 8px;
-    margin-left: 64px;
-    vertical-align: middle;
-    flex: 1;
-    align-items: center;
-}
-
-.stufinite-header-search input {
+  }
+  .header > .search {
+    display: block;
     margin: 0;
-    padding-left: 8px;
     width: 100%;
-    height: 32px;
-    border: none;
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-    box-shadow: 0px 0px 1px black;
-    color: #403F3F;
+  }
+  .header > .search > input {
+    margin-bottom: 4px;
+    border-radius: 0;
+  }
+
+  .app-header {
+    top: 102px;
+  }
 }
