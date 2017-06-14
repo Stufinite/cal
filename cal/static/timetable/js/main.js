@@ -154,7 +154,9 @@ function editUser() {
             window.searchbar = new StufiniteSearchbar();
           },
           error: (res) => {
-            console.log(res);
+            window.timetable = new StufiniteTimetable();
+            window.searchbar = new StufiniteSearchbar();
+            // console.log(res);
           }
         });
       },
@@ -189,7 +191,18 @@ function loadUser(user) {
       window.searchbar = new StufiniteSearchbar();
     },
     error: (res) => {
-      console.log(res);
+      window.cpUser = {
+        id: user.id,
+        username: user.name,
+        selected: [],
+        school: user.profile.school,
+        career: user.profile.career,
+        grade: user.profile.grade,
+        major: user.profile.major
+      }
+      window.timetable = new StufiniteTimetable();
+      window.searchbar = new StufiniteSearchbar();
+      // console.log(res);
     }
   });
 }
