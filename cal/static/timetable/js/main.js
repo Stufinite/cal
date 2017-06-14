@@ -1,12 +1,14 @@
-// var loginUrl = 'https://login.campass.com.tw';
-var loginUrl = 'http://test.localhost.login.campass.com.tw:8080';
+var loginURL = 'https://login.campass.com.tw';
+var infernoURL = 'http://course.campass.com.tw';
+// var loginURL = 'http://test.localhost.login.campass.com.tw:8080';
+// var infernoURL = "http://test.localhost.course.campass.com.tw:8080";
 
 (function main() {
   window.unsaved = false;
   window.onbeforeunload = unloadPage;
 
   $.ajax({
-    url: loginUrl + '/fb/user',
+    url: loginURL + '/fb/user',
     dataType: 'json',
     xhrFields: {
       withCredentials: true
@@ -23,7 +25,7 @@ var loginUrl = 'http://test.localhost.login.campass.com.tw:8080';
         loadUser(res);
       }
       // Change status of Facebook button
-      $('#fb-login-btn').html('<i class="fa fa-facebook-square" aria-hidden="true"></i> 登出').attr('href', loginUrl + '/fb/logout?redirect_service=www')
+      $('#fb-login-btn').html('<i class="fa fa-facebook-square" aria-hidden="true"></i> 登出').attr('href', loginURL + '/fb/logout?redirect_service=www')
     },
     error: (res) => {
       // User is not logged in

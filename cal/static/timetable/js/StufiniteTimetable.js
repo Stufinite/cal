@@ -303,7 +303,6 @@ class StufiniteTimetable {
 
   addCourseToDetail(course) {
     $(".chart-container").children().remove();
-    var infernoURL = "http://test.localhost.course.campass.com.tw:8080";
     $.getJSON(infernoURL + "/sloth/get/search?school=nchu&keyword=" + course.title[this.language], () => {})
       .done(res => {
         drawChart(res[0].pk);
