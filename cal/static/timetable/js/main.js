@@ -5,6 +5,7 @@
     xhrFields: {
       withCredentials: true
     },
+    crossDomain: true,
     success: (res) => {
       window.userId = res.id
       window.userName = res.name
