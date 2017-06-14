@@ -125,41 +125,41 @@ function guest() {
 function editUser() {
   $("#user-profile-cancel-btn").show()
   promptUserprofile(() => {
+    window.cpUser.id = window.userId;
     $.ajax({
-      url: "/api/get/selected_course",
-      method: "POST",
+      url: '/api/user/edit',
+      method: 'POST',
       data: {
-        id: window.userId,
-        semester: '2017',
+        key: window.userVerify,
+        id: cpUser.id,
+        school: cpUser.school,
+        career: cpUser.career,
+        major: cpUser.major,
+        grade: cpUser.grade,
         csrfmiddlewaretoken: getCookie('csrftoken')
       },
-      dataType: "text",
-      done: (res) => {
-        window.cpUser.id = window.userId;
-        window.cpUser.selected = JSON.parse(res)
+      success: (res) => {
         $.ajax({
-          url: '/api/user/edit',
-          method: 'POST',
+          url: "/api/get/selected_course",
+          method: "POST",
           data: {
-            key: window.userVerify,
-            id: cpUser.id,
-            school: cpUser.school,
-            career: cpUser.career,
-            major: cpUser.major,
-            grade: cpUser.grade,
+            id: window.userId,
+            semester: '2017',
             csrfmiddlewaretoken: getCookie('csrftoken')
           },
-          success: (res) => {
+          dataType: "text",
+          done: (res) => {
+            window.cpUser.selected = JSON.parse(res)
             window.timetable = new StufiniteTimetable();
             window.searchbar = new StufiniteSearchbar();
           },
           error: (res) => {
-            console.log(res)
+            console.log(res);
           }
         });
       },
       error: (res) => {
-        console.log(res);
+        console.log(res)
       }
     });
   });
