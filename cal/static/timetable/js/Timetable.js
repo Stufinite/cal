@@ -65,18 +65,6 @@ class StufiniteTimetable {
         this['optional'][i] = json['optional'][i];
       }
 
-      // Add major courses to searchbar
-      for (let grade in this['obligatory']) {
-        this.getMultipleCourseByCode((course) => {
-          window.searchbar.addResult(course, undefined, grade);
-        }, this['obligatory'][grade]);
-      }
-      for (let grade in this['optional']) {
-        this.getMultipleCourseByCode((course) => {
-          window.searchbar.addResult(course, undefined, grade);
-        }, this['optional'][grade]);
-      }
-
       // Check if there are courses selected
       let s_list = [];
       if (this.user.selected.length == 0) {
@@ -97,6 +85,19 @@ class StufiniteTimetable {
         this.getMultipleCourseByCode(this.addCourse.bind(this), s_list);
       }
       document.cookie = "selected_course=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+      // Add major courses to searchbar
+      for (let grade in this['obligatory']) {
+        this.getMultipleCourseByCode((course) => {
+          window.searchbar.addResult(course, undefined, grade);
+        }, this['obligatory'][grade]);
+      }
+      for (let grade in this['optional']) {
+        this.getMultipleCourseByCode((course) => {
+          window.searchbar.addResult(course, undefined, grade);
+        }, this['optional'][grade]);
+      }
+
     });
   }
 
