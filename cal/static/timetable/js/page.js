@@ -16,6 +16,9 @@ function addEventListenerToDOM() {
   $('#fb-login-btn').attr('href', fbURL);
   $('#user-login-btn').attr('href', fbURL);
 
+  $('.searchbar-toggle-btn').bind('click', (e) => {
+    window.searchbar.show();
+  });
 
   // Initialize user profile setting buttons
   $("#user-profile-setting-btn").bind("click", (e) => {

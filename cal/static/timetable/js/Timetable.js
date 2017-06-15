@@ -56,6 +56,8 @@ class StufiniteTimetable {
   initializeMajorStuff() {
     this.getCourseByMajor((json) => {
       // Build major course index
+      this.obligatory = {};
+      this.optional = {}
       for (let i in json['obligatory']) {
         this['obligatory'][i] = json['obligatory'][i];
       }
@@ -85,9 +87,9 @@ class StufiniteTimetable {
       let s_list = [];
       if (this.user.selected.length == 0) {
         // Add major courses to timetable
-        // for (let code in this['obligatory'][this.user.grade]) {
-        //   this.getCourseByCode(this.addCourse.bind(this), this['obligatory'][this.user.grade][code]);
-        // }
+        for (let code in this['obligatory'][this.user.grade]) {
+          this.getCourseByCode(this.addCourse.bind(this), this['obligatory'][this.user.grade][code]);
+        }
         try {
           s_list = getCookie('selected_course').split(',');
         } catch (err) {

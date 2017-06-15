@@ -156,7 +156,8 @@ class StufiniteSearchbar {
               <h4 class='title'></h4>
               <div>
                 <div class="action-btn">
-                  <button class='detail'>＋</button>
+                  <button class='join'>新增</button>
+                  <button class='detail'>詳情</button>
                 </div>
                 <span class='info'></span>
               </div>
