@@ -11,6 +11,9 @@ class StufiniteTimetable {
     this.obligatory = {};
     this.optional = {};
 
+    this.loadedObj = {};
+    this.loadedCode = [];
+
     this.classroom = {};
 
     // Initialize classroom map
@@ -27,7 +30,7 @@ class StufiniteTimetable {
     setInterval(this.storeCourse.bind(this), 120000);
 
     // Initialize user profile setting buttons
-    $("#save-course-btn").bind("click", (e) => {
+    $("#save-course-btn").unbind().bind("click", (e) => {
       window.unsaved = false;
 
       if (this.user.name === 'Guest') {
@@ -138,6 +141,15 @@ class StufiniteTimetable {
     return false;
   }
 
+  isCodeLoaded(code) {
+    for (let i in this.loadedCode) {
+      if (this.loadedCode[i] == code) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   isCodeSelected(code) {
     for (let i in this.user.selected) {
       if (this.user.selected[i] == code) {
@@ -180,19 +192,31 @@ class StufiniteTimetable {
   }
 
   getCourseByCode(method, key) {
-    $.getJSON('/api/get/course/code/' + key, (course) => {
-      method(course[0]);
-    });
+    if (this.isCodeLoaded(key)) {
+      method(this.loadedObj[key]);
+    } else {
+      $.getJSON('/api/get/course/code/' + key, (course) => {
+        this.loadedCode.push(key);
+        this.loadedObj[key] = course[0];
+        method(course[0]);
+      });
+    }
   }
 
   getMultipleCourseByCode(method, keys) {
     let keysString = ''
     for (let k of keys) {
+      if (this.isCodeLoaded(k)) {
+        method(this.loadedObj[k]);
+        continue;
+      }
       keysString = keysString + k + '+'
     }
     keysString = keysString.substr(0, keysString.length - 1);
     $.getJSON('/api/get/course/code?code=' + keysString + '&semester=' + this.semester, (courses) => {
       for (let c of courses) {
+        this.loadedCode.push(c.code);
+        this.loadedObj[c.code] = c;
         method(c);
       }
     });
@@ -349,7 +373,7 @@ class StufiniteTimetable {
   addCourse(course) {
     if (this.isCourseSelected(course)) {
       toastr.warning(this.language == "zh_TW" ?
-        "此課程已加選" :
+        course.title[this.language] + " 已加選" :
         "This course is selected.", {
           timeOut: 2500
         });
@@ -383,10 +407,10 @@ class StufiniteTimetable {
         let $td = this.target.find('tr[data-hour="' + courseByTime + '"] td:eq(' + (courseByDay.day - 1) + ')');
 
         $cell
-          .find('.detail').bind('click', (e) => {
+          .find('.detail').unbind().bind('click', (e) => {
             this.addCourseToDetail(course)
           }).end()
-          .find('.remove').bind('click', (e) => {
+          .find('.remove').unbind().bind('click', (e) => {
             this.delCourse(course)
           }).end()
           .find('.title').text(course.title[this.language]).end()
@@ -420,7 +444,7 @@ class StufiniteTimetable {
       $.each(iv.time, (_, jv) => {
         var $td = target.find('tr[data-hour=' + jv + '] td:eq(' + (iv.day - 1) + ')');
         //td:eq()為搜尋td的陣列索引值，找到課程的時間    iv.day為星期，但因為td為陣列所以iv.day要減一    find()是找class!!
-        $td.html($('<i class="fa fa-plus-square fa-5x"></i>').bind('click', this.addCourseToSearchbar.bind(this)));
+        $td.html($('<i class="fa fa-plus-square fa-5x"></i>').unbind().bind('click', this.addCourseToSearchbar.bind(this)));
       })
     })
 

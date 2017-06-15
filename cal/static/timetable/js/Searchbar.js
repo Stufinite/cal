@@ -11,7 +11,7 @@ class StufiniteSearchbar {
 
     let tab = $('.stufinite-searchbar-tab');
     for (let t of this.tabs) {
-      tab.find('span.tab-' + t).bind('click', this.displayTab.bind(this));
+      tab.find('span.tab-' + t).unbind().bind('click', this.displayTab.bind(this));
       $('.' + t + '-container').hide();
     }
     $('.tab-deptObl').css("background-color", "#DEDEDE").css("color", "white")
@@ -28,7 +28,7 @@ class StufiniteSearchbar {
       }
       $('.stufinite-searchbar-department-select').val(this.user.major);
     });
-    $('.stufinite-searchbar-department-button').bind("click", () => {
+    $('.stufinite-searchbar-department-button').unbind().bind("click", () => {
       this.clear();
       let dept = $('.stufinite-searchbar-department-select').val();
 
@@ -63,16 +63,16 @@ class StufiniteSearchbar {
 
   InitializeSearchForm() {
     // Initialize search-form behavior
-    $(".stufinite-app-searchbar-toggle").bind("click", () => {
+    $(".stufinite-app-searchbar-toggle").unbind().bind("click", () => {
       window.searchbar.hide();
       $('.stufinite-course-info-container').hide();
     });
 
-    $("#search-form").bind("focus", () => {
+    $("#search-form").unbind().bind("focus", () => {
       window.searchbar.show();
     });
 
-    $("#search-form").bind("change", (e) => {
+    $("#search-form").unbind().bind("change", (e) => {
       let raw_key = $(e.target).val();
       if (raw_key.length < 2) {
         window.searchbar.clear();
@@ -177,12 +177,12 @@ class StufiniteSearchbar {
       .find('h4.title').text(course.title[this.language]).end()
       .find('span.info').text(window.timetable.getCourseTimeString(course) + ' | ' + course.professor).end()
       .find('span.grade').text(grade != undefined ? grade + '年級' : '').end()
-      .find('button.join').attr('code', course.code).bind('click', (e) => {
+      .find('button.join').attr('code', course.code).unbind().bind('click', (e) => {
         let code = $(e.target).attr('code');
         window.timetable.getCourseByCode(window.timetable.addCourse.bind(window.timetable), code);
         this.hide();
       }).end()
-      .find('button.detail').bind('click', () => {
+      .find('button.detail').unbind().bind('click', () => {
         window.timetable.addCourseToDetail(course)
       }).end()
 
