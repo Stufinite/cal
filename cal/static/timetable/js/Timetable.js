@@ -67,20 +67,14 @@ class StufiniteTimetable {
 
       // Add major courses to searchbar
       for (let grade in this['obligatory']) {
-        for (let code in this['obligatory'][grade]) {
-          let g = grade;
-          this.getCourseByCode((course) => {
-            window.searchbar.addResult(course, undefined, g);
-          }, this['obligatory'][grade][code]);
-        }
+        this.getMultipleCourseByCode((course) => {
+          window.searchbar.addResult(course, undefined, grade);
+        }, this['obligatory'][grade]);
       }
       for (let grade in this['optional']) {
-        for (let code in this['optional'][grade]) {
-          let g = grade;
-          this.getCourseByCode((course) => {
-            window.searchbar.addResult(course, undefined, g);
-          }, this['optional'][grade][code]);
-        }
+        this.getMultipleCourseByCode((course) => {
+          window.searchbar.addResult(course, undefined, grade);
+        }, this['optional'][grade]);
       }
 
       // Check if there are courses selected
@@ -346,9 +340,7 @@ class StufiniteTimetable {
 
     $.getJSON('/course/TimeOfCourse/?school=' + this.school + '&degree=O+' + this.user.career + '&day=' + day + '&time=' + hour + '&dept=C00+' + this.user.major, (codes) => {
       window.searchbar.clear();
-      for (let c of codes) {
-        this.getCourseByCode(window.searchbar.addResult.bind(window.searchbar), c);
-      }
+      this.getMultipleCourseByCode(window.searchbar.addResult.bind(window.searchbar), codes);
       window.searchbar.show();
     });
   }
