@@ -55,7 +55,7 @@ function promptUserLogin() {
 function promptUserprofile(func) {
   addMask();
   $('#stufinite-create-user-profile').show();
-
+  $('#user-profile-department').empty();
   // Retrieve department list
   let careerMap = {
     'U': '學士學位',
