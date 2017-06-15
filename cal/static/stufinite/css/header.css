@@ -1,26 +1,26 @@
 .header {
   position: fixed;
+  z-index: 50;
   display: flex;
   -ms-flex-align: center;
   width: 100%;
-  z-index: 50;
   background-color: #4180B2;
   -webkit-align-items: center;
   -webkit-box-align: center;
   align-items: center;
 }
 
-.header > .title {
+.header>.title {
   padding-top: 2px;
   padding-right: 64px;
   padding-left: 64px;
 }
 
-.header > .title > .logo {
+.header>.title>.logo {
   height: 64px;
 }
 
-.header > .search {
+.header>.search {
   display: inline-block;
   margin-right: 8px;
   vertical-align: middle;
@@ -28,7 +28,7 @@
   align-items: center;
 }
 
-.header > .search > input {
+.header>.search>input {
   margin: 0;
   padding-left: 8px;
   width: 100%;
@@ -42,8 +42,9 @@
 .app-header {
   position: fixed;
   top: 70px;
-  height: 32px;
+  z-index: 100;
   width: 100%;
+  height: 32px;
   background-color: white;
 }
 
@@ -74,10 +75,10 @@
 }
 
 .app-header #fb-login-btn {
+  padding: 4px;
+  border-radius: 3px;
   background-color: #3b5998;
   color: white;
-  border-radius: 3px;
-  padding: 4px;
   text-decoration: none;
 }
 
@@ -85,21 +86,20 @@
   .header {
     display: block;
   }
-  .header > .title {
+  .header>.title {
     display: block;
     padding-right: 0;
     width: 100%;
   }
-  .header > .search {
+  .header>.search {
     display: block;
     margin: 0;
     width: 100%;
   }
-  .header > .search > input {
+  .header>.search>input {
     margin-bottom: 4px;
     border-radius: 0;
   }
-
   .app-header {
     top: 102px;
   }
