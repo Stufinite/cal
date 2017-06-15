@@ -34,19 +34,25 @@ class StufiniteSearchbar {
 
       $.getJSON('/course/CourseOfDept/?dept=' + dept + '&school=' + this.user.school, (json) => {
         for (let grade in json['obligatory']) {
-          for (let index in json['obligatory'][grade]) {
-            window.timetable.getCourseByCode((course) => {
-              this.addResult(course, undefined, grade, true);
-            }, json['obligatory'][grade][index]);
-          }
+          // for (let index in json['obligatory'][grade]) {
+          //   window.timetable.getCourseByCode((course) => {
+          //     this.addResult(course, undefined, grade, true);
+          //   }, json['obligatory'][grade][index]);
+          // }
+          window.timetable.getMultipleCourseByCode((course) => {
+            this.addResult(course, undefined, grade, true);
+          }, json['obligatory'][grade]);
         }
 
         for (let grade in json['optional']) {
-          for (let index in json['optional'][grade]) {
-            window.timetable.getCourseByCode((course) => {
-              this.addResult(course, undefined, grade, false);
-            }, json['optional'][grade][index]);
-          }
+          // for (let index in json['optional'][grade]) {
+          //   window.timetable.getCourseByCode((course) => {
+          //     this.addResult(course, undefined, grade, false);
+          //   }, json['optional'][grade][index]);
+          // }
+          window.timetable.getMultipleCourseByCode((course) => {
+            this.addResult(course, undefined, grade, false);
+          }, json['optional'][grade]);
         }
       });
 
@@ -86,11 +92,14 @@ class StufiniteSearchbar {
           return;
         }
         window.searchbar.clear()
-        for (let i of c_by_key) {
-          window.timetable.getCourseByCode((course) => {
-            window.searchbar.addResult(course, true);
-          }, i)
-        }
+        // for (let i of c_by_key) {
+        //   window.timetable.getCourseByCode((course) => {
+        //     window.searchbar.addResult(course, true);
+        //   }, i);
+        // }
+        window.timetable.getMultipleCourseByCode((course) => {
+          window.searchbar.addResult(course, true);
+        }, c_by_key);
       });
     });
   }

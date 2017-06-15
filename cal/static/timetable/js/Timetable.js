@@ -86,10 +86,6 @@ class StufiniteTimetable {
       // Check if there are courses selected
       let s_list = [];
       if (this.user.selected.length == 0) {
-        // Add major courses to timetable
-        for (let code in this['obligatory'][this.user.grade]) {
-          this.getCourseByCode(this.addCourse.bind(this), this['obligatory'][this.user.grade][code]);
-        }
         try {
           s_list = getCookie('selected_course').split(',');
         } catch (err) {
@@ -100,8 +96,11 @@ class StufiniteTimetable {
         s_list = this.user.selected;
       }
       this.user.selected = [];
-      for (let i in s_list) {
-        this.getCourseByCode(this.addCourse.bind(this), s_list[i]);
+      if (s_list.length == 0) {
+        // Add major courses to timetable
+        this.getMultipleCourseByCode(this.addCourse.bind(this), this['obligatory'][this.user.grade]);
+      } else {
+        this.getMultipleCourseByCode(this.addCourse.bind(this), s_list);
       }
       document.cookie = "selected_course=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     });
@@ -188,6 +187,19 @@ class StufiniteTimetable {
   getCourseByCode(method, key) {
     $.getJSON('/api/get/course/code/' + key, (course) => {
       method(course[0]);
+    });
+  }
+
+  getMultipleCourseByCode(method, keys) {
+    let keysString = ''
+    for (let k of keys) {
+      keysString = keysString + k + '+'
+    }
+    keysString = keysString.substr(0, keysString.length - 1);
+    $.getJSON('/api/get/course/code?code=' + keysString + '&semester=' + this.semester, (courses) => {
+      for (let c of courses) {
+        method(c);
+      }
     });
   }
 

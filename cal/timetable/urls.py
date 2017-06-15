@@ -8,6 +8,7 @@ urlpatterns = [
 
 urlpatterns += [
     url(r'^api/get/course/code/(?P<course_code>\d+)$', apis.get_course_by_code),
+    url(r'^api/get/course/code$', apis.get_courses_by_code),
 
     url(r'^api/get/dept$', apis.get_department),
 
