@@ -107,6 +107,8 @@ def get_course_by_code(request, course_code):
 def store_selected_course(request):
     if request.method == 'POST':
         user_id = request.POST.get('id')
+        if user_id == '':
+            raise Http404("Page does not exist")
         selected = request.POST.get('selected').split(',')
         semester = request.POST.get('semester')
         try:
