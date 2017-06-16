@@ -68,11 +68,11 @@ class StufiniteSearchbar {
       $('.stufinite-course-info-container').hide();
     });
 
-    $("#search-form").unbind().bind("focus", () => {
+    $("#search-form").bind("focus", () => {
       window.searchbar.show();
     });
 
-    $("#search-form").unbind().bind("change", (e) => {
+    $("#search-form").bind("change", (e) => {
       let raw_key = $(e.target).val();
       if (raw_key.length < 2) {
         window.searchbar.clear();
