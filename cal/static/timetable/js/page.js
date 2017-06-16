@@ -16,12 +16,19 @@ function addEventListenerToDOM() {
   $('#fb-login-btn').attr('href', fbURL);
   $('#user-login-btn').attr('href', fbURL);
 
+  $('.searchbar-toggle-btn').unbind().bind('click', (e) => {
+    window.searchbar.show();
+  });
 
   // Initialize user profile setting buttons
-  $("#user-profile-setting-btn").bind("click", (e) => {
-    editUser();
+  $("#user-profile-setting-btn").unbind().bind("click", (e) => {
+    if (window.userName == 'Guest') {
+      guest();
+    } else {
+      editUser();
+    }
   });
-  $("#user-login-cancel-btn").bind("click", (e) => {
+  $("#user-login-cancel-btn").unbind().bind("click", (e) => {
     closePrompt();
   });
 
@@ -34,7 +41,7 @@ function addEventListenerToDOM() {
 
 function unloadPage() {
   if (window.unsaved) {
-    return "You have unsaved changes on this page. Do you want to leave this page and discard your changes or stay on this page?";
+    return "您還沒儲存課表喔，確定離開嘛?";
   }
 }
 
@@ -52,7 +59,7 @@ function promptUserLogin() {
 function promptUserprofile(func) {
   addMask();
   $('#stufinite-create-user-profile').show();
-
+  $('#user-profile-department').empty();
   // Retrieve department list
   let careerMap = {
     'U': '學士學位',
@@ -78,7 +85,9 @@ function promptUserprofile(func) {
   });
 
   // Update deaprtment list after career change
-  $('#user-profile-career').bind('change', () => {
+  $('#user-profile-career').unbind()
+
+  .bind('change', () => {
     $('#user-profile-department').empty();
     for (let department of departmentList[$('#user-profile-career').val()]) {
       $('#user-profile-department').append(
@@ -88,7 +97,8 @@ function promptUserprofile(func) {
   });
 
   // Close prompt and update global user info
-  $('#user-profile-btn').bind('click', () => {
+  $('#user-profile-btn').unbind().bind('click', () => {
+    window.userName = "Guest";
     window.cpUser = {
       "id": "",
       "name": "Guest",
@@ -106,12 +116,105 @@ function promptUserprofile(func) {
   });
 
   // Close prompt
-  $('#user-profile-cancel-btn').bind('click', () => {
+  $('#user-profile-cancel-btn').unbind().bind('click', () => {
     delMask();
     $('#stufinite-create-user-profile').hide();
     $("#user-profile-cancel-btn").hide()
   });
 }
+
+
+function guest() {
+  promptUserprofile(() => {
+    init();
+  });
+}
+
+function editUser() {
+  $("#user-profile-cancel-btn").show()
+
+  promptUserprofile(() => {
+    $.ajax({
+      url: '/api/user/edit',
+      method: 'POST',
+      data: {
+        csrfmiddlewaretoken: getCookie('csrftoken'),
+        key: window.userVerify,
+        id: window.userId,
+        school: cpUser.school,
+        career: cpUser.career,
+        major: cpUser.major,
+        grade: cpUser.grade
+      },
+      success: (res) => {
+        window.cpUser.id = window.userId;
+        window.cpUser.name = window.userName;
+
+        $.ajax({
+          url: "/api/get/selected_course",
+          method: "POST",
+          data: {
+            csrfmiddlewaretoken: getCookie('csrftoken'),
+            id: window.userId,
+            semester: '1061'
+          },
+          dataType: "text",
+          success: (res) => {
+            window.cpUser.selected = JSON.parse(res)
+            init();
+          },
+          error: (res) => {
+            window.cpUser.selected = [];
+            init();
+            console.log(res);
+          }
+        });
+      },
+      error: (res) => {
+        console.log(res)
+      }
+    });
+  });
+}
+
+function loadUser(user) {
+  $.ajax({
+    url: "/api/get/selected_course",
+    method: "POST",
+    data: {
+      csrfmiddlewaretoken: getCookie('csrftoken'),
+      id: user.id,
+      semester: '1061'
+    },
+    dataType: "text",
+    success: (res) => {
+      window.cpUser = {
+        id: user.id,
+        username: user.name,
+        selected: JSON.parse(res),
+        school: user.profile.school,
+        career: user.profile.career,
+        grade: user.profile.grade,
+        major: user.profile.major
+      }
+      init();
+    },
+    error: (res) => {
+      window.cpUser = {
+        id: user.id,
+        username: user.name,
+        selected: [],
+        school: user.profile.school,
+        career: user.profile.career,
+        grade: user.profile.grade,
+        major: user.profile.major
+      }
+      init();
+      // console.log(res);
+    }
+  });
+}
+
 
 function getCookie(name) {
   //name should be 'csrftoken', as an argument to be sent into getCookie()

@@ -46,6 +46,36 @@ def get_department(request):
     except:
         raise Http404("Page does not exist")
 
+def get_courses_by_code(request):
+    semester = request.GET.get('semester')
+    codes_str = request.GET.get('code')
+    codes = codes_str.split(' ')
+    result = []
+    try:
+        for code in codes:
+            c = Course.objects.get(code=code, semester=semester)
+            result.append({
+                    "code": c.code,
+                    "credits": c.credits,
+                    "title": {
+                        "zh_TW": c.title.split(",")[0],
+                        "en_US": c.title.split(",")[1],
+                    },
+                    "professor": c.professor,
+                    "department": c.department,
+                    "time": c.time,
+                    "location": c.location,
+                    "intern_location": c.intern_location,
+                    "prerequisite": c.prerequisite,
+                    "note": c.note,
+                    "discipline": c.discipline,
+                }
+            )
+        return JsonResponse(result, safe=False)
+    except Exception as e:
+        raise Http404("Page does not exist")
+    return HttpResponse(str(codes))
+
 
 def get_course_by_code(request, course_code):
     try:
@@ -77,6 +107,8 @@ def get_course_by_code(request, course_code):
 def store_selected_course(request):
     if request.method == 'POST':
         user_id = request.POST.get('id')
+        if user_id == '':
+            raise Http404("Page does not exist")
         selected = request.POST.get('selected').split(',')
         semester = request.POST.get('semester')
         try:
