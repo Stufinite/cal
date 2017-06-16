@@ -41,7 +41,7 @@ function addEventListenerToDOM() {
 
 function unloadPage() {
   if (window.unsaved) {
-    return "You have unsaved changes on this page. Do you want to leave this page and discard your changes or stay on this page?";
+    return "您還沒儲存課表喔，確定離開嘛?";
   }
 }
 
