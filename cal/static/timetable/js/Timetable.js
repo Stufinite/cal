@@ -325,7 +325,7 @@ class StufiniteTimetable {
 
   addCourseToDetail(course) {
     $(".chart-container").children().remove();
-    $.getJSON(infernoURL + "/sloth/get/search?school=nchu&keyword=" + course.title[this.language], () => {})
+    $.getJSON(infernoURL + `/sloth/get/search?school=nchu&keyword=${course.title[this.language]}&teacher=${course['professor']}`, () => {})
       .done(res => {
         drawChart(res[0].pk);
         $('#course-review').attr('target', "_blank").attr('href', infernoURL + '/infernoWeb/sloth/inside?id=' + res[0].pk);
