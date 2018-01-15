@@ -112,7 +112,7 @@ def store_selected_course(request):
         selected = request.POST.get('selected').split(',')
         semester = request.POST.get('semester')
         try:
-            SelectedCourse.objects.filter(user_id=user_id).delete()
+            SelectedCourse.objects.filter(user_id=user_id, semester=semester).delete()
             for code in selected:
                 if not code.isdigit():
                     raise Http404("Page does not exist")
